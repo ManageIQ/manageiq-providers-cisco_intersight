@@ -47,59 +47,28 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                 :validationDependencies => %w[type],
                 :fields                 => [
                   {
-                    :component    => "select",
-                    :id           => "endpoints.default.security_protocol",
-                    :name         => "endpoints.default.security_protocol",
-                    :label        => _("Security Protocol"),
-                    :isRequired   => true,
-                    :validate     => [{:type => "required"}],
-                    :initialValue => 'ssl-with-validation',
-                    :options      => [
-                      {
-                        :label => _("SSL without validation"),
-                        :value => "ssl-no-validation"
-                      },
-                      {
-                        :label => _("SSL"),
-                        :value => "ssl-with-validation"
-                      },
-                      {
-                        :label => _("Non-SSL"),
-                        :value => "non-ssl"
-                      }
-                    ]
-                  },
-                  {
                     :component  => "text-field",
-                    :id         => "endpoints.default.hostname",
-                    :name       => "endpoints.default.hostname",
-                    :label      => _("Hostname (or IPv4 or IPv6 address)"),
+                    :id         => "endpoints.default.endpoint",
+                    :name       => "endpoints.default.endpoint",
+                    :label      => _("Endpoint"),
                     :isRequired => true,
                     :validate   => [{:type => "required"}],
                   },
                   {
-                    :component    => "text-field",
-                    :id           => "endpoints.default.port",
-                    :name         => "endpoints.default.port",
-                    :label        => _("API Port"),
-                    :type         => "number",
-                    :initialValue => 443,
-                    :isRequired   => true,
-                    :validate     => [{:type => "required"}],
-                  },
-                  {
                     :component  => "text-field",
-                    :id         => "authentications.default.userid",
-                    :name       => "authentications.default.userid",
-                    :label      => "Username",
+                    :id         => "authentications.default.key_id",
+                    :name       => "authentications.default.key_id",
+                    :label      => "Key ID",
                     :isRequired => true,
                     :validate   => [{:type => "required"}],
                   },
                   {
+                    # Question: Is this form of type "password" (since it's a private key)
                     :component  => "password-field",
-                    :id         => "authentications.default.password",
-                    :name       => "authentications.default.password",
-                    :label      => "Password",
+                    :id         => "authentications.default.key_file",
+                    :name       => "authentications.default.key_file",
+                    :label      => "Key File",
+                    # Question: Is this form of type "password" (since it's a private key)
                     :type       => "password",
                     :isRequired => true,
                     :validate   => [{:type => "required"}],
