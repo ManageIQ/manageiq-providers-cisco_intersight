@@ -1,20 +1,11 @@
-# require "redfish_client"
-
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
   def connect(options = {})
-    if missing_credentials?(options[:auth_type])
-      raise MiqException::MiqHostError, "No credentials defined"
-    end
+    raise MiqException::MiqHostError, "No credentials defined" if missing_credentials?(options[:auth_type])
 
-    username = options[:user] || authentication_userid(options[:auth_type])
-    password = options[:pass] || authentication_password(options[:auth_type])
-    host = options[:host] || hostname
-    port = options[:port] || self.port
-    protocol = options[:protocol] || security_protocol
-
-    self.class.raw_connect(username, password, host, port, protocol)
+    auth_token = authentication_token(options[:auth_type])
+    self.class.raw_connect(project, auth_token, options, options[:proxy_uri] || http_proxy_uri)
   end
 
   def disconnect(connection)
@@ -29,6 +20,62 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   end
 
   module ClassMethods
+
+    class MyRubySDK
+      def vms
+        [
+          OpenStruct.new(
+            :id       => '1',
+            :name     => 'funky',
+            :location => 'dc-1',
+            :vendor   => 'unknown'
+          ),
+          OpenStruct.new(
+            :id       => '2',
+            :name     => 'bunch',
+            :location => 'dc-1',
+            :vendor   => 'unknown'
+          ),
+        ]
+      end
+  
+      def find_vm(id)
+        vms.find { |v| v.id == id.to_s }
+      end
+  
+      def events
+        [
+          OpenStruct.new(
+            :name       => %w(instance_power_on instance_power_off).sample,
+            :id         => Time.zone.now.to_i,
+            :timestamp  => Time.zone.now,
+            :vm_ems_ref => [1, 2].sample
+          ),
+          OpenStruct.new(
+            :name       => %w(instance_power_on instance_power_off).sample,
+            :id         => Time.zone.now.to_i + 1,
+            :timestamp  => Time.zone.now,
+            :vm_ems_ref => [1, 2].sample
+          )
+        ]
+      end
+  
+      def metrics(start_time, end_time)
+        timestamp = start_time
+        metrics = {}
+        while (timestamp < end_time)
+          metrics[timestamp] = {
+            'cpu_usage_rate_average'  => rand(100).to_f,
+            'disk_usage_rate_average' => rand(100).to_f,
+            'mem_usage_rate_average'  => rand(100).to_f,
+            'net_usage_rate_average'  => rand(100).to_f,
+          }
+          timestamp += 20.seconds
+        end
+        metrics
+      end
+    end
+  
     def params_for_create
       @params_for_create ||= {
         :fields => [
@@ -97,55 +144,18 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     #     }
     #   }
 
-    def verify_credentials(args)
-      endpoint = args.dig("endpoints", "default")
-      authentication = args.dig("authentications", "default")
-
-      hostname, port, security_protocol = endpoint&.values_at("hostname", "port", "security_protocol")
-      userid, password = authentication&.values_at("userid", "password")
-
-      password = ManageIQ::Password.try_decrypt(password)
-      password ||= find(args["id"]).authentication_password(endpoint_name) if args["id"]
-
-      !!raw_connect(userid, password, hostname, port, security_protocol)
-    end
-
-    <<-DOC
-    def raw_connect(username, password, host, port, protocol)
-      url = service_url(protocol, host, port)
-      verify = (protocol == "ssl-with-validation")
-
-      connection_rescue_block do
-        # TODO(tadeboro): Make prefix configurable from UI
-        c = RedfishClient.new(url, :prefix => "/redfish/v1", :verify => verify)
-        c.login(username, password)
-        c
+    def verify_credentials(auth_type = nil, options = {})
+      begin
+        connect
+      rescue => err
+        raise MiqException::MiqInvalidCredentialsError, err.message
       end
     end
-    DOC
 
-    SCHEME_LUT = {
-      "ssl"                 => "https",
-      "ssl-with-validation" => "https",
-      "non-ssl"             => "http"
-    }.freeze
-
-    def service_url(protocol, host, port)
-      scheme = SCHEME_LUT[protocol]
-      URI::Generic.build(:scheme => scheme, :host => host, :port => port).to_s
+    def self.raw_connect(*args)
+      # TODO: Replace this with a client connection from your Ruby SDK library and remove the MyRubySDK class
+      MyRubySDK.new
     end
 
-    def translate_exception(err)
-      MiqException::MiqEVMLoginError.new(
-        "Unexpected response returned from system: #{err.message}"
-      )
-    end
-
-    def connection_rescue_block
-      yield
-    rescue StandardError => err
-      miq_exception = translate_exception(err)
-      raise miq_exception
-    end
   end
 end

@@ -1,9 +1,4 @@
-module ManageIQ::Providers::Redfish
-  class Inventory::Persister::PhysicalInfraManager < Inventory::Persister
-    include Inventory::Persister::Definitions::PhysicalInfraCollections
-
-    def initialize_inventory_collections
-      initialize_physical_infra_collections
-    end
+module ManageIQ::Providers::CiscoIntersight
+  class ManageIQ::Providers::CiscoIntersight::Inventory::Persister::PhysicalInfraManager < ManageIQ::Providers::CiscoIntersight::Inventory::Persister
   end
 end
