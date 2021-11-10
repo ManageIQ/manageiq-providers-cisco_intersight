@@ -5,7 +5,7 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :Refresher
     require_nested :RefreshWorker
     require_nested :PhysicalServer
-    require_nested :Vm
+    # require_nested :Vm
 
     include Vmdb::Logging
     include ManagerMixin
