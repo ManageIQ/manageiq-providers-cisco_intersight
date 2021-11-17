@@ -11,9 +11,11 @@ module ManageIQ::Providers::CiscoIntersight
     include ManagerMixin
     include_concern "Operations"
 
-    # TODO: This class represents a fake Ruby SDK with sample data.
-    #       This will be removed after a real Ruby SDK is created in
-    #       the raw_connect method.
+    # TODO (Tjaz Erzen): Remove this class after cisco gem is fully developed
+    # ... and replace fake data with real API calls.
+    #
+    # This class represents a fake Ruby SDK with sample data. This will be removed after a real Ruby SDK is created in
+    # the raw_connect method.
     class MyRubySDK
       def vms
         [
