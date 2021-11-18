@@ -61,7 +61,7 @@ module ManageIQ::Providers::CiscoIntersight
       parts = []
       parts << res.Manufacturer if res.Manufacturer
       parts << res.Name if res.Name
-      parts << "(#{res.SerialNumber})" if res.SerialNumber
+      parts << "(\#{res.SerialNumber})" if res.SerialNumber
       parts.join(" ")
     end
 

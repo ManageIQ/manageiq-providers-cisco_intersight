@@ -1,5 +1,7 @@
 module ManageIQ::Providers::CiscoIntersight
-  class Inventory::Collector::PhysicalInfraManager < Inventory::Collector
+  class Inventory::Collector::PhysicalInfraManager # < Inventory::Collector
+
+    # ManageIQ::Providers::CiscoIntersight::Inventory::Collector::PhysicalInfraManager
 
     def collect
 
@@ -7,18 +9,21 @@ module ManageIQ::Providers::CiscoIntersight
 
       # TODO(Tjaz Erzen): Collect some data from made-up sdk.
       # For every collected data call function, defined below
+      events
+      vms
     end
 
     def connection
-      @connection ||= manager.connect
+      # TODO: When SDK is finished, uncomment the line below and remove the ones below it.
+      # @connection ||= manager.connect
+
+      @connection ||= ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::MyRubySDK.new
     end
 
-    def vms
-      # vms should call the gem we're creating already. Schematically represents the data we're going to get
-      connection.vms
-    end
+    delegate :vms, :to => :connection
 
-    # TODO(Tjaz Erzen): Create helper functions that will collect individual data
+    delegate :events, :to => :connection
+
 
   end
 end
