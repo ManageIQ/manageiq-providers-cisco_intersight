@@ -1,2 +1,5 @@
-class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::RefreshWorker::Runner < ManageIQ::Providers::BaseManager::RefreshWorker::Runner
+module ManageIQ::Providers::CiscoIntersight
+  class PhysicalInfraManager::RefreshWorker::Runner \
+    < ManageIQ::Providers::BaseManager::RefreshWorker::Runner
+  end
 end
