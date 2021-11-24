@@ -1,0 +1,26 @@
+:ems:
+  :ems_cisco_intersight:
+    :blacklisted_event_names: []
+    :event_handling:
+      :event_groups:
+:ems_refresh:
+  :cisco_intersight:
+    :refresh_interval: 15.minutes
+:http_proxy:
+  :cisco_intersight:
+    :host:
+    :password:
+    :port:
+    :user:
+:log:
+  :level_cisco_intersight: info
+:workers:
+  :worker_base:
+    :event_catcher:
+      :event_catcher_cisco_intersight:
+        :poll: 20.seconds
+    :queue_worker_base:
+      :ems_metrics_collector_worker:
+        :ems_metrics_collector_worker_cisco_intersight: {}
+      :ems_refresh_worker:
+        :ems_refresh_worker_cisco_intersight: {}
