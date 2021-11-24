@@ -71,5 +71,4 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
   end
-
 end

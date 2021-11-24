@@ -1,7 +1,7 @@
 module ManageIQ::Providers::CiscoIntersight
   class Inventory::Persister::PhysicalInfraManager < Inventory::Persister
 
-    # TODO: Find out, why the line below isn't processed properly
+    # TODO: Find out, why the line below isn't processed properly. After that, uncomment it
     # include Inventory::Persister::Definitions::PhysicalInfraCollections
 
     # TODO: Write initializer function for this collections.

@@ -2,9 +2,13 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
   def connect(options = {})
-    raise MiqException::MiqHostError, "No credentials defined" if missing_credentials?(options[:auth_type])
+    # Temprorarily hardcoding for the connection to happen even if the credentials are missing.
+    # TODO (Tjaz Erzen): When the connection is verified properly, un-hardcode properly verified connection
+    # raise MiqException::MiqHostError, "No credentials defined" if missing_credentials?(options[:auth_type])
+    # auth_token = authentication_token(options[:auth_type])
 
-    auth_token = authentication_token(options[:auth_type])
+    auth_token = nil # a temporary value - it won't be needed in raw_connection anyways.
+
     self.class.raw_connect(project, auth_token, options, options[:proxy_uri] || http_proxy_uri)
   end
 
