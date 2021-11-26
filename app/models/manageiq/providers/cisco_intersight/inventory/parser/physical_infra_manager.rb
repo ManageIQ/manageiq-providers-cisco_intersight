@@ -7,10 +7,14 @@ module ManageIQ::Providers::CiscoIntersight
 
     def vms
       collector.vms.each do |inventory|
-        inventory_object = persister.vms.find_or_build(inventory.id.to_s)
-        inventory_object.name = inventory.name
-        inventory_object.location = inventory.location
-        inventory_object.vendor = inventory.vendor
+
+        persister.vms.build(
+          :ems_ref         => inventory.id,
+          :uid_ems         => inventory.id,
+          :name            => inventory.name,
+          :location        => inventory.location,
+          :vendor          => inventory.vendor
+        )
       end
     end
 
