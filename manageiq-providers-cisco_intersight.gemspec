@@ -20,4 +20,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "manageiq-style"
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "intersight_client"
 end
