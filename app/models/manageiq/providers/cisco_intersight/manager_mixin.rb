@@ -107,16 +107,16 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
 
     def raw_connect(*args)
 
-      # TODO: When the intersight gem is refactored, change this function so that it returns client instead of connector
+      # TODO: To get this function working, change your `path_current` to where your tucson-v3 keys are
+      path_current = "/home/tjazerzen/intersight-client-keys"
 
-      path_current = "/home/tjazerzen/intersight-client-ruby"
       key_file_name = "/tucson-v3.key"
       keyid_file_name = "/tucson-v3.keyid"
       key_file_path = path_current + key_file_name
       keyid_file_path = path_current + keyid_file_name
       key = File.read(key_file_path).strip
       keyid = File.read(keyid_file_path).strip
-      connector = IntersightConnector.new(key, keyid)
+      connector = IntersightConnector.new(keyid, key)
       connector
 
     end
