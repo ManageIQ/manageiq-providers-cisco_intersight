@@ -9,8 +9,12 @@ module ManageIQ::Providers::CiscoIntersight
       @connection ||= manager.connect
     end
 
+    # def vms
+    #   @vms ||= connection.vms
+    # end
+
     def vms
-      @vms ||= connection.vms
+      @vms ||= connection.get_physical_summaries_temporary.Results
     end
 
   end

@@ -1,3 +1,5 @@
+require 'intersight_client'
+
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
@@ -105,7 +107,15 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
 
     def raw_connect(*args)
       # TODO: Replace this with a client connection from your Ruby SDK library and remove the MyRubySDK class
-      ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::MyRubySDK.new
+      # ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::MyRubySDK.new
+      my_absolute_path = "/home/vagrant/intersight-client-keys/"
+      key_file_name = "tucson-v3.key"
+      keyid_file_name = "tucson-v3.keyid"
+      key_file_path = my_absolute_path + key_file_name
+      keyid_file_path = my_absolute_path + keyid_file_name
+      key = File.read(key_file_path).strip
+      keyid = File.read(keyid_file_path).strip
+      IntersightConnector.new(keyid, key)
     end
 
     def hostname_required?
