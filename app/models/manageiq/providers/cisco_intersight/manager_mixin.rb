@@ -115,7 +115,12 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
       keyid_file_path = my_absolute_path + keyid_file_name
       key = File.read(key_file_path).strip
       keyid = File.read(keyid_file_path).strip
-      IntersightConnector.new(keyid, key)
+      
+      IntersightClient.configure do |config|
+        config.api_key = key
+        config.api_key_id = keyid
+        config.debugging = false
+      end
 
     end
 
