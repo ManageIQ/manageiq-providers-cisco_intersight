@@ -9,10 +9,10 @@ module ManageIQ::Providers::CiscoIntersight
       collector.physical_servers.each do |s|
 
         persister.physical_servers.build(
-          :ems_ref                => s.Moid,
+          :ems_ref                => s.registered_device.moid,
        	  :health_state           => "dummy",  
        	  :hostname               => "dummy",  
-       	  :name                   => s.Name,
+       	  :name                   => s.name,
        	  :physical_chassis       => "dummy",
           :physical_rack          => "dummy",  
        	  :power_state            => "dummy",
