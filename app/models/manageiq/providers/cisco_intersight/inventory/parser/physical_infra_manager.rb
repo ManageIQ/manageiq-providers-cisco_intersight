@@ -15,7 +15,7 @@ module ManageIQ::Providers::CiscoIntersight
         rack = nil
         chassis = nil
 
-        persister.physical_servers.build(
+        server = persister.physical_servers.build(
           :ems_ref                => s.device_mo_id,
        	  :health_state           => "unknown",  
        	  :hostname               => "dummy",  
@@ -26,6 +26,11 @@ module ManageIQ::Providers::CiscoIntersight
           :raw_power_state        => s.oper_power_state,
           :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
         )
+
+        persister.physical_server_computer_systems.build(
+          :managed_entity => server
+        )
+
       end
     end
 

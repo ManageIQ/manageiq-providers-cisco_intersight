@@ -5,11 +5,11 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
     %i(
       physical_servers
       physical_server_details
+      physical_server_computer_systems
     ).each do |name|
       add_collection(physical_infra, name)
     end    
     # TODO: Add the following collections to the loop above after you start implementing new collections
-      # physical_server_computer_systems
       # physical_server_hardwares
       # physical_server_network_devices
       # physical_server_storage_adapters
