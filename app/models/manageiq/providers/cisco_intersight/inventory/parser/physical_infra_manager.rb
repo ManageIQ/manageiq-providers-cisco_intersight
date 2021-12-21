@@ -5,6 +5,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers
       physical_servers_details
       # firmwares
+      physical_racks
     end 
 
     def physical_servers
@@ -12,7 +13,7 @@ module ManageIQ::Providers::CiscoIntersight
         
         # Temporarily setting the values of rack and chassis to nil - as the other two collections are built,
         # this is going to be changed by lazy_find function on the id
-        rack = nil
+        rack = persister.physical_racks.lazy_find(s.device_mo_id)
         chassis = nil
 
         server = persister.physical_servers.build(
@@ -55,10 +56,6 @@ module ManageIQ::Providers::CiscoIntersight
         )
       end
     end
-       	
-       	
-
-
 
     def firmwares
       collector.firmware_inventory.each do |firmware|
@@ -70,6 +67,33 @@ module ManageIQ::Providers::CiscoIntersight
         )
       end
     end
+
+    def physical_racks
+      collector.physical_racks.each do |r|
+        persister.physical_racks.build(
+          :ems_ref => r.registered_device.moid,
+          :name    => "dummy"
+        )
+      end
+    end
+
+
+    def physical_chassis
+      collector.physical_chassis.each do |c|
+        # parent_id = c.dig("Links", "ContainedBy", "@odata.id")
+        # chassis = persister.physical_chassis.lazy_find(parent_id) if parent_id
+        # rack = persister.physical_racks.lazy_find(parent_id) if parent_id
+
+        persister.physical_chassis.build(
+          :ems_ref                 => c["@odata.id"],
+          :health_state            => c.Status.Health,
+          :name                    => resource_name(c),
+          :parent_physical_chassis => chassis,
+          :physical_rack           => rack,
+        )
+      end
+    end
+
 
   end
 end
