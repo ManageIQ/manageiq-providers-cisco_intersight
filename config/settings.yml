@@ -23,4 +23,4 @@
       :ems_metrics_collector_worker:
         :ems_metrics_collector_worker_cisco_intersight: {}
       :ems_refresh_worker:
-        :ems_refresh_worker_cisco_intersight: {}
+        :ems_refresh_worker_cisco_intersight_physical_infra: {}
