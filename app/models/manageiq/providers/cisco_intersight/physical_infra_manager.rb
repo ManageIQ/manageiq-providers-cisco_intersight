@@ -16,5 +16,12 @@ module ManageIQ::Providers::CiscoIntersight
 
     supports :create
 
+    def self.ems_type
+      @ems_type ||= "cisco_intersight".freeze
+    end
+
+    def self.description
+      @description ||= "Cisco Intersight".freeze
+    end
   end
 end
