@@ -7,7 +7,7 @@ module ManageIQ::Providers::CiscoIntersight
 
       physical_servers
       physical_racks
-      physical_chassis
+      physical_server_network_devices
     end
 
     def set_configuration
@@ -30,8 +30,8 @@ module ManageIQ::Providers::CiscoIntersight
       get_equipment_api.get_equipment_device_summary_list.results.select { |c| c.source_object_type == "compute.RackUnit" }
     end
 
-    def physical_chassis
-      get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" }
+    def physical_server_network_devices
+      get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" } # source_object_type == "adapter.Unit"
     end
     
     # not sure if this is the right API call. get_firmware_inventory_api.get_firmware_firmware_summary_list gives me empty results,
