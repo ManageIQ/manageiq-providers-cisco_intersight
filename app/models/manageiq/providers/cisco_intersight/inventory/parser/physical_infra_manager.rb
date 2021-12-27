@@ -6,6 +6,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers_details
       physical_racks
       hardwares
+      firmwares
     end 
 
     def physical_servers
@@ -74,10 +75,12 @@ module ManageIQ::Providers::CiscoIntersight
           persister.physical_server_network_devices.build(
        	    :hardware     => hardware,
        	    :device_name  => net_adapter.dn,
-       	    :device_type  => net_adapter.model,
+            # TODO (tjazsch): Change the device type => "ethernet" to the actual device_type - minor problems with MiQ core implementation
+       	    :device_type  => "ethernet", # net_adapter.model,
        	    :manufacturer => "unknown", # no data about the manufacturer - setting its value to unknown.
        	    :model        => net_adapter.model,
-            :uid_ems	  => get_temporary_unique_identifyer(net_adapter.registered_device.moid, net_adapter.dn)
+            :uid_ems	  => net_adapter.registered_device.moid + "-" + net_adapter.dn
+             # get_temporary_unique_identifyer(net_adapter.registered_device.moid, net_adapter.dn)
           )
         end
       end
@@ -98,6 +101,23 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
+
+    def firmwares
+      collector.firmware_inventory.each do |firmware|
+        server = persister.physical_servers.lazy_find(firmware.registered_device.moid)
+        computer = persister.physical_server_computer_systems.lazy_find(server)
+        hardware = persister.physical_server_hardwares.lazy_find(computer)
+        temp = "dummy"
+        persister.physical_server_firmwares.build(
+          :resource => hardware,
+          :build    => firmware.type,  #  firmware.SoftwareId,
+          # TODO: Parse the data for firmware.component somewhere (find out where it sould go)
+          # TODO: Change the value under :name so that the value will actually resemble name and that name will be unique for every moid
+          :name     => firmware.version, # for every device moid, there has to be unique name. For now, setting it to firmware.version
+          :version  => firmware.version # firmware.Version
+        )
+      end
+    end
 
 
   end

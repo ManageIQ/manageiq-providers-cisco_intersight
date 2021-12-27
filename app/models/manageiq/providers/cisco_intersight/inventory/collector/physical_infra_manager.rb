@@ -8,6 +8,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers
       physical_racks
       physical_server_network_devices
+      firmware_inventory
     end
 
     def set_configuration
@@ -38,7 +39,7 @@ module ManageIQ::Providers::CiscoIntersight
     # despite being the summary
     # TODO: Find out, if this is the right api call; if it isn't, find the one that is
     def firmware_inventory
-      @firmware_inventory ||= get_firmware_inventory_api.get_firmware_running_firmware_list().results
+      @firmware_inventory ||= get_firmware_inventory_api.get_firmware_running_firmware_list.results
     end
 
     def physical_servers
