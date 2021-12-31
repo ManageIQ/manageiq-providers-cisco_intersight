@@ -27,8 +27,52 @@ module ManageIQ::Providers::CiscoIntersight
       IntersightClient::EquipmentApi.new
     end
 
+    def get_asset_api
+      IntersightClient::AssetApi.new
+    end
+
+    def get_memory_api
+      IntersightClient::MemoryApi.new
+    end
+
+    def get_adapter_api
+     IntersightClient::AdapterApi.new
+    end
+
+    def get_management_api
+      IntersightClient::ManagementApi.new
+    end
+
+    def get_equipment_locator_led_by_moid(moid)
+      get_equipment_api.get_equipment_locator_led_by_moid(moid)
+    end
+
+    def get_storage_controller_by_moid(moid)
+      get_storage_api.get_storage_controller_by_moid(moid)
+    end
+
+    def get_compute_board_by_moid(moid)
+      get_compute_api.get_compute_board_by_moid(moid)
+    end
+
+    def get_adapter_unit_by_moid(moid)
+      get_adapter_api.get_adapter_unit_by_moid(moid)
+    end
+
+    def get_asset_device_registration_by_moid(moid)
+      get_asset_api.get_asset_device_registration_by_moid(moid)
+    end
+
+    def get_rack_unit_from_physical_summary_moid(moid)
+      physical_racks.select { |c| c.registered_device.moid == moid } [0]
+    end
+
+    def get_management_controller_by_moid(moid)
+      get_management_api.get_management_controller_by_moid(moid)
+    end
+
     def physical_racks
-      get_equipment_api.get_equipment_device_summary_list.results.select { |c| c.source_object_type == "compute.RackUnit" }
+      get_compute_api.get_compute_rack_unit_list.results
     end
 
     def physical_server_network_devices
