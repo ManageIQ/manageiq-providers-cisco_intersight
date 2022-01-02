@@ -1,4 +1,4 @@
-require 'intersight_client'
+# require 'intersight_client'
 
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern

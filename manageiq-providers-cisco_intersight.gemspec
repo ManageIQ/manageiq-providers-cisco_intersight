@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "intersight_client"
+  # spec.add_dependency "intersight_client", "~> 0.1.0"
 
   spec.add_development_dependency "manageiq-style"
   spec.add_development_dependency "simplecov"
