@@ -46,7 +46,7 @@ module ManageIQ::Providers::CiscoIntersight
 
         # TODO: Go through the data about the servers and obtain the data about the atributes, which at the moment hold value temp.
        	persister.physical_server_details.build(
-       	  :description        => "no description", # no desc
+       	  :description        => "no description", # TODO: Look for description method in endpoint "IntersightClient::CapabilityApi" when you open the second lab.
       	  :location_led_state        => locator_led_unit.oper_state, # find through rack_unit
       	  :machine_type        => temp, # TODO: Look at redfish for example of machine type
       	  :manufacturer        => temp, # no manufacturer given; look again through physical_summary_list
@@ -70,48 +70,30 @@ module ManageIQ::Providers::CiscoIntersight
         storage_controllers_list = board_unit.storage_controllers
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
-          :cpu_total_cores => s.num_cpus,  # board.processors.count, # board.processors is an array with referenced processor as each element.
-          :disk_capacity   => s.total_memory, # "Still a TO-DO", # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
-          :memory_mb       => 0, # s.available_memory,
+          :cpu_total_cores => board_unit.processors.count, # board.processors is an array with referenced processor as each element (and .count is the length operator)
+          :disk_capacity   => "Still a TO-DO", # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
+          :memory_mb       => s.available_memory,
           :cpu_speed       => s.cpu_capacity,
-       	  :disk_free_space => s.available_memory # "Still a TO-DO" # TODO: Replace this atribute, since it's not the right one.
+       	  :disk_free_space => "Still a TO-DO" # TODO: Find info about disk_free_space. Haven't found it yet, but I assume it must be somewhere inside board_unit and/or storage_controllers
         )
 
-        # TODO: Get physical_server_network_devices to a functional state on Monday - find out, why it's not working. Note: older code (below it) works --> comapre to it and debug!
-<<-DOC
         rack_unit.adapters.each do |adapter|
-          adapter_unit = get_adapter_unit_by_moid(adapter.moid)
-          controller = collector.get_management_controller_by_moid(adapter_unit.controller.moid)
-          adapter_unit_dn = s.dn + "/" + "network-adapter-" + adapter_unit.adapter_id
+          adapter_unit = collector.get_adapter_unit_by_moid(adapter.moid)
+          management_controller_unit = collector.get_management_controller_by_moid(adapter_unit.controller.moid)
+          adapter_unit_dn = s.dn + "/" + "network-adapter-" + adapter_unit.adapter_id # TODO: Write this into a helper function
           persister.physical_server_network_devices.build(
             :hardware     => hardware,
             # TODO: Put forming the device name into a function
             :device_name  => adapter_unit_dn, # This is the way to write distinguished names for network adapters
             # TODO (tjazsch): Change the device type => "ethernet" to the actual device_type - minor problems with MiQ core implementation
-            :device_type  => "ethernet", # net_adapter.model,
+            :device_type  => "ethernet", # TODO: Change the hardcoded "ethernet to the actual device_type - not sure, but I think this isn't the only device type present
             :manufacturer => "unknown", # TODO: Look at controller.model - depending if it contains inter or cisco, set its value accordingly
-            :model        => controller.model,
+            :model        => management_controller_unit.model,
+            # TODO: Ask Ales to ask the Intersight people how should we encode unique identifyer
+            # (Since there's only unique ID of the single device and not for example, distinguished ID of physical_racks and physical_summary)
             :uid_ems      => adapter_unit.registered_device.moid + "-" + adapter_unit_dn # adapter_unit_dn is here only temporarily
           )
         end
-DOC
-
-
-
-
-# 	adapters_current = collector.physical_server_network_devices.select { |c| c.registered_device.moid == s.registered_device.moid }
-#         (adapters_current || []).each  do |net_adapter|
-#           # TODO: Write atributes about the parent ID - set its value net_adapter.registered_device.moid
-#           persister.physical_server_network_devices.build(
-#        	    :hardware     => hardware,
-#        	    :device_name  => net_adapter.dn,
-#             # TODO (tjazsch): Change the device type => "ethernet" to the actual device_type - minor problems with MiQ core implementation
-#        	    :device_type  => "ethernet", # net_adapter.model,
-#       	    :manufacturer => "unknown", # no data about the manufacturer - setting its value to unknown.
-#        	    :model        => net_adapter.model,
-#             :uid_ems	  => net_adapter.registered_device.moid + "-" + net_adapter.dn
-#              # get_temporary_unique_identifyer(net_adapter.registered_device.moid, net_adapter.dn)
-#           )
       end
     end
 
