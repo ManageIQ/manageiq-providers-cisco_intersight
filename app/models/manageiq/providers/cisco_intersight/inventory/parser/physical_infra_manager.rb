@@ -69,11 +69,11 @@ module ManageIQ::Providers::CiscoIntersight
         storage_controller = collector.get_storage_controller_by_moid(s.registered_device.moid)
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
-          :cpu_total_cores => board.processors.count, # board.processors is an array with referenced processor as each element.
-          :disk_capacity   => "Still a TO-DO", # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
-          :memory_mb       => s.available_memory,
+          :cpu_total_cores => s.num_cpus,  # board.processors.count, # board.processors is an array with referenced processor as each element.
+          :disk_capacity   => s.total_memory, # "Still a TO-DO", # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
+          :memory_mb       => 0, # s.available_memory,
           :cpu_speed       => s.cpu_capacity,
-       	  :disk_free_space => "Still a TO-DO" # TODO: Replace this atribute, since it's not the right one.
+       	  :disk_free_space => s.available_memory # "Still a TO-DO" # TODO: Replace this atribute, since it's not the right one.
         )
 
         # TODO: Get physical_server_network_devices to a functional state on Monday - find out, why it's not working. Note: older code (below it) works --> comapre to it and debug!
