@@ -6,7 +6,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers_details
       physical_racks
       hardwares
-      # firmwares
+      firmwares
     end 
 
     def physical_servers
@@ -127,7 +127,6 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
-<<-DOC
     def firmwares
       collector.firmware_inventory.each do |firmware|
         server = persister.physical_servers.lazy_find(firmware.registered_device.moid)
@@ -136,14 +135,13 @@ module ManageIQ::Providers::CiscoIntersight
         temp = "dummy"
         persister.physical_server_firmwares.build(
           :resource => hardware,
-          :build    => firmware.type,  #  firmware.SoftwareId,
+          :build    => firmware.component,  #  firmware.SoftwareId,
           # TODO: Parse the data for firmware.component somewhere (find out where it sould go)
           # TODO: Change the value under :name so that the value will actually resemble name and that name will be unique for every moid
-          :name     => firmware.version, # for every device moid, there has to be unique name. For now, setting it to firmware.version
+          :name     => firmware.type + " - " + firmware.version, # for every device moid, there has to be unique name. For now, setting it to firmware.version
           :version  => firmware.version # firmware.Version
         )
       end
     end
-DOC
   end
 end
