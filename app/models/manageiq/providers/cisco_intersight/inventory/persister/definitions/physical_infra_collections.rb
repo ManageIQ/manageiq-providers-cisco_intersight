@@ -17,7 +17,6 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
     # Collections that still have to be written:
 
     # physical_chassis
-    # physical_server_storage_adapters
     # physical_chassis_details
 
     end    

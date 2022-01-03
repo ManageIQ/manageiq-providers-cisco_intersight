@@ -81,16 +81,16 @@ module ManageIQ::Providers::CiscoIntersight
           adapter_unit = collector.get_adapter_unit_by_moid(adapter.moid)
           management_controller_unit = collector.get_management_controller_by_moid(adapter_unit.controller.moid)
           adapter_unit_dn = s.dn + "/" + "network-adapter-" + adapter_unit.adapter_id # TODO: Write this into a helper function
+          # This is the way to write distinguished names for network adapters
           persister.physical_server_network_devices.build(
             :hardware     => hardware,
-            # TODO: Put forming the device name into a function
-            :device_name  => adapter_unit_dn, # This is the way to write distinguished names for network adapters
-            # TODO (tjazsch): Change the device type => "ethernet" to the actual device_type - minor problems with MiQ core implementation
-            :device_type  => "ethernet", # TODO: Change the hardcoded "ethernet to the actual device_type - not sure, but I think this isn't the only device type present
-            :manufacturer => "unknown", # TODO: Look at controller.model - depending if it contains inter or cisco, set its value accordingly
+            :device_name  => s.name, # Note that this is name of the entire device, not only the name of network adapter
+            :device_type  => "ethernet",
+            :manufacturer => get_manufacturer_from_management_controller(management_controller_unit),
             :model        => management_controller_unit.model,
             # TODO: Ask Ales to ask the Intersight people how should we encode unique identifyer
             # (Since there's only unique ID of the single device and not for example, distinguished ID of physical_racks and physical_summary)
+            # TODO: Replace this uid_ems with some "ID" (after we find out, how we should set it).
             :uid_ems      => adapter_unit.registered_device.moid + "-" + adapter_unit_dn # adapter_unit_dn is here only temporarily
           )
         end
@@ -101,15 +101,30 @@ module ManageIQ::Providers::CiscoIntersight
           temp = "dummy"
           persister.physical_server_storage_adapters.build(
             :hardware     => hardware,
-            :device_name  => temp, # controller.Name,
+            :device_name  => s.name, # Note that this is name of the entire device, not only the name of storage controller
             :device_type  => "storage",
-            :manufacturer => temp, # controller.Manufacturer,
-            :model        => temp, # controller.Model,
-            :uid_ems      => storage_controller_moid # controller["@odata.id"]
+            :manufacturer => temp,
+            :model        => temp,
+            :uid_ems      => storage_controller_moid
           )
         end
       end
     end
+
+    def get_manufacturer_from_management_controller(management_controller_unit)
+      model = management_controller_unit.model
+      
+      if (model.include? "Cisco") or (model.include? "cisco")
+        manufacturer = "Cisco"
+      elsif (model.include? "Intel") or (model.include? "intel")
+        manufacturer = "Intel"
+      else
+        manufacturer = "unknown"
+      end
+
+      manufacturer
+    end
+
 
     def get_temporary_unique_identifyer(moid, dn)
       # Temporarily forming the uniquie identifyer from moid and dn - eventually, this will be replaced something else
