@@ -5,7 +5,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers
       physical_servers_details
       physical_racks
-      # hardwares
+      hardwares
       # firmwares
     end 
 
@@ -60,13 +60,14 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
+
     def hardwares
       collector.physical_servers.each do |s|
         rack_unit = collector.get_rack_unit_from_physical_summary_moid(s.registered_device.moid)
-        server = persister.physical_servers.lazy_find(s.device_mo_id)
+        server = persister.physical_servers.lazy_find(s.registered_device.moid)
         computer = persister.physical_server_computer_systems.lazy_find(server)
-        board = collector.get_compute_board_by_moid(s.registered_device.moid)
-        storage_controller = collector.get_storage_controller_by_moid(s.registered_device.moid)
+        board_unit = collector.get_compute_board_by_moid(rack_unit.board.moid)
+        storage_controllers_list = board_unit.storage_controllers
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
           :cpu_total_cores => s.num_cpus,  # board.processors.count, # board.processors is an array with referenced processor as each element.
@@ -77,7 +78,7 @@ module ManageIQ::Providers::CiscoIntersight
         )
 
         # TODO: Get physical_server_network_devices to a functional state on Monday - find out, why it's not working. Note: older code (below it) works --> comapre to it and debug!
-
+<<-DOC
         rack_unit.adapters.each do |adapter|
           adapter_unit = get_adapter_unit_by_moid(adapter.moid)
           controller = collector.get_management_controller_by_moid(adapter_unit.controller.moid)
@@ -93,7 +94,7 @@ module ManageIQ::Providers::CiscoIntersight
             :uid_ems      => adapter_unit.registered_device.moid + "-" + adapter_unit_dn # adapter_unit_dn is here only temporarily
           )
         end
-
+DOC
 
 
 
@@ -125,7 +126,7 @@ module ManageIQ::Providers::CiscoIntersight
         persister.physical_racks.build(
           :ems_ref => r.registered_device.moid,
           # TODO: r.dn instead of the "dummy"
-          :name    => "dummy" # TODO: Obtain the name of the physical rack.
+          :name    => "dummy"
         )
       end
     end
