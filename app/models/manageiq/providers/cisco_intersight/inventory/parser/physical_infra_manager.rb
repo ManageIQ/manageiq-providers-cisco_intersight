@@ -94,6 +94,20 @@ module ManageIQ::Providers::CiscoIntersight
             :uid_ems      => adapter_unit.registered_device.moid + "-" + adapter_unit_dn # adapter_unit_dn is here only temporarily
           )
         end
+
+        storage_controllers_list.each do |storage_controller_reference|
+          storage_controller_moid = storage_controller_reference.moid
+          storage_controller_object = collector.get_storage_controller_by_moid(storage_controller_moid)
+          temp = "dummy"
+          persister.physical_server_storage_adapters.build(
+            :hardware     => hardware,
+            :device_name  => temp, # controller.Name,
+            :device_type  => "storage",
+            :manufacturer => temp, # controller.Manufacturer,
+            :model        => temp, # controller.Model,
+            :uid_ems      => storage_controller_moid # controller["@odata.id"]
+          )
+        end
       end
     end
 
