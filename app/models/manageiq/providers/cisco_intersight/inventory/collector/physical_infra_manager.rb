@@ -43,6 +43,10 @@ module ManageIQ::Providers::CiscoIntersight
       IntersightClient::ManagementApi.new
     end
 
+    def get_storage_api
+      IntersightClient::StorageApi.new
+    end
+
     def get_equipment_locator_led_by_moid(moid)
       get_equipment_api.get_equipment_locator_led_by_moid(moid)
     end
