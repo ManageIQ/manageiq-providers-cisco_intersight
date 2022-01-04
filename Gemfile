@@ -7,7 +7,7 @@ gemspec
 # your gemspec. These might include edge Rails or gems from your path or
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
-gem "intersight_client", path: "/Users/tjazerzen/.rvm/gems/ruby-2.6.8/gems/intersight_client-0.1.0"
+gem "intersight_client" # , path: "/Users/tjazerzen/.rvm/gems/ruby-2.6.8/gems/intersight_client-0.1.0"
 
 # Load Gemfile with dependencies from manageiq
 eval_gemfile(File.expand_path("spec/manageiq/Gemfile", __dir__))
