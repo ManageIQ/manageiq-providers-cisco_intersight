@@ -23,7 +23,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   end
 
   def self.verify_provider_connection
-    IntersightClient::IamApi.new.get_iam_api_key_list({:count => true}).count > 0
+    IntersightClient::IamApi.new.get_iam_api_key_list({ :count => true }).count > 0
   rescue IntersightClient::ApiError => err
     case err.code
     when 401
@@ -40,35 +40,35 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
         :fields => [
           {
             :component => 'sub-form',
-            :id        => 'endpoints-subform',
-            :name      => 'endpoints-subform',
-            :title     => _('Authentication'),
-            :fields    => [
+            :id => 'endpoints-subform',
+            :name => 'endpoints-subform',
+            :title => _('Authentication'),
+            :fields => [
               {
-                :component              => 'validate-provider-credentials',
-                :id                     => 'authentications.default.valid',
-                :name                   => 'authentications.default.valid',
-                :skipSubmit             => true,
-                :isRequired             => true,
+                :component => 'validate-provider-credentials',
+                :id => 'authentications.default.valid',
+                :name => 'authentications.default.valid',
+                :skipSubmit => true,
+                :isRequired => true,
                 :validationDependencies => %w[type],
-                :fields                 => [
+                :fields => [
                   {
-                    :component  => "text-field",
-                    :id         => "authentications.default.userid",
-                    :name       => "authentications.default.userid",
-                    :label      => "Intersight API key ID",
+                    :component => "text-field",
+                    :id => "authentications.default.userid",
+                    :name => "authentications.default.userid",
+                    :label => "Intersight API key ID",
                     :isRequired => true,
-                    :validate   => [{:type => "required"}],
+                    :validate => [{ :type => "required" }],
                   },
                   {
-                    :component  => "textarea",
-                    :id         => "authentications.default.password",
-                    :name       => "authentications.default.password",
-                    :label      => "Intersight API key",
-                    :type       => "password",
+                    :component => "textarea",
+                    :id => "authentications.default.password",
+                    :name => "authentications.default.password",
+                    :label => "Intersight API key",
+                    :type => "password",
                     :isRequired => true,
-                    :validate   => [{:type => "required"}, {
-                      :type    => "pattern",
+                    :validate => [{ :type => "required" }, {
+                      :type => "pattern",
                       :pattern => "-+BEGIN EC PRIVATE KEY-+[ \r\nA-Za-z0-9\\+/=]+-+END EC PRIVATE KEY-+",
                       :message => "PEM-formatted X.509 EC private key required"
                     }],

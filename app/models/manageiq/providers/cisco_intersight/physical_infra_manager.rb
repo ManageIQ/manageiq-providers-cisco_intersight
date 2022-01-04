@@ -8,7 +8,6 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :EventParser
     require_nested :PhysicalServer
 
-
     include Vmdb::Logging
     include ManagerMixin
     include_concern "Operations"

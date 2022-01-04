@@ -14,12 +14,12 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
     ).each do |name|
       add_collection(physical_infra, name)
 
-    # Collections that still have to be written:
+      # Collections that still have to be written:
 
-    # physical_chassis
-    # physical_chassis_details
+      # physical_chassis
+      # physical_chassis_details
 
-    end    
+    end
   end
 end
 

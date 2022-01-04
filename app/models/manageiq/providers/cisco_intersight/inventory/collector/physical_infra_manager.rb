@@ -2,7 +2,7 @@ module ManageIQ::Providers::CiscoIntersight
   class Inventory::Collector::PhysicalInfraManager < ManageIQ::Providers::Inventory::Collector
 
     def collect
-      
+
       set_configuration
 
       physical_servers
@@ -37,7 +37,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def get_adapter_api
-     IntersightClient::AdapterApi.new
+      IntersightClient::AdapterApi.new
     end
 
     def get_management_api
@@ -69,7 +69,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def get_rack_unit_from_physical_summary_moid(moid)
-      physical_racks.select { |c| c.registered_device.moid == moid } [0]
+      physical_racks.select { |c| c.registered_device.moid == moid }[0]
     end
 
     def get_management_controller_by_moid(moid)
@@ -84,7 +84,7 @@ module ManageIQ::Providers::CiscoIntersight
     def physical_server_network_devices
       get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" } # source_object_type == "adapter.Unit"
     end
-    
+
     # not sure if this is the right API call. get_firmware_inventory_api.get_firmware_firmware_summary_list gives me empty results,
     # despite being the summary
     # TODO: Find out, if this is the right api call; if it isn't, find the one that is
