@@ -1,32 +1,35 @@
-
 require 'intersight_client'
 
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
   def connect(options = {})
-    # Temprorarily hardcoding for the connection to happen even if the credentials are missing.
-    # TODO (Tjaz Erzen): When the connection is verified properly, un-hardcode properly verified connection
+    keyid = authentication_userid
+    key = authentication_password
+    raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
 
-    # raise MiqException::MiqHostError, "No credentials defined" if missing_credentials?(options[:auth_type])
-    # auth_token = authentication_token(options[:auth_type])
-    # auth_token = nil # a temporary value - it won't be needed in raw_connection anyways.
-    # self.class.raw_connect(project, auth_token, options, options[:proxy_uri] || http_proxy_uri)
-
-    self.class.raw_connect
+    self.class.raw_connect(keyid, key)
   end
 
   def disconnect(connection)
-    connection.logout
-  rescue StandardError => error
-    _log.warn("Disconnect failed: #{error}")
+    # no need to disconnect - connection not persistent
+    # TODO: should we clear configuration here (api_key=nil) ? (-> may require changes in intersight-client gem)
   end
 
   def verify_credentials(auth_type = nil, options = {})
-    begin
-      connect
-    rescue => err
-      raise MiqException::MiqInvalidCredentialsError, err.message
+    with_provider_connection(options) do
+      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
+    end
+  end
+
+  def self.verify_provider_connection
+    IntersightClient::IamApi.new.get_iam_api_key_list({:count => true}).count > 0
+  rescue IntersightClient::ApiError => err
+    case err.code
+    when 401
+      raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
+    else
+      raise MiqException::MiqCommunicationsError, "HTTP error %d" % [err.code]
     end
   end
 
@@ -39,7 +42,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
             :component => 'sub-form',
             :id        => 'endpoints-subform',
             :name      => 'endpoints-subform',
-            :title     => _('Endpoints'),
+            :title     => _('Authentication'),
             :fields    => [
               {
                 :component              => 'validate-provider-credentials',
@@ -51,30 +54,24 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                 :fields                 => [
                   {
                     :component  => "text-field",
-                    :id         => "endpoints.default.endpoint",
-                    :name       => "endpoints.default.endpoint",
-                    :label      => _("Endpoint"),
+                    :id         => "authentications.default.userid",
+                    :name       => "authentications.default.userid",
+                    :label      => "Intersight API key ID",
                     :isRequired => true,
                     :validate   => [{:type => "required"}],
                   },
                   {
-                    :component  => "text-field",
-                    :id         => "authentications.default.key_id",
-                    :name       => "authentications.default.key_id",
-                    :label      => "Key ID",
-                    :isRequired => true,
-                    :validate   => [{:type => "required"}],
-                  },
-                  {
-                    # Question: Is this form of type "password" (since it's a private key)
-                    :component  => "password-field",
-                    :id         => "authentications.default.key_file",
-                    :name       => "authentications.default.key_file",
-                    :label      => "Key File",
-                    # Question: Is this form of type "password" (since it's a private key)
+                    :component  => "textarea",
+                    :id         => "authentications.default.password",
+                    :name       => "authentications.default.password",
+                    :label      => "Intersight API key",
                     :type       => "password",
                     :isRequired => true,
-                    :validate   => [{:type => "required"}],
+                    :validate   => [{:type => "required"}, {
+                      :type    => "pattern",
+                      :pattern => "-+BEGIN EC PRIVATE KEY-+[ \r\nA-Za-z0-9\\+/=]+-+END EC PRIVATE KEY-+",
+                      :message => "PEM-formatted X.509 EC private key required"
+                    }],
                   },
                 ]
               },
@@ -87,12 +84,6 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     # Verify Credentials
     #
     # args: {
-    #   "endpoints" => {
-    #     "default" => {
-    #       "security_protocol" => String,
-    #       "hostname" => String,
-    #       "port" => Integer,
-    #     }
     #   "authentications" => {
     #     "default" => {
     #       "userid" => String,
@@ -101,47 +92,26 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     #   }
 
     def verify_credentials(args)
-      # Verify the credentials without having an actual record created.
-      # This method is being called from the UI upon validation when adding/editing a provider via DDF
-      # Ideally it should pass the args with some kind of mapping to the connect method
+      authentication = args.dig("authentications", "default")
+      keyid, enc_key = authentication&.values_at("userid", "password")
+      key = ManageIQ::Password.try_decrypt(enc_key)
+
+      raw_connect(keyid, key)
+
+      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
     end
 
-    def raw_connect(*args)
-
-      my_absolute_path = "/home/vagrant/intersight-client-keys/"
-      key_file_name = "tucson-v3.key"
-      keyid_file_name = "tucson-v3.keyid"
-      key_file_path = my_absolute_path + key_file_name
-      keyid_file_path = my_absolute_path + keyid_file_name
-      key = File.read(key_file_path).strip
-      keyid = File.read(keyid_file_path).strip
-      
+    def raw_connect(keyid, key)
       IntersightClient.configure do |config|
         config.api_key = key
         config.api_key_id = keyid
-        config.debugging = false
       end
-
+    rescue OpenSSL::PKey::ECError
+      raise MiqException::MiqInvalidCredentialsError, "Invalid key structure"
     end
 
     def hostname_required?
-      # TODO: ExtManagementSystem is validating this
       false
     end
-
-    def validate_authentication_args(params)
-      # return args to be used in raw_connect
-      [params[:default_userid], ManageIQ::Password.encrypt(params[:default_password])]
-    end
-
-    def ems_type
-      @ems_type ||= "cisco_intersight".freeze
-    end
-
-    def description
-      @description ||= "Cisco Intersight".freeze
-    end
-
-
   end
 end

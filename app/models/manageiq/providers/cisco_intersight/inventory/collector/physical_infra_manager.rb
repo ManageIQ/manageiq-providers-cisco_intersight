@@ -9,6 +9,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_racks
       physical_server_network_devices
       firmware_inventory
+
     end
 
     def set_configuration
@@ -77,6 +78,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     def physical_racks
       get_compute_api.get_compute_rack_unit_list.results
+
     end
 
     def physical_server_network_devices
