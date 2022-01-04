@@ -9,15 +9,14 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
       physical_racks
       physical_server_hardwares
       physical_server_network_devices
-      
+      physical_server_firmwares      
+      physical_server_storage_adapters
     ).each do |name|
       add_collection(physical_infra, name)
 
     # Collections that still have to be written:
 
     # physical_chassis
-    # physical_server_storage_adapters
-    # physical_server_firmwares
     # physical_chassis_details
 
     end    

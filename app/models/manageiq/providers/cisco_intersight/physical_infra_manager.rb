@@ -4,7 +4,6 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :MetricsCollectorWorker
     require_nested :Refresher
     require_nested :RefreshWorker
-    require_nested :Vm
     require_nested :EventCatcher
     require_nested :EventParser
     require_nested :PhysicalServer
