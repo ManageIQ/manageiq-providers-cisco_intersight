@@ -19,7 +19,7 @@ module ManageIQ::Providers::CiscoIntersight
         chassis = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
         server = persister.physical_servers.build(
           :ems_ref => moid,
-          :health_state => "still to be found", # TODO: Obtain the data about health state
+          :health_state => get_health_state(s),
           :hostname => device_registration.device_hostname[0], # I assume one registered device manages one (and only one) compute element
           :name => s.name,
           :physical_chassis => chassis,
@@ -35,6 +35,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def physical_server_details
+      # Comment: description may be added if needed (through endpoint: AssetApi, class: AssetDeviceContractInformation)
       collector.physical_servers.each do |s|
         moid = get_registered_device_moid(s)
         server = persister.physical_servers.lazy_find(moid)
@@ -119,6 +120,18 @@ module ManageIQ::Providers::CiscoIntersight
           :version => firmware.version
         )
       end
+    end
+
+    def get_health_state(server)
+      alarm_summary = server.alarm_summary
+      if alarm_summary.critical > 0
+        health = "Critical"
+      elsif alarm_summary.warning > 0
+        health = "Warning"
+      else
+        health = "None"
+      end
+      health
     end
 
     def get_adapter_unit_dn(server, adapter_unit)
