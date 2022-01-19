@@ -16,7 +16,7 @@ module ManageIQ::Providers::CiscoIntersight
       @connection ||= manager.connect
     end
 
-    def get_firmware_inventory_api
+    def get_firmware_api
       IntersightClient::FirmwareApi.new
     end
 
@@ -89,11 +89,15 @@ module ManageIQ::Providers::CiscoIntersight
     # despite being the summary
     # TODO: Find out, if this is the right api call; if it isn't, find the one that is
     def firmware_inventory
-      @firmware_inventory ||= get_firmware_inventory_api.get_firmware_running_firmware_list.results
+      get_firmware_api.get_firmware_firmware_summary_list.results
     end
 
     def physical_servers
-      @physical_servers ||= get_compute_api.get_compute_physical_summary_list.results
+      get_compute_api.get_compute_physical_summary_list.results
+    end
+
+    def compute_blades
+      get_compute_api.get_compute_blade_list.results
     end
 
   end
