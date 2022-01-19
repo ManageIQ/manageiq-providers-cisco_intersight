@@ -8,6 +8,7 @@ module ManageIQ::Providers::CiscoIntersight
       hardwares
       firmwares
       physical_chassis
+      physical_chassis_details
     end
 
     def physical_servers
@@ -135,6 +136,25 @@ module ManageIQ::Providers::CiscoIntersight
           :ems_ref => c.moid,
           :health_state => get_health_state(c),
           :name => c.name
+        )
+      end
+    end
+
+    def physical_chassis_details
+      collector.physical_chassis.each do |c|
+        registered_device_moid = get_registered_device_moid(c)
+        device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
+        chassis = persister.physical_chassis.lazy_find(c.moid)
+        persister.physical_chassis_details.build(
+          :description => device_contract_information_unit.product.description,
+          :location => format_location(device_contract_information_unit),
+          :location_led_state => get_locator_led_state(c),
+          :model => c.model,
+          :part_number => nil, # this piece of data is un-parsable until attribute 'part_number' is seen in EquipmentChassis object
+          # :part_number => c.part_number,
+          :resource => chassis,
+          :serial_number => nil # this piece of data is un-parsable until attribute 'serial' is seen in EquipmentChassis object
+          # :serial_number => c.serial
         )
       end
     end
