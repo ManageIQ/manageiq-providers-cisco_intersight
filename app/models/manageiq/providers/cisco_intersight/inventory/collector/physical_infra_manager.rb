@@ -48,6 +48,15 @@ module ManageIQ::Providers::CiscoIntersight
       IntersightClient::StorageApi.new
     end
 
+    def get_device_contract_informations
+      # Returns an array with objects of type DeviceContractInformation
+      get_asset_api.get_asset_device_contract_information_list.results
+    end
+
+    def get_device_contract_information_from_device_moid(registered_device_moid)
+      get_device_contract_informations.select{|c| c.registered_device.moid == registered_device_moid}[0]
+    end
+
     def get_equipment_locator_led_by_moid(moid)
       get_equipment_api.get_equipment_locator_led_by_moid(moid)
     end
@@ -98,6 +107,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def compute_blades
       get_compute_api.get_compute_blade_list.results
+    end
+
+    def physical_chassis
+      physical_chassis = get_equipment_api.get_equipment_chassis_list
     end
 
   end

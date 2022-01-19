@@ -42,8 +42,12 @@ module ManageIQ::Providers::CiscoIntersight
         registered_device_moid = get_registered_device_moid(s)
         server = persister.physical_servers.lazy_find(s.moid)
         locator_led_unit = collector.get_equipment_locator_led_by_moid(s.locator_led.moid)
+        device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
         persister.physical_server_details.build(
+          :description => device_contract_information_unit.product.description,
+          :location => format_location(device_contract_information_unit),
           :location_led_state => locator_led_unit.oper_state,
+          :machine_type => device_contract_information_unit.device_type,
           # :model => s.model,
           :model => nil,   # this piece of data is un-parsable until attribute 'model' is seen in ComputeBlade object
           # :product_name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
@@ -131,7 +135,7 @@ module ManageIQ::Providers::CiscoIntersight
       elsif alarm_summary.warning > 0
         health = "Warning"
       else
-        health = "None"
+        health = "Valid"
       end
       health
     end
@@ -155,6 +159,18 @@ module ManageIQ::Providers::CiscoIntersight
 
     def get_registered_device_moid(intersight_api_object)
       intersight_api_object.registered_device.moid
+    end
+
+    def format_location(device_contract_information_object)
+      shipping_info = device_contract_information_object.product.ship_to
+      [
+        shipping_info.name,
+        shipping_info.address1,
+        shipping_info.postal_code,
+        shipping_info.postal_code,
+        shipping_info.city,
+        shipping_info.country
+      ].join(", ")
     end
 
   end
