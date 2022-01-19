@@ -7,6 +7,7 @@ module ManageIQ::Providers::CiscoIntersight
       # physical_racks
       hardwares
       firmwares
+      physical_chassis
     end
 
     def physical_servers
@@ -128,8 +129,19 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
-    def get_health_state(server)
-      alarm_summary = server.alarm_summary
+    def physical_chassis
+      collector.physical_chassis.each do |c|
+        persister.physical_chassis.build(
+          :ems_ref => c.moid,
+          :health_state => get_health_state(c),
+          :name => c.name
+        )
+      end
+    end
+
+
+    def get_health_state(object)
+      alarm_summary = object.alarm_summary
       if alarm_summary.critical > 0
         health = "Critical"
       elsif alarm_summary.warning > 0

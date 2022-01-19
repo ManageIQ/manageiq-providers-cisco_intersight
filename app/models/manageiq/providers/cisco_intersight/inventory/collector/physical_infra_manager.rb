@@ -110,7 +110,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def physical_chassis
-      physical_chassis = get_equipment_api.get_equipment_chassis_list
+      get_equipment_api.get_equipment_chassis_list.results
     end
 
   end
