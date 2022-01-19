@@ -46,7 +46,7 @@ module ManageIQ::Providers::CiscoIntersight
         persister.physical_server_details.build(
           :description => device_contract_information_unit.product.description,
           :location => format_location(device_contract_information_unit),
-          :location_led_state => locator_led_unit.oper_state,
+          :location_led_state => get_locator_led_state(s),
           :machine_type => device_contract_information_unit.device_type,
           # :model => s.model,
           :model => nil,   # this piece of data is un-parsable until attribute 'model' is seen in ComputeBlade object
@@ -69,7 +69,7 @@ module ManageIQ::Providers::CiscoIntersight
         # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
-          :cpu_total_cores => nil, # this piece of data is un-parsable until attribute 'num_cpu_cores' is seen in ComputeBlade object
+          :cpu_total_cores => nil, # this piece of daxta is un-parsable until attribute 'num_cpu_cores' is seen in ComputeBlade object
           # :cpu_total_cores => s.num_cpu_cores, # board.processors is an array with referenced processor as each element (and .count is the length operator)
           :disk_capacity => -1, # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
           :memory_mb => nil, # this piece of data is un-parsable until attribute 'available_memory' is seen in ComputeBlade object
@@ -172,6 +172,16 @@ module ManageIQ::Providers::CiscoIntersight
         shipping_info.country
       ].join(", ")
     end
+
+    def get_locator_led_state(object)
+      # object represents either ComputeBlade or EquipmentChassis type objects, that are given as response from the client
+      if object.locator_led
+        collector.get_equipment_locator_led_by_moid(object.locator_led.moid).oper_state
+      else
+        nil
+      end
+    end
+
 
   end
 end
