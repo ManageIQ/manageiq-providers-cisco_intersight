@@ -85,9 +85,30 @@ module ManageIQ::Providers::CiscoIntersight
       get_management_api.get_management_controller_by_moid(moid)
     end
 
+    def get_compute_blade_by_moid(moid)
+      get_compute_api.get_compute_blade_by_moid(moid)
+    end
+
+    def get_compute_rack_unit_by_moid(moid)
+      get_compute_api.get_compute_rack_unit_by_moid(moid)
+    end
+
+    def get_source_object_from_physical_server(physical_summary)
+      # physical_summary represents API object, class IntersightClient::ComputePhysicalSummary
+      # Returns API object of either class IntersightClient::ComputeBlade or IntersightClient::ComputeRackUnit,
+      # depending on attribute source_object_type
+      source_object_type = physical_summary.source_object_type
+      source_object_moid = physical_summary.moid
+      if source_object_type == "compute.Blade"
+        source_object = get_compute_blade_by_moid(source_object_moid)
+      else
+        source_object = get_compute_rack_unit_by_moid(source_object_moid)
+      end
+      source_object
+    end
+
     def physical_racks
       get_compute_api.get_compute_rack_unit_list.results
-
     end
 
     def physical_server_network_devices

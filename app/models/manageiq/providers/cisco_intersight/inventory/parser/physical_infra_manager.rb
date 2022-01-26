@@ -4,7 +4,7 @@ module ManageIQ::Providers::CiscoIntersight
     def parse
       physical_servers
       physical_server_details
-      # physical_racks
+      2physical_racks
       hardwares
       firmwares
       physical_chassis
@@ -12,7 +12,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def physical_servers
-      collector.compute_blades.each do |s|
+      collector.physical_servers.each do |s|
         registered_device_moid = get_registered_device_moid(s)
         device_registration = collector.get_asset_device_registration_by_moid(registered_device_moid)
         # Setting value of chassis and rack to nil for now
@@ -20,10 +20,9 @@ module ManageIQ::Providers::CiscoIntersight
         rack = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
         server = persister.physical_servers.build(
           :ems_ref => s.moid,
-          :health_state => nil, # this piece of data is un-parsable until attribute 'health_state' is seen in ComputeBlade object
           :health_state => get_health_state(s), # health_state obtained through atribute s.alarm_summary
           :hostname => device_registration.device_hostname[0], # I assume one registered device manages one (and only one) compute element
-          # :name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
+          :name => s.name,
           :physical_chassis => chassis, # nil for now
           :physical_rack => rack, # nil for now
           :power_state => s.oper_power_state,
@@ -37,18 +36,18 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def physical_server_details
-      # Comment: description may be added if needed (through endpoint: AssetApi, class: AssetDeviceContractInformation)
-      collector.compute_blades.each do |s|
+      collector.physical_servers.each do |s|
         registered_device_moid = get_registered_device_moid(s)
         server = persister.physical_servers.lazy_find(s.moid)
+        source_object = collector.get_source_object_from_physical_server(s)
         device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
         persister.physical_server_details.build(
           :description => device_contract_information_unit.product.description,
           :location => format_location(device_contract_information_unit),
-          :location_led_state => get_locator_led_state(s),
+          :location_led_state => get_locator_led_state(source_object),
           :machine_type => device_contract_information_unit.device_type,
           :model => s.model,
-          # :product_name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
+          :product_name => s.name,
           :resource => server,
           :room => s.slot_id,
           :serial_number => s.serial,
@@ -57,28 +56,26 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def hardwares
-      collector.compute_blades.each do |s|
-        # rack_unit = collector.get_rack_unit_from_physical_summary_moid(s.registered_device.moid)
+      collector.physical_servers.each do |s|
         server = persister.physical_servers.lazy_find(s.moid)
         computer = persister.physical_server_computer_systems.lazy_find(server)
-        board_unit = collector.get_compute_board_by_moid(s.board.moid)
+        source_object = collector.get_source_object_from_physical_server(s)
+        board_unit = collector.get_compute_board_by_moid(source_object.board.moid)
         storage_controllers_list = board_unit.storage_controllers
         # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
-          :cpu_total_cores => s.num_cpu_cores, # board.processors is an array with referenced processor as each element (and .count is the length operator)
-          :disk_capacity => -1, # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
+          :cpu_total_cores => s.num_cpu_cores,
           :memory_mb => s.available_memory,
-          # :cpu_speed => s.cpu_capacity, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
-          :disk_free_space => -1 # TODO: Find info about disk_free_space. Haven't found it yet, but I assume it must be somewhere inside board_unit and/or storage_controllers
+          :cpu_speed => s.cpu_capacity,
         )
 
-        s.adapters.each do |adapter|
+        source_object.adapters.each do |adapter|
           adapter_unit = collector.get_adapter_unit_by_moid(adapter.moid)
           management_controller_unit = collector.get_management_controller_by_moid(adapter_unit.controller.moid)
           persister.physical_server_network_devices.build(
             :hardware => hardware,
-            # :device_name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
+            :device_name => s.name,
             :device_type => "ethernet",
             :manufacturer => get_manufacturer_from_management_controller(management_controller_unit),
             :model => management_controller_unit.model,
@@ -89,7 +86,7 @@ module ManageIQ::Providers::CiscoIntersight
         storage_controllers_list.each do |storage_controller_reference|
           persister.physical_server_storage_adapters.build(
             :hardware => hardware,
-            # :device_name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
+            :device_name => s.name,
             :device_type => "storage",
             :uid_ems => storage_controller_reference.moid
           )
