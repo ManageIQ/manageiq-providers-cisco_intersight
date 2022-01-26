@@ -21,15 +21,13 @@ module ManageIQ::Providers::CiscoIntersight
         server = persister.physical_servers.build(
           :ems_ref => s.moid,
           :health_state => nil, # this piece of data is un-parsable until attribute 'health_state' is seen in ComputeBlade object
-          # :health_state => get_health_state(s), # health_state obtained through atribute s.alarm_summary
+          :health_state => get_health_state(s), # health_state obtained through atribute s.alarm_summary
           :hostname => device_registration.device_hostname[0], # I assume one registered device manages one (and only one) compute element
           # :name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
           :physical_chassis => chassis, # nil for now
           :physical_rack => rack, # nil for now
-          :power_state => nil, # this piece of data is un-parsable until attribute 'oper_power_state' is seen in ComputeBlade object
-          :raw_power_state => nil, # this piece of data is un-parsable until attribute 'admin_power_state' is seen in ComputeBlade object
-          # :power_state => s.oper_power_state,
-          # :raw_power_state => s.admin_power_state,
+          :power_state => s.oper_power_state,
+          :raw_power_state => s.admin_power_state,
           :type => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
         )
         persister.physical_server_computer_systems.build(
@@ -43,20 +41,17 @@ module ManageIQ::Providers::CiscoIntersight
       collector.compute_blades.each do |s|
         registered_device_moid = get_registered_device_moid(s)
         server = persister.physical_servers.lazy_find(s.moid)
-        locator_led_unit = collector.get_equipment_locator_led_by_moid(s.locator_led.moid)
         device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
         persister.physical_server_details.build(
           :description => device_contract_information_unit.product.description,
           :location => format_location(device_contract_information_unit),
           :location_led_state => get_locator_led_state(s),
           :machine_type => device_contract_information_unit.device_type,
-          # :model => s.model,
-          :model => nil,   # this piece of data is un-parsable until attribute 'model' is seen in ComputeBlade object
+          :model => s.model,
           # :product_name => s.name, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
           :resource => server,
           :room => s.slot_id,
-          # :serial_number => s.serial,
-          :serial_number => nil  # this piece of data is un-parsable until attribute 'serial' is seen in ComputeBlade object
+          :serial_number => s.serial,
         )
       end
     end
@@ -71,11 +66,9 @@ module ManageIQ::Providers::CiscoIntersight
         # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
         hardware = persister.physical_server_hardwares.build(
           :computer_system => computer,
-          :cpu_total_cores => nil, # this piece of daxta is un-parsable until attribute 'num_cpu_cores' is seen in ComputeBlade object
-          # :cpu_total_cores => s.num_cpu_cores, # board.processors is an array with referenced processor as each element (and .count is the length operator)
+          :cpu_total_cores => s.num_cpu_cores, # board.processors is an array with referenced processor as each element (and .count is the length operator)
           :disk_capacity => -1, # TODO: storage_controller.physical_disks is an array with physical disks. Out of it, obtain disk_capacity and memory_mb
-          :memory_mb => nil, # this piece of data is un-parsable until attribute 'available_memory' is seen in ComputeBlade object
-          # :memory_mb => s.available_memory,
+          :memory_mb => s.available_memory,
           # :cpu_speed => s.cpu_capacity, (tjazsch): not setting its value for now. Later, I'll focus on this issue later
           :disk_free_space => -1 # TODO: Find info about disk_free_space. Haven't found it yet, but I assume it must be somewhere inside board_unit and/or storage_controllers
         )
@@ -150,11 +143,9 @@ module ManageIQ::Providers::CiscoIntersight
           :location => format_location(device_contract_information_unit),
           :location_led_state => get_locator_led_state(c),
           :model => c.model,
-          :part_number => nil, # this piece of data is un-parsable until attribute 'part_number' is seen in EquipmentChassis object
-          # :part_number => c.part_number,
+          :part_number => c.part_number,
           :resource => chassis,
-          :serial_number => nil # this piece of data is un-parsable until attribute 'serial' is seen in EquipmentChassis object
-          # :serial_number => c.serial
+          :serial_number => c.serial
         )
       end
     end
@@ -182,11 +173,6 @@ module ManageIQ::Providers::CiscoIntersight
         manufacturer = "unknown"
       end
       manufacturer
-    end
-
-    # This will get removed after proper moid encoding is set up for adaters.
-    def get_temporary_unique_identifyer(moid, dn)
-      moid + "-" + dn
     end
 
     def get_registered_device_moid(intersight_api_object)
