@@ -4,7 +4,7 @@ module ManageIQ::Providers::CiscoIntersight
     def parse
       physical_servers
       physical_server_details
-      2physical_racks
+      physical_racks
       hardwares
       firmwares
       physical_chassis
