@@ -1,6 +1,6 @@
 # ManageIQ::Providers::CiscoIntersight
 
-[![Build Status](https://travis-ci.com/ManageIQ/manageiq-providers-cisco_intersight.svg?branch=master)](https://travis-ci.com/ManageIQ/manageiq-providers-cisco_intersight)
+[![CI](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml/badge.svg)](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/<badge_token>/maintainability)](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/<badge_token>/test_coverage)](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight/test_coverage)
 [![Security](https://hakiri.io/github/ManageIQ/manageiq-providers-cisco_intersight/master.svg)](https://hakiri.io/github/ManageIQ/manageiq-providers-cisco_intersight/master)
