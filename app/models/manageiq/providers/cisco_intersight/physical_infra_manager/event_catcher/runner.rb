@@ -1,10 +1,9 @@
 module ManageIQ::Providers::CiscoIntersight
-
-  class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EventCatcher::Runner < ManageIQ::Providers::BaseManager::EventCatcher::Runner
+  class PhysicalInfraManager::EventCatcher::Runner < ManageIQ::Providers::BaseManager::EventCatcher::Runner
     def stop_event_monitor
       event_monitor_handle.stop
     end
-  
+
     def monitor_events
       event_monitor_handle.start
       event_monitor_running
@@ -14,15 +13,15 @@ module ManageIQ::Providers::CiscoIntersight
     ensure
       stop_event_monitor
     end
-  
+
     def queue_event(event)
       _log.info "#{log_prefix} Caught event [#{event[:id]}]"
       event_hash = event_to_hash(event, @cfg[:ems_id])
       EmsEvent.add_queue('add', @cfg[:ems_id], event_hash)
     end
-  
+
     private
-  
+
     def event_to_hash(event, ems_id)
       {
         :event_type => "CISCO_INTERSIGHT#{event[:name]}",
@@ -33,7 +32,7 @@ module ManageIQ::Providers::CiscoIntersight
         :ems_id     => ems_id
       }
     end
-  
+
     def event_monitor_handle
       @event_monitor_handle ||= begin
         self.class.parent::Stream.new(
@@ -42,6 +41,5 @@ module ManageIQ::Providers::CiscoIntersight
         )
       end
     end
-  end  
-
+  end
 end
