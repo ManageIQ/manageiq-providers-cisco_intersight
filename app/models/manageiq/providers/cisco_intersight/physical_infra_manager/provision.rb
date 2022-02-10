@@ -1,4 +1,6 @@
-class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Provision \
-    < ::PhysicalServerProvisionTask
-  include_concern 'StateMachine'
+module ManageIQ::Providers::CiscoIntersight
+  class PhysicalInfraManager::Provision \
+      < ::PhysicalServerProvisionTask
+    include_concern 'StateMachine'
+  end
 end

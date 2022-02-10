@@ -1,4 +1,6 @@
-class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::FirmwareUpdateTask \
-    < ManageIQ::Providers::PhysicalInfraManager::FirmwareUpdateTask
-  include_concern 'StateMachine'
+module ManageIQ::Providers::CiscoIntersight
+  class PhysicalInfraManager::FirmwareUpdateTask \
+      < ManageIQ::Providers::PhysicalInfraManager::FirmwareUpdateTask
+    include_concern 'StateMachine'
+  end
 end

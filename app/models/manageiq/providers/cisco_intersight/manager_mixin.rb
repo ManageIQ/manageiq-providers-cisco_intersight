@@ -1,22 +1,36 @@
+require 'intersight_client'
+
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
   def connect(options = {})
-    raise MiqException::MiqHostError, "No credentials defined" if missing_credentials?(options[:auth_type])
+    keyid = authentication_userid
+    key = authentication_password
+    raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
 
-    auth_token = authentication_token(options[:auth_type])
-    self.class.raw_connect(project, auth_token, options, options[:proxy_uri] || http_proxy_uri)
+    self.class.raw_connect(keyid, key)
   end
 
   def disconnect(connection)
-    connection.logout
-  rescue StandardError => error
-    _log.warn("Disconnect failed: #{error}")
+    # no need to disconnect - connection not persistent
+    # TODO: should we clear configuration here (api_key=nil) ? (-> may require changes in intersight-client gem)
   end
 
   def verify_credentials(auth_type = nil, options = {})
-    options[:auth_type] = auth_type
-    with_provider_connection(options) { true }
+    with_provider_connection(options) do
+      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
+    end
+  end
+
+  def self.verify_provider_connection
+    IntersightClient::IamApi.new.get_iam_api_key_list({ :count => true }).count > 0
+  rescue IntersightClient::ApiError => err
+    case err.code
+    when 401
+      raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
+    else
+      raise MiqException::MiqCommunicationsError, "HTTP error %d" % [err.code]
+    end
   end
 
   module ClassMethods
@@ -26,44 +40,38 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
         :fields => [
           {
             :component => 'sub-form',
-            :id        => 'endpoints-subform',
-            :name      => 'endpoints-subform',
-            :title     => _('Endpoints'),
-            :fields    => [
+            :id => 'endpoints-subform',
+            :name => 'endpoints-subform',
+            :title => _('Authentication'),
+            :fields => [
               {
-                :component              => 'validate-provider-credentials',
-                :id                     => 'authentications.default.valid',
-                :name                   => 'authentications.default.valid',
-                :skipSubmit             => true,
-                :isRequired             => true,
+                :component => 'validate-provider-credentials',
+                :id => 'authentications.default.valid',
+                :name => 'authentications.default.valid',
+                :skipSubmit => true,
+                :isRequired => true,
                 :validationDependencies => %w[type],
-                :fields                 => [
+                :fields => [
                   {
-                    :component  => "text-field",
-                    :id         => "endpoints.default.endpoint",
-                    :name       => "endpoints.default.endpoint",
-                    :label      => _("Endpoint"),
+                    :component => "text-field",
+                    :id => "authentications.default.userid",
+                    :name => "authentications.default.userid",
+                    :label => "Intersight API key ID",
                     :isRequired => true,
-                    :validate   => [{:type => "required"}],
+                    :validate => [{ :type => "required" }],
                   },
                   {
-                    :component  => "text-field",
-                    :id         => "authentications.default.key_id",
-                    :name       => "authentications.default.key_id",
-                    :label      => "Key ID",
+                    :component => "textarea",
+                    :id => "authentications.default.password",
+                    :name => "authentications.default.password",
+                    :label => "Intersight API key",
+                    :type => "password",
                     :isRequired => true,
-                    :validate   => [{:type => "required"}],
-                  },
-                  {
-                    # Question: Is this form of type "password" (since it's a private key)
-                    :component  => "password-field",
-                    :id         => "authentications.default.key_file",
-                    :name       => "authentications.default.key_file",
-                    :label      => "Key File",
-                    # Question: Is this form of type "password" (since it's a private key)
-                    :type       => "password",
-                    :isRequired => true,
-                    :validate   => [{:type => "required"}],
+                    :validate => [{ :type => "required" }, {
+                      :type => "pattern",
+                      :pattern => "-+BEGIN EC PRIVATE KEY-+[ \r\nA-Za-z0-9\\+/=]+-+END EC PRIVATE KEY-+",
+                      :message => "PEM-formatted X.509 EC private key required"
+                    }],
                   },
                 ]
               },
@@ -76,12 +84,6 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     # Verify Credentials
     #
     # args: {
-    #   "endpoints" => {
-    #     "default" => {
-    #       "security_protocol" => String,
-    #       "hostname" => String,
-    #       "port" => Integer,
-    #     }
     #   "authentications" => {
     #     "default" => {
     #       "userid" => String,
@@ -89,18 +91,27 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     #     }
     #   }
 
-    def verify_credentials(auth_type = nil, options = {})
-      begin
-        connect
-      rescue => err
-        raise MiqException::MiqInvalidCredentialsError, err.message
+    def verify_credentials(args)
+      authentication = args.dig("authentications", "default")
+      keyid, enc_key = authentication&.values_at("userid", "password")
+      key = ManageIQ::Password.try_decrypt(enc_key)
+
+      raw_connect(keyid, key)
+
+      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
+    end
+
+    def raw_connect(keyid, key)
+      IntersightClient.configure do |config|
+        config.api_key = key
+        config.api_key_id = keyid
       end
+    rescue OpenSSL::PKey::ECError
+      raise MiqException::MiqInvalidCredentialsError, "Invalid key structure"
     end
 
-    def self.raw_connect(*args)
-      # TODO: Replace this with a client connection from your Ruby SDK library and remove the MyRubySDK class
-      MyRubySDK.new
+    def hostname_required?
+      false
     end
-
   end
 end
