@@ -17,6 +17,6 @@
 /config/environments/*.local.yml
 /spec/manageiq
 
+.idea/
 intersight-client-ruby/
-
 intersight-sdk-ruby
