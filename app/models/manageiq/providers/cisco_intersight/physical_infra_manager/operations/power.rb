@@ -58,13 +58,11 @@ module ManageIQ::Providers::CiscoIntersight
 
         if compute_server_settings_list.empty?
           raise MiqException::Error, "No IntersightClient::ComputeServerSetting object found for ems_ref #{server.ems_ref} . Server might not be Intersight-managed."
-          return
         end
         if compute_server_settings_list.size > 1
           raise MiqException::Error, "Multiple IntersightClient::ComputeServerSetting retrieved for ems_ref #{server.ems_ref}."
-          return
         end
-        compute_server_settings = compute_server_settings_list[0]
+        compute_server_settings = compute_server_settings_list.first
 
         previous_admin_power_state = compute_server_settings.admin_power_state
 
