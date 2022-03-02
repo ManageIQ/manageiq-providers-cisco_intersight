@@ -51,7 +51,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
       :model                  => nil,
       :serial_number          => nil,
       :field_replaceable_unit => nil,
-      :raw_power_state        => "policy",
+      :raw_power_state        => "on",
       :vendor                 => nil,
     )
 

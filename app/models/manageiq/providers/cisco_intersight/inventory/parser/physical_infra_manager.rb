@@ -26,7 +26,7 @@ module ManageIQ::Providers::CiscoIntersight
           :physical_chassis => chassis, # nil for now
           :physical_rack    => rack, # nil for now
           :power_state      => s.oper_power_state,
-          :raw_power_state  => s.admin_power_state,
+          :raw_power_state  => s.oper_power_state,
           :type => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
         )
         persister.physical_server_computer_systems.build(
