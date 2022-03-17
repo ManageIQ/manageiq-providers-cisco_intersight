@@ -9,7 +9,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_racks
       physical_server_network_devices
       firmware_inventory
-
+      network_elements
     end
 
     def set_configuration
@@ -48,50 +48,56 @@ module ManageIQ::Providers::CiscoIntersight
       IntersightClient::StorageApi.new
     end
 
+    def get_network_api
+      IntersightClient::NetworkApi.new
+    end
+
+    def get_port_api
+      IntersightClient::PortApi.new
+    end
+
+    def get_ether_api
+      IntersightClient::EtherApi.new
+    end
+
     def get_device_contract_informations
       # Returns an array with objects of type DeviceContractInformation
       get_asset_api.get_asset_device_contract_information_list.results
     end
 
     def get_device_contract_information_from_device_moid(registered_device_moid)
-      get_device_contract_informations.select{|c| c.registered_device.moid == registered_device_moid}[0]
+      get_device_contract_informations.select { |c| c.registered_device.moid == registered_device_moid }[0]
     end
 
-    def get_equipment_locator_led_by_moid(moid)
-      get_equipment_api.get_equipment_locator_led_by_moid(moid)
-    end
+    delegate :get_adapter_ext_eth_interface_by_moid, :to => :get_adapter_api
 
-    def get_storage_controller_by_moid(moid)
-      get_storage_api.get_storage_controller_by_moid(moid)
-    end
+    delegate :get_ether_physical_port_by_moid, :to => :get_ether_api
 
-    def get_compute_board_by_moid(moid)
-      get_compute_api.get_compute_board_by_moid(moid)
-    end
+    delegate :get_port_group_by_moid, :to => :get_port_api
 
-    def get_adapter_unit_by_moid(moid)
-      get_adapter_api.get_adapter_unit_by_moid(moid)
-    end
+    delegate :get_equipment_switch_card_by_moid, :to => :get_equipment_api
 
-    def get_asset_device_registration_by_moid(moid)
-      get_asset_api.get_asset_device_registration_by_moid(moid)
-    end
+    delegate :get_equipment_locator_led_by_moid, :to => :get_equipment_api
+
+    delegate :get_storage_controller_by_moid, :to => :get_storage_api
+
+    delegate :get_compute_board_by_moid, :to => :get_compute_api
+
+    delegate :get_adapter_unit_by_moid, :to => :get_adapter_api
+
+    delegate :get_asset_device_registration_by_moid, :to => :get_asset_api
+
+    delegate :get_firmware_running_firmware_by_moid, :to => :get_firmware_api
 
     def get_rack_unit_from_physical_summary_moid(moid)
       physical_racks.select { |c| c.registered_device.moid == moid }[0]
     end
 
-    def get_management_controller_by_moid(moid)
-      get_management_api.get_management_controller_by_moid(moid)
-    end
+    delegate :get_management_controller_by_moid, :to => :get_management_api
 
-    def get_compute_blade_by_moid(moid)
-      get_compute_api.get_compute_blade_by_moid(moid)
-    end
+    delegate :get_compute_blade_by_moid, :to => :get_compute_api
 
-    def get_compute_rack_unit_by_moid(moid)
-      get_compute_api.get_compute_rack_unit_by_moid(moid)
-    end
+    delegate :get_compute_rack_unit_by_moid, :to => :get_compute_api
 
     def get_source_object_from_physical_server(physical_summary)
       # physical_summary represents API object, class IntersightClient::ComputePhysicalSummary
@@ -100,11 +106,10 @@ module ManageIQ::Providers::CiscoIntersight
       source_object_type = physical_summary.source_object_type
       source_object_moid = physical_summary.moid
       if source_object_type == "compute.Blade"
-        source_object = get_compute_blade_by_moid(source_object_moid)
+        get_compute_blade_by_moid(source_object_moid)
       else
-        source_object = get_compute_rack_unit_by_moid(source_object_moid)
+        get_compute_rack_unit_by_moid(source_object_moid)
       end
-      source_object
     end
 
     def physical_racks
@@ -112,7 +117,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def physical_server_network_devices
-      get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" } # source_object_type == "adapter.Unit"
+      get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" }
     end
 
     def firmware_inventory
@@ -130,6 +135,12 @@ module ManageIQ::Providers::CiscoIntersight
     def physical_chassis
       get_equipment_api.get_equipment_chassis_list.results
     end
+
+    def network_elements
+      get_network_api.get_network_element_list.results
+    end
+
+
 
   end
 end
