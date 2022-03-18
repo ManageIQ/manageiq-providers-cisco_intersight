@@ -9,7 +9,6 @@
 /spec/reports/
 /tmp/
 
-.DS_Store
 .rubocop-*
 /bundler.d/*
 !/bundler.d/.keep
@@ -17,8 +16,6 @@
 /config/settings/*.local.yml
 /config/environments/*.local.yml
 /spec/manageiq
-.idea/
 
-.idea/
 intersight-client-ruby/
 intersight-sdk-ruby
