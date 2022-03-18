@@ -3,101 +3,58 @@ module ManageIQ::Providers::CiscoIntersight
 
     def collect
 
-      set_configuration
+      # Establish conneciton. Connection in inside ManagerMixin sets API key and keyid-d
+      connection
 
+      # Initialize API endpoints
+      firmware_api
+      compute_api
+      equipment_api
+      asset_api
+      adapter_api
+      management_api
+      storage_api
+      network_api
+      port_api
+      ether_api
+
+      # Initialize the variables that may be memoized for the duration of the refresh run
       physical_servers
       physical_racks
-      physical_server_network_devices
       firmware_inventory
       network_elements
+      physical_chassis
     end
 
-    def set_configuration
-      @connection ||= manager.connect
-    end
+    # Methods that are directly used by parser
 
-    def get_firmware_api
-      IntersightClient::FirmwareApi.new
-    end
-
-    def get_compute_api
-      IntersightClient::ComputeApi.new
-    end
-
-    def get_equipment_api
-      IntersightClient::EquipmentApi.new
-    end
-
-    def get_asset_api
-      IntersightClient::AssetApi.new
-    end
-
-    def get_memory_api
-      IntersightClient::MemoryApi.new
-    end
-
-    def get_adapter_api
-      IntersightClient::AdapterApi.new
-    end
-
-    def get_management_api
-      IntersightClient::ManagementApi.new
-    end
-
-    def get_storage_api
-      IntersightClient::StorageApi.new
-    end
-
-    def network_api
-      @network_api ||= IntersightClient::NetworkApi.new
-    end
-
-    def get_port_api
-      IntersightClient::PortApi.new
-    end
-
-    def get_ether_api
-      IntersightClient::EtherApi.new
-    end
-
-    def get_device_contract_informations
+    def device_contract_informations
       # Returns an array with objects of type DeviceContractInformation
-      get_asset_api.get_asset_device_contract_information_list.results
+      @device_contract_informations = asset_api.get_asset_device_contract_information_list.results
+    end
+
+    def physical_racks
+      @physical_racks = compute_api.get_compute_rack_unit_list.results
+    end
+
+    def firmware_inventory
+      @firmware_inventory = firmware_api.get_firmware_firmware_summary_list.results
+    end
+
+    def physical_servers
+      @physical_servers = compute_api.get_compute_physical_summary_list.results
+    end
+
+    def physical_chassis
+      @physical_chassis = equipment_api.get_equipment_chassis_list.results
+    end
+
+    def network_elements
+      @network_elements = network_api.get_network_element_list.results
     end
 
     def get_device_contract_information_from_device_moid(registered_device_moid)
-      get_device_contract_informations.select { |c| c.registered_device.moid == registered_device_moid }[0]
-    end
-
-    delegate :get_adapter_ext_eth_interface_by_moid, :to => :get_adapter_api
-
-    delegate :get_ether_physical_port_by_moid, :to => :get_ether_api
-
-    delegate :get_port_group_by_moid, :to => :get_port_api
-
-    delegate :get_equipment_switch_card_by_moid, :to => :get_equipment_api
-
-    delegate :get_equipment_locator_led_by_moid, :to => :get_equipment_api
-
-    delegate :get_storage_controller_by_moid, :to => :get_storage_api
-
-    delegate :get_compute_board_by_moid, :to => :get_compute_api
-
-    delegate :get_adapter_unit_by_moid, :to => :get_adapter_api
-
-    delegate :get_asset_device_registration_by_moid, :to => :get_asset_api
-
-    delegate :get_firmware_running_firmware_by_moid, :to => :get_firmware_api
-
-    def get_rack_unit_from_physical_summary_moid(moid)
-      physical_racks.select { |c| c.registered_device.moid == moid }[0]
-    end
-
-    delegate :get_management_controller_by_moid, :to => :get_management_api
-
-    delegate :get_compute_blade_by_moid, :to => :get_compute_api
-
-    delegate :get_compute_rack_unit_by_moid, :to => :get_compute_api
+      device_contract_informations.select { |c| c.registered_device.moid == registered_device_moid }[0]
 
     def get_source_object_from_physical_server(physical_summary)
       # physical_summary represents API object, class IntersightClient::ComputePhysicalSummary
@@ -112,35 +69,76 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
-    def physical_racks
-      get_compute_api.get_compute_rack_unit_list.results
+    delegate :get_ether_physical_port_by_moid, :to => :ether_api
+
+    delegate :get_port_group_by_moid, :to => :port_api
+
+    delegate :get_equipment_switch_card_by_moid, :to => :equipment_api
+
+    delegate :get_equipment_locator_led_by_moid, :to => :equipment_api
+
+    delegate :get_storage_controller_by_moid, :to => :storage_api
+
+    delegate :get_compute_board_by_moid, :to => :compute_api
+
+    delegate :get_adapter_unit_by_moid, :to => :adapter_api
+
+    delegate :get_asset_device_registration_by_moid, :to => :asset_api
+
+    delegate :get_firmware_running_firmware_by_moid, :to => :firmware_api
+
+    delegate :get_compute_blade_by_moid, :to => :compute_api
+
+    delegate :get_compute_rack_unit_by_moid, :to => :compute_api
+
+    private
+
+    # API endpoint declaration
+
+    def firmware_api
+      @firmware_api = IntersightClient::FirmwareApi.new
     end
 
-    def physical_server_network_devices
-      get_equipment_api.get_equipment_device_summary_list.results.reject { |c| c.source_object_type == "compute.RackUnit" }
+    def compute_api
+      @compute_api = IntersightClient::ComputeApi.new
     end
 
-    def firmware_inventory
-      get_firmware_api.get_firmware_firmware_summary_list.results
+    def equipment_api
+      @equipment_api = IntersightClient::EquipmentApi.new
     end
 
-    def physical_servers
-      get_compute_api.get_compute_physical_summary_list.results
+    def asset_api
+      @asset_api = IntersightClient::AssetApi.new
     end
 
-    def compute_blades
-      get_compute_api.get_compute_blade_list.results
+    def adapter_api
+      @adapter_api = IntersightClient::AdapterApi.new
     end
 
-    def physical_chassis
-      get_equipment_api.get_equipment_chassis_list.results
+    def management_api
+      @management_api = IntersightClient::ManagementApi.new
     end
 
-    def network_elements
-      network_api.get_network_element_list.results
+    def storage_api
+      @storage_api = IntersightClient::StorageApi.new
     end
 
+    def network_api
+      @network_api = IntersightClient::NetworkApi.new
+    end
 
+    def port_api
+      @port_api = IntersightClient::PortApi.new
 
+    def ether_api
+      @ether_api = IntersightClient::EtherApi.new
+    end
+
+    # API key and keyid configuration
+
+    def connection
+      # Sets API key and keyid for the manager
+      @connection ||= manager.connect
+    end
   end
 end
