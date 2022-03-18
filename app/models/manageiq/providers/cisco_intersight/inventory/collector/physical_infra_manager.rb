@@ -48,8 +48,8 @@ module ManageIQ::Providers::CiscoIntersight
       IntersightClient::StorageApi.new
     end
 
-    def get_network_api
-      IntersightClient::NetworkApi.new
+    def network_api
+      @network_api ||= IntersightClient::NetworkApi.new
     end
 
     def get_port_api
@@ -137,7 +137,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def network_elements
-      get_network_api.get_network_element_list.results
+      network_api.get_network_element_list.results
     end
 
 
