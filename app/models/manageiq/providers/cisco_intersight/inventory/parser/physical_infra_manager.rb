@@ -3,7 +3,6 @@ module ManageIQ::Providers::CiscoIntersight
 
     def parse
       physical_servers
-      physical_server_firmwares
       physical_racks
       physical_chassis
       physical_switches
@@ -45,17 +44,13 @@ module ManageIQ::Providers::CiscoIntersight
           # build collection physical_server_storage_adapters
           build_physical_server_storage_adapters(hardware, storage_controller_reference)
         end
-      end
-    end
 
-    def physical_server_firmwares
-      collector.firmware_inventory.each do |firmware_summary|
-        firmware_summary.components_fw_inventory.each do |component_fw_inventory|
-          server = persister.physical_servers.lazy_find(firmware_summary.server.moid)
-          computer = persister.physical_server_computer_systems.lazy_find(server)
-          physical_server_hardware = persister.physical_server_hardwares.lazy_find(computer)
+        firmware_firmware_summary = collector.get_firmware_firmware_summary_from_server_moid(server.moid)
+        next unless firmware_firmware_summary
+
+        firmware_firmware_summary.components_fw_inventory.each do |component_fw_inventory|
           # build collection physical_server_firmwares
-          build_physical_server_firmwares(physical_server_hardware, component_fw_inventory)
+          build_physical_server_firmwares(hardware, component_fw_inventory)
         end
       end
     end

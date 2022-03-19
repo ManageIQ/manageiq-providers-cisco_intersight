@@ -21,7 +21,7 @@ module ManageIQ::Providers::CiscoIntersight
       # Initialize the variables that may be memoized for the duration of the refresh run
       physical_servers
       physical_racks
-      firmware_inventory
+      firmware_firmware_summaries
       network_elements
       physical_chassis
     end
@@ -37,8 +37,8 @@ module ManageIQ::Providers::CiscoIntersight
       @physical_racks = compute_api.get_compute_rack_unit_list.results
     end
 
-    def firmware_inventory
-      @firmware_inventory = firmware_api.get_firmware_firmware_summary_list.results
+    def firmware_firmware_summaries
+      @firmware_firmware_summaries = firmware_api.get_firmware_firmware_summary_list.results
     end
 
     def physical_servers
@@ -55,6 +55,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def get_device_contract_information_from_device_moid(registered_device_moid)
       device_contract_informations.find { |c| c.registered_device.moid == registered_device_moid }
+    end
+
+    def get_firmware_firmware_summary_from_server_moid(server_moid)
+      firmware_firmware_summaries.find { |c| c.server.moid == server_moid}
     end
 
     def get_source_object_from_physical_server(physical_summary)
