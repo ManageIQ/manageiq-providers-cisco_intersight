@@ -94,7 +94,6 @@ module ManageIQ::Providers::CiscoIntersight
     private
 
     # API endpoint declaration
-
     def firmware_api
       @firmware_api = IntersightClient::FirmwareApi.new
     end
