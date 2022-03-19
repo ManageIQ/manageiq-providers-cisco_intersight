@@ -26,9 +26,9 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         # switches tests
 
         assert_specific_physical_switch
-        # assert_specific_physical_switch_details
-        # assert_specific_physical_switch_hardwares
-        # assert_specific_physical_switch_firmwares
+        assert_specific_physical_switch_details
+        assert_specific_physical_switch_hardwares
+        assert_specific_physical_switch_firmwares
         # assert_specific_physical_switch_network_ports
         # assert_specific_physical_switch_networks
       end
@@ -63,6 +63,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     expect(ems.physical_switch_networks.count).to eq(2)
 
   end
+
+  # Asserting specific objects type of tests
 
   def assert_specific_physical_server
     server_ems_ref = "614cec406176752d35abe2dc"
@@ -261,21 +263,108 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     switch_uid_ems = "614ce2a16176752d35a7ec96"
     switch = get_physical_switch_from_uid_ems(switch_uid_ems)
 
-    expect(server).to have_attributes(
-      :name               => "switch-FDO244106VJ",
-      :ports => nil,
-      :uid_ems => switch_uid_ems,
+    expect(switch).to have_attributes(
+      :name              => "switch-FDO244106VJ",
+      :ports             => nil,
+      :uid_ems           => switch_uid_ems,
       :allow_promiscuous => nil,
-      :forged_transmits => nil,
-      :mac_changes => nil,
-      mtu => nil,
-      :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch",
-      :health_state => "Warning",
-      :power_state => nil
+      :forged_transmits  => nil,
+      :mac_changes       => nil,
+      :mtu               => nil,
+      :type              => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch",
+      :health_state      => "Warning",
+      :power_state       => nil
+    )
+    expect(switch.ext_management_system).to eq(ems)
+  end
+
+  def assert_specific_physical_switch_details
+    switch_uid_ems = "614ce2a16176752d35a7ec96"
+    switch = get_physical_switch_from_uid_ems(switch_uid_ems)
+    asset_detail = AssetDetail.find_by!(:resource => switch)
+
+    expect(asset_detail).to have_attributes(
+      :description            => "UCS Fabric Interconnect 6454",
+      :location               => "3800 ZANKER ROAD SAN JOSE US 95134 CA",
+      :room                   => nil,
+      :contact                => nil,
+      :rack_name              => nil,
+      :lowest_rack_unit       => nil,
+      :resource_type          => "Switch",
+      :product_name           => "CISCO SYSTEMS INC FOR US INTERNAL DEMO EVAL ONLY",
+      :manufacturer           => "Cisco Systems, Inc.",
+      :machine_type           => "CiscoUcsFI",
+      :model                  => "UCS-FI-6454",
+      :serial_number          => "FDO244106VJ",
+      :field_replaceable_unit => nil,
+      :part_number            => nil,
+      :location_led_ems_ref   => nil,
+      :location_led_state     => nil
     )
 
-    expect(server.ext_management_system).to eq(ems)
   end
+
+  def assert_specific_physical_switch_hardwares
+    switch_uid_ems = "614ce2a16176752d35a7ec96"
+    switch = get_physical_switch_from_uid_ems(switch_uid_ems)
+    hardware = switch.hardware
+
+    expect(hardware).to have_attributes(
+      :virtual_hw_version   => nil,
+      :config_version       => nil,
+      :guest_os             => nil,
+      :cpu_sockets          => 1,
+      :bios                 => nil,
+      :bios_location        => nil,
+      :time_sync            => nil,
+      :annotation           => nil,
+      :vm_or_template_id    => nil,
+      :memory_mb            => nil,
+      :host_id              => nil,
+      :cpu_speed            => nil,
+      :cpu_type             => nil,
+      :size_on_disk         => nil,
+      :manufacturer         => "",
+      :model                => "",
+      :number_of_nics       => nil,
+      :cpu_usage            => nil,
+      :memory_usage         => nil,
+      :cpu_cores_per_socket => nil,
+      :cpu_total_cores      => nil,
+      :vmotion_enabled      => nil,
+      :disk_free_space      => nil,
+      :disk_capacity        => nil,
+      :guest_os_full_name   => nil,
+      :memory_console       => nil,
+      :bitness              => nil,
+      :virtualization_type  => nil,
+      :root_device_type     => nil,
+      :disk_size_minimum    => nil,
+      :memory_mb_minimum    => nil,
+      :introspected         => nil,
+      :provision_state      => nil,
+      :serial_number        => nil,
+      :switch_id            => 7,
+      :firmware_type        => nil,
+      :canister_id          => nil
+    )
+  end
+
+  def assert_specific_physical_switch_firmwares
+    switch_uid_ems = "614ce2a16176752d35a7ec96"
+    switch = get_physical_switch_from_uid_ems(switch_uid_ems)
+    firmware = switch.hardware.firmwares.first
+
+    expect(firmware).to have_attributes(
+      :name            => "switch-FDO244106VJ/mgmt/fw-system",
+      :build           => "9.3(5)I42(1f)",
+      :version         => "9.3(5)I42(1f)",
+      :resource_type   => "Hardware",
+      :guest_device_id => nil
+    )
+  end
+
+  # Helper methods
 
   def get_physical_switch_from_uid_ems(uid_ems)
     PhysicalSwitch.find_by(:uid_ems => uid_ems)
