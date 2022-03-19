@@ -54,7 +54,8 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def get_device_contract_information_from_device_moid(registered_device_moid)
-      device_contract_informations.select { |c| c.registered_device.moid == registered_device_moid }[0]
+      device_contract_informations.find { |c| c.registered_device.moid == registered_device_moid }
+    end
 
     def get_source_object_from_physical_server(physical_summary)
       # physical_summary represents API object, class IntersightClient::ComputePhysicalSummary
@@ -128,6 +129,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     def port_api
       @port_api = IntersightClient::PortApi.new
+    end
 
     def ether_api
       @ether_api = IntersightClient::EtherApi.new
