@@ -11,70 +11,99 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         ems.reload
 
         assert_ems
+
+        # servers tests
         assert_specific_physical_server
         assert_specific_physical_server_details
         assert_specific_physical_server_hardwares
         assert_specific_physical_server_firmwares
         assert_specific_physical_server_network_devices
+
+        # chasses tests
         assert_specific_physical_chassis
         assert_specific_physical_chassis_details
+
+        # switches tests
+
+        assert_specific_physical_switch
+        # assert_specific_physical_switch_details
+        # assert_specific_physical_switch_hardwares
+        # assert_specific_physical_switch_firmwares
+        # assert_specific_physical_switch_network_ports
+        # assert_specific_physical_switch_networks
       end
     end
   end
 
   def assert_ems
-    expect(ems.physical_servers.count).to eq(29)
-    expect(ems.physical_server_details.count).to eq(29)
-    expect(ems.physical_server_computer_systems.count).to eq(29)
-    expect(ems.physical_server_hardwares.count).to eq(29)
-    expect(ems.physical_server_firmwares.count).to eq(45)
+    # physical server's collections
+    expect(ems.physical_servers.count).to eq(4)
+    expect(ems.physical_server_details.count).to eq(4)
+    expect(ems.physical_server_computer_systems.count).to eq(4)
+    expect(ems.physical_server_hardwares.count).to eq(4)
+    expect(ems.physical_server_network_devices.count).to eq(4)
+    expect(ems.physical_server_firmwares.count).to eq(56)
+    expect(ems.physical_server_storage_adapters.count).to eq(7)
 
-    # In our available lab, we don't yet have a rack information.
+    # physical rack's collections
+    # In our available lab, we have informations about racks yet.
     expect(ems.physical_racks.count).to eq(0)
 
-    expect(ems.physical_chassis.count).to eq(7)
+    # physical chassis' collections
+    expect(ems.physical_chassis.count).to eq(1)
     expect(ems.physical_chassis_details.count).to eq(7)
-    expect(ems.physical_server_network_devices.count).to eq(55)
+
+    # physical switch's collections
+    expect(ems.physical_switches.count).to eq(2)
+    expect(ems.physical_switch_details.count).to eq(2)
+    expect(ems.physical_switch_hardwares.count).to eq(2)
+    expect(ems.physical_switch_firmwares.count).to eq(2)
+
+    expect(ems.physical_switch_network_ports.count).to eq(108)
+    expect(ems.physical_switch_networks.count).to eq(2)
+
   end
 
   def assert_specific_physical_server
-    server_ems_ref = "5ed10e4a6176752d31a406fc"
+    server_ems_ref = "614cec406176752d35abe2dc"
     server = get_physical_server_from_ems_ref(server_ems_ref)
 
     expect(server).to have_attributes(
-      :ems_ref                => "5ed10e4a6176752d31a406fc",
-      :hostname               => "CLABS000D000F001",
+      :ems_ref                => server_ems_ref,
+      :hostname               => "C1-B2-UCSX-210C-M6",
       :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
       :product_name           => nil,
-      :manufacturer           => nil,
+      :manufacturer           => "Cisco Systems Inc",
       :machine_type           => nil,
       :model                  => nil,
       :serial_number          => nil,
       :field_replaceable_unit => nil,
-      :raw_power_state        => "on",
+      :raw_power_state        => "",
       :vendor                 => nil,
+      :health_state           => "Valid",
+      :power_state            => ""
     )
 
     expect(server.ext_management_system).to eq(ems)
   end
 
   def assert_specific_physical_server_details
-    server_ems_ref = "5ed10e4a6176752d31a406fc"
+    server_ems_ref = "614cec406176752d35abe2dc"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     asset_detail = AssetDetail.find_by!(:resource => server)
 
     expect(asset_detail).to have_attributes(
-      :description => "UCS 6332-16UP 1RU FI/No PSU/24 QSFP+ 16UP/4x40G Lic/8xUP Lic",
+      :description => "UCS 210c M6 Compute Node w/o CPU,  Memory, Storage, Mezz",
       :contact => nil,
-      :location => "IBM TUCSON LAB 11619032-1, 9000 S RITA RD, 85744-0002, 85744-0002, TUCSON, US",
+      :location => "3800 ZANKER ROAD SAN JOSE US 95134 CA",
       :room => "2",
       :rack_name => nil,
       :lowest_rack_unit => nil,
       :resource_type => "PhysicalServer",
-      :product_name => "CLABS000D000F001-2-2",
-      :machine_type => "CiscoUcsFI",
-      :model => "UCSB-B200-M5",
-      :serial_number => "FLM23490685",
+      :product_name => "CISCO SYSTEMS INC FOR US INTERNAL DEMO EVAL ONLY",
+      :machine_type => "CiscoUcsServer",
+      :model => "UCSX-210C-M6",
+      :serial_number => "FCH250671HR",
       :field_replaceable_unit => nil,
       :part_number => nil,
       :location_led_ems_ref => nil,
@@ -83,7 +112,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
   end
 
   def assert_specific_physical_server_hardwares
-    server_ems_ref = "5ed10e4a6176752d31a406fc"
+    server_ems_ref = "614cec406176752d35abe2dc"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     hardware = server.hardware
 
@@ -92,13 +121,14 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
       :config_version => nil,
       :guest_os => nil,
       :cpu_sockets => 1,
-      :bios => nil, :bios_location => nil,
+      :bios => nil,
+      :bios_location => nil,
       :time_sync => nil,
       :annotation => nil,
       :vm_or_template_id => nil,
-      :memory_mb => 393216,
+      :memory_mb => 512,
       :host_id => nil,
-      :cpu_speed => 100,
+      :cpu_speed => 145,
       :cpu_type => nil,
       :size_on_disk => nil,
       :manufacturer => "",
@@ -107,7 +137,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
       :cpu_usage => nil,
       :memory_usage => nil,
       :cpu_cores_per_socket => nil,
-      :cpu_total_cores => 40,
+      :cpu_total_cores => 56,
       :vmotion_enabled => nil,
       :disk_free_space => nil,
       :disk_capacity => nil,
@@ -136,7 +166,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     expect(firmware).to have_attributes(
       :name            => "BIOS",
       :build           => "BIOS",
-      :version         => "B210M6.4.1.5a.0.0324212030",
+      :version         => "X210M6.5.0.1d.0.0816211754",
       :release_date    => nil,
       :resource_type   => "Hardware",
       :guest_device_id => nil,
@@ -180,11 +210,15 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
   end
 
   def assert_specific_physical_chassis
-    chassis_ems_ref = "5ed10e4b6176752d31a40743"
+    chassis_ems_ref = "614ceb786176752d35ab8b41"
     chassis = get_physical_chassis_from_ems_ref(chassis_ems_ref)
 
     expect(chassis).to have_attributes(
      :uid_ems                      => nil,
+     :ems_ref                      => chassis_ems_ref,
+     :physical_rack_id             => nil,
+     :name                         => "LAB02D02F01-1",
+     :vendor                       => nil,
      :type                         => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalChassis",
      :health_state                 => "Valid",
      :overall_health_state         => nil,
@@ -193,20 +227,19 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
      :fan_slot_count               => nil,
      :blade_slot_count             => nil,
      :powersupply_slot_count       => nil,
-     :parent_physical_chassis_id   => nil,
      )
 
     expect(chassis.ext_management_system).to eq(ems)
   end
 
   def assert_specific_physical_chassis_details
-    chassis_ems_ref = "5ed10e4b6176752d31a40743"
+    chassis_ems_ref = "614ceb786176752d35ab8b41"
     chassis = get_physical_chassis_from_ems_ref(chassis_ems_ref)
     asset_detail = AssetDetail.find_by!(:resource => chassis)
 
     expect(asset_detail).to have_attributes(
-     :description            => "UCS 6332-16UP 1RU FI/No PSU/24 QSFP+ 16UP/4x40G Lic/8xUP Lic",
-     :location               => "IBM TUCSON LAB 11619032-1, 9000 S RITA RD, 85744-0002, 85744-0002, TUCSON, US",
+     :description            => "UCS Fabric Interconnect 6454",
+     :location               => "CISCO SYSTEMS INC, 3800 ZANKER ROAD, 95134, 95134, SAN JOSE, US",
      :room                   => nil,
      :contact                => nil,
      :rack_name              => nil,
@@ -215,13 +248,37 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
      :product_name           => nil,
      :manufacturer           => nil,
      :machine_type           => nil,
-     :model                  => "UCSB-5108-AC2",
-     :serial_number          => "FOX2337P25E",
+     :model                  => "UCSX-9508",
+     :serial_number          => "FOX2510P5HJ",
      :field_replaceable_unit => nil,
-     :part_number            => "68-5091-06",
+     :part_number            => "68-6847-03  ",
      :location_led_ems_ref   => nil,
-     :location_led_state     => nil,
+     :location_led_state     => "off",
      )
+  end
+
+  def assert_specific_physical_switch
+    switch_uid_ems = "614ce2a16176752d35a7ec96"
+    switch = get_physical_switch_from_uid_ems(switch_uid_ems)
+
+    expect(server).to have_attributes(
+      :name               => "switch-FDO244106VJ",
+      :ports => nil,
+      :uid_ems => switch_uid_ems,
+      :allow_promiscuous => nil,
+      :forged_transmits => nil,
+      :mac_changes => nil,
+      mtu => nil,
+      :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch",
+      :health_state => "Warning",
+      :power_state => nil
+    )
+
+    expect(server.ext_management_system).to eq(ems)
+  end
+
+  def get_physical_switch_from_uid_ems(uid_ems)
+    PhysicalSwitch.find_by(:uid_ems => uid_ems)
   end
 
   def get_physical_server_from_ems_ref(ems_ref)
@@ -231,6 +288,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
   def get_physical_chassis_from_ems_ref(ems_ref)
     PhysicalChassis.find_by(:ems_ref => ems_ref)
   end
+
 
 end
 
