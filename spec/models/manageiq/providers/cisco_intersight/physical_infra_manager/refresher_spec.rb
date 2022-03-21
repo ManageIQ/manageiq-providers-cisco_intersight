@@ -29,8 +29,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         assert_specific_physical_switch_details
         assert_specific_physical_switch_hardwares
         assert_specific_physical_switch_firmwares
-        # assert_specific_physical_switch_network_ports
-        # assert_specific_physical_switch_networks
+        assert_specific_physical_switch_network_ports
+        assert_specific_physical_switch_networks
       end
     end
   end
@@ -119,43 +119,43 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     hardware = server.hardware
 
     expect(hardware).to have_attributes(
-      :virtual_hw_version => nil,
-      :config_version => nil,
-      :guest_os => nil,
-      :cpu_sockets => 1,
-      :bios => nil,
-      :bios_location => nil,
-      :time_sync => nil,
-      :annotation => nil,
-      :vm_or_template_id => nil,
-      :memory_mb => 512,
-      :host_id => nil,
-      :cpu_speed => 145,
-      :cpu_type => nil,
-      :size_on_disk => nil,
-      :manufacturer => "",
-      :model => "",
-      :number_of_nics => nil,
-      :cpu_usage => nil,
-      :memory_usage => nil,
+      :virtual_hw_version   => nil,
+      :config_version       => nil,
+      :guest_os             => nil,
+      :cpu_sockets          => 1,
+      :bios                 => nil,
+      :bios_location        => nil,
+      :time_sync            => nil,
+      :annotation           => nil,
+      :vm_or_template_id    => nil,
+      :memory_mb            => 512,
+      :host_id              => nil,
+      :cpu_speed            => 145,
+      :cpu_type             => nil,
+      :size_on_disk         => nil,
+      :manufacturer         => "",
+      :model                => "",
+      :number_of_nics       => nil,
+      :cpu_usage            => nil,
+      :memory_usage         => nil,
       :cpu_cores_per_socket => nil,
-      :cpu_total_cores => 56,
-      :vmotion_enabled => nil,
-      :disk_free_space => nil,
-      :disk_capacity => nil,
-      :guest_os_full_name => nil,
-      :memory_console => nil,
-      :bitness => nil,
-      :virtualization_type => nil,
-      :root_device_type => nil,
-      :disk_size_minimum => nil,
-      :memory_mb_minimum => nil,
-      :introspected => nil,
-      :provision_state => nil,
-      :serial_number => nil,
-      :switch_id => nil,
-      :firmware_type => nil,
-      :canister_id => nil
+      :cpu_total_cores      => 56,
+      :vmotion_enabled      => nil,
+      :disk_free_space      => nil,
+      :disk_capacity        => nil,
+      :guest_os_full_name   => nil,
+      :memory_console       => nil,
+      :bitness              => nil,
+      :virtualization_type  => nil,
+      :root_device_type     => nil,
+      :disk_size_minimum    => nil,
+      :memory_mb_minimum    => nil,
+      :introspected         => nil,
+      :provision_state      => nil,
+      :serial_number        => nil,
+      :switch_id            => nil,
+      :firmware_type        => nil,
+      :canister_id          => nil
     )
 
   end
@@ -216,19 +216,19 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     chassis = get_physical_chassis_from_ems_ref(chassis_ems_ref)
 
     expect(chassis).to have_attributes(
-     :uid_ems                      => nil,
-     :ems_ref                      => chassis_ems_ref,
-     :physical_rack_id             => nil,
-     :name                         => "LAB02D02F01-1",
-     :vendor                       => nil,
-     :type                         => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalChassis",
-     :health_state                 => "Valid",
-     :overall_health_state         => nil,
-     :management_module_slot_count => nil,
-     :switch_slot_count            => nil,
-     :fan_slot_count               => nil,
-     :blade_slot_count             => nil,
-     :powersupply_slot_count       => nil,
+      :uid_ems                      => nil,
+      :ems_ref                      => chassis_ems_ref,
+      :physical_rack_id             => nil,
+      :name                         => "LAB02D02F01-1",
+      :vendor                       => nil,
+      :type                         => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalChassis",
+      :health_state                 => "Valid",
+      :overall_health_state         => nil,
+      :management_module_slot_count => nil,
+      :switch_slot_count            => nil,
+      :fan_slot_count               => nil,
+      :blade_slot_count             => nil,
+      :powersupply_slot_count       => nil,
      )
 
     expect(chassis.ext_management_system).to eq(ems)
@@ -240,22 +240,22 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     asset_detail = AssetDetail.find_by!(:resource => chassis)
 
     expect(asset_detail).to have_attributes(
-     :description            => "UCS Fabric Interconnect 6454",
-     :location               => "CISCO SYSTEMS INC, 3800 ZANKER ROAD, 95134, 95134, SAN JOSE, US",
-     :room                   => nil,
-     :contact                => nil,
-     :rack_name              => nil,
-     :lowest_rack_unit       => nil,
-     :resource_type          => "PhysicalChassis",
-     :product_name           => nil,
-     :manufacturer           => nil,
-     :machine_type           => nil,
-     :model                  => "UCSX-9508",
-     :serial_number          => "FOX2510P5HJ",
-     :field_replaceable_unit => nil,
-     :part_number            => "68-6847-03  ",
-     :location_led_ems_ref   => nil,
-     :location_led_state     => "off",
+      :description            => "UCS Fabric Interconnect 6454",
+      :location               => "CISCO SYSTEMS INC, 3800 ZANKER ROAD, 95134, 95134, SAN JOSE, US",
+      :room                   => nil,
+      :contact                => nil,
+      :rack_name              => nil,
+      :lowest_rack_unit       => nil,
+      :resource_type          => "PhysicalChassis",
+      :product_name           => nil,
+      :manufacturer           => nil,
+      :machine_type           => nil,
+      :model                  => "UCSX-9508",
+      :serial_number          => "FOX2510P5HJ",
+      :field_replaceable_unit => nil,
+      :part_number            => "68-6847-03  ",
+      :location_led_ems_ref   => nil,
+      :location_led_state     => "off",
      )
   end
 
@@ -364,6 +364,52 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     )
   end
 
+  def assert_specific_physical_switch_network_ports
+    switch_uid_ems = "614ce25c4630312d42bf1d67"
+    physical_switch_network_port = get_switch_network_port_from_port_uid(switch_uid_ems)
+
+    expect(physical_switch_network_port).to have_attributes(
+      :ems_ref            => nil,
+      :uid_ems            => switch_uid_ems,
+      :type               => nil,
+      :port_name          => "switch-FDO244106VJ/slot-1/switch-ether/port-42",
+      :port_type          => "ethernet",
+      :peer_mac_address   => nil,
+      :vlan_key           => nil,
+      :mac_address        => "00:3A:9C:DA:78:F1",
+      :port_index         => 42,
+      :vlan_enabled       => nil,
+      :guest_device_id    => nil,
+      :switch_id          => 7,
+      :connected_port_uid => switch_uid_ems
+    )
+  end
+
+  def assert_specific_physical_switch_networks
+    switch_uid_ems = "614ce2a16176752d35a7ec96"
+    switch = get_physical_switch_from_uid_ems(switch_uid_ems)
+    hardware = switch.hardware
+    network = Network.find_by(:hardware => hardware)
+
+    expect(physical_switch_network_port).to have_attributes(
+      :hardware_id     => 99,
+      :device_id       => nil,
+      :description     => nil,
+      :guid            => nil,
+      :dhcp_enabled    => nil,
+      :ipaddress       => "100.66.11.142",
+      :subnet_mask     => "255.255.255.192",
+      :lease_obtained  => nil,
+      :lease_expires   => nil,
+      :default_gateway => "100.66.11.129",
+      :dhcp_server     => nil,
+      :dns_server      => nil,
+      :hostname        => nil,
+      :domain          => nil,
+      :ipv6address     => ""
+    )
+  end
+
   # Helper methods
 
   def get_physical_switch_from_uid_ems(uid_ems)
@@ -378,6 +424,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     PhysicalChassis.find_by(:ems_ref => ems_ref)
   end
 
-
+  def get_switch_network_port_from_uid_ems(uid_ems)
+    PhysicalNetworkPort.find_by(:connected_port_uid => uid_ems)
+  end
 end
 

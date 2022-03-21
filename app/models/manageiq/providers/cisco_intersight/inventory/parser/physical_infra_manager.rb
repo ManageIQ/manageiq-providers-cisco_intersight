@@ -357,12 +357,13 @@ module ManageIQ::Providers::CiscoIntersight
             physical_port = collector.get_ether_physical_port_by_moid(physical_port_reference.moid)
             physical_switch = persister.physical_switches.lazy_find(network_element.moid)
             persister.physical_switch_network_ports.build(
-              :physical_switch => physical_switch,
-              :uid_ems         => physical_port.moid,
-              :port_name       => physical_port.dn,
-              :port_type       => "ethernet",
-              :mac_address     => physical_port.mac_address,
-              :port_index      => physical_port.port_id
+              :physical_switch    => physical_switch,
+              :uid_ems            => physical_port.moid,
+              :port_name          => physical_port.dn,
+              :port_type          => "ethernet",
+              :mac_address        => physical_port.mac_address,
+              :port_index         => physical_port.port_id,
+              :connected_port_uid => physical_port.moid,
             )
           end
         end
