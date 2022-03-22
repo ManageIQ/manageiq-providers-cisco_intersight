@@ -30,27 +30,27 @@ module ManageIQ::Providers::CiscoIntersight
 
     def device_contract_informations
       # Returns an array with objects of type DeviceContractInformation
-      @device_contract_informations = asset_api.get_asset_device_contract_information_list.results
+      @device_contract_informations ||= asset_api.get_asset_device_contract_information_list.results
     end
 
     def physical_racks
-      @physical_racks = compute_api.get_compute_rack_unit_list.results
+      @physical_racks ||= compute_api.get_compute_rack_unit_list.results
     end
 
     def firmware_firmware_summaries
-      @firmware_firmware_summaries = firmware_api.get_firmware_firmware_summary_list.results
+      @firmware_firmware_summaries ||= firmware_api.get_firmware_firmware_summary_list.results
     end
 
     def physical_servers
-      @physical_servers = compute_api.get_compute_physical_summary_list.results
+      @physical_servers ||= compute_api.get_compute_physical_summary_list.results
     end
 
     def physical_chassis
-      @physical_chassis = equipment_api.get_equipment_chassis_list.results
+      @physical_chassis ||= equipment_api.get_equipment_chassis_list.results
     end
 
     def network_elements
-      @network_elements = network_api.get_network_element_list.results
+      @network_elements ||= network_api.get_network_element_list.results
     end
 
     def get_device_contract_information_from_device_moid(registered_device_moid)
@@ -100,43 +100,43 @@ module ManageIQ::Providers::CiscoIntersight
 
     # API endpoint declaration
     def firmware_api
-      @firmware_api = IntersightClient::FirmwareApi.new
+      @firmware_api ||= IntersightClient::FirmwareApi.new
     end
 
     def compute_api
-      @compute_api = IntersightClient::ComputeApi.new
+      @compute_api ||= IntersightClient::ComputeApi.new
     end
 
     def equipment_api
-      @equipment_api = IntersightClient::EquipmentApi.new
+      @equipment_api ||= IntersightClient::EquipmentApi.new
     end
 
     def asset_api
-      @asset_api = IntersightClient::AssetApi.new
+      @asset_api ||= IntersightClient::AssetApi.new
     end
 
     def adapter_api
-      @adapter_api = IntersightClient::AdapterApi.new
+      @adapter_api ||= IntersightClient::AdapterApi.new
     end
 
     def management_api
-      @management_api = IntersightClient::ManagementApi.new
+      @management_api ||= IntersightClient::ManagementApi.new
     end
 
     def storage_api
-      @storage_api = IntersightClient::StorageApi.new
+      @storage_api ||= IntersightClient::StorageApi.new
     end
 
     def network_api
-      @network_api = IntersightClient::NetworkApi.new
+      @network_api ||= IntersightClient::NetworkApi.new
     end
 
     def port_api
-      @port_api = IntersightClient::PortApi.new
+      @port_api ||= IntersightClient::PortApi.new
     end
 
     def ether_api
-      @ether_api = IntersightClient::EtherApi.new
+      @ether_api ||= IntersightClient::EtherApi.new
     end
 
     # API key and keyid configuration
