@@ -13,12 +13,8 @@ module ManageIQ::Providers::CiscoIntersight
     def physical_servers
       # Parses physical servers and its details
       collector.physical_servers.each do |server|
-        # Obtain data about chassis and racks if they're wired to the server
-        # Setting value of chassis and rack to nil for now
-        physical_chassis = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
-        physical_rack = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
         # build collection physical_servers
-        physical_server = build_physical_servers(server, physical_rack, physical_chassis)
+        physical_server = build_physical_servers(server)
         # build collection physical_server_details
         build_physical_server_details(physical_server, server)
         # build collection physical_server_computer_systems
@@ -44,6 +40,9 @@ module ManageIQ::Providers::CiscoIntersight
           # build collection physical_server_storage_adapters
           build_physical_server_storage_adapters(hardware, storage_controller_reference)
         end
+
+        physical_server_management_device = build_physical_server_management_devices(hardware, server)
+        build_physical_server_networks(physical_server_management_device, server)
 
         firmware_firmware_summary = collector.get_firmware_firmware_summary_from_server_moid(server.moid)
         next unless firmware_firmware_summary
@@ -146,7 +145,7 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_servers(server, physical_rack, physical_chassis)
+    def build_physical_servers(server)
       # Builds out collection physical_servers
       # Object types:
       #   - server - ComputePhysicalSummary, object obtained by intersight client
@@ -154,6 +153,10 @@ module ManageIQ::Providers::CiscoIntersight
       #   - physical_chassis - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalChassis
       # Returns:
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServers
+
+      # Obtain data about chassis and racks if they're wired to the server
+      physical_rack = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
+      physical_chassis = persister.physical_chassis.lazy_find(server.equipment_chassis.moid) if server.equipment_chassis
       registered_device_moid = get_registered_device_moid(server)
       device_registration = collector.get_asset_device_registration_by_moid(registered_device_moid)
       persister.physical_servers.build(
@@ -161,7 +164,7 @@ module ManageIQ::Providers::CiscoIntersight
         :health_state     => get_health_state(server), # health_state obtained through atribute s.alarm_summary
         :hostname         => device_registration.device_hostname[0], # I assume one registered device manages one (and only one) compute element
         :name             => server.name,
-        :physical_chassis => physical_chassis, # nil for now
+        :physical_chassis => physical_chassis,
         :physical_rack    => physical_rack, # nil for now
         :power_state      => server.admin_power_state,
         :raw_power_state  => server.admin_power_state,
@@ -267,6 +270,36 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
+    def build_physical_server_management_devices(physical_server_hardware, server)
+      # Builds out collection physical_server_details
+      # Object types:
+      #   - physical_server_hardware - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerHardwares
+      #   - server - ComputePhysicalSummary, object obtained by intersight client
+      # Returns:
+      #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerManagementDevices
+      persister.physical_server_management_devices.build(
+        :hardware    => physical_server_hardware,
+        :address     => server.mgmt_ip_address,
+        :device_type => 'management'
+      )
+    end
+
+    def build_physical_server_networks(physical_server_management_device, server)
+      # Builds out collection physical_server_details
+      # Object types:
+      #   - physical_server_hardware - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerManagementDevices
+      #   - server - ComputePhysicalSummary, object obtained by intersight client
+      # Returns:
+      #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerNetworks
+
+      # There's still missing data for ipv4address
+      persister.physical_server_networks.build(
+        :guest_device => physical_server_management_device,
+        :ipaddress    => server.mgmt_ip_address,
+        :ipv6address  => "" # So far, there hasn't been any data regarding ipv6 address for physical servers
+      )
+    end
+
     def build_physical_switches(network_element)
       # Builds out collection physical_switches
       # Object types:
@@ -363,12 +396,13 @@ module ManageIQ::Providers::CiscoIntersight
               :port_type          => "ethernet",
               :mac_address        => physical_port.mac_address,
               :port_index         => physical_port.port_id,
-              :connected_port_uid => physical_port.moid,
+              :connected_port_uid => physical_port.moid
             )
           end
         end
       end
     end
+
 
     # Helper methods to the ones that directly build inventory collections
 

@@ -21,11 +21,8 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
       add_collection(physical_infra, name)
 
       add_physical_network_ports
-
       add_physical_server_networks
-
       add_physical_switch_networks
-
       add_physical_server_management_devices
     end
   end
@@ -53,10 +50,9 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
   def add_physical_server_management_devices
     add_collection(physical_infra, :physical_server_management_devices) do |builder|
       builder.add_properties(
-        :model_class                  => ::Network,
-        :manager_ref                  => %i[guest_device ipaddress ipv6address],
-        :manager_ref_allowed_nil      => %i[ipaddress ipv6address],
-        :parent_inventory_collections => [:physical_server]
+        :model_class                  => ::GuestDevice,
+        :manager_ref                  => %i[device_type hardware],
+        :parent_inventory_collections => %i[physical_servers]
       )
     end
   end
@@ -67,7 +63,7 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
         :model_class                  => ::Network,
         :manager_ref                  => %i[guest_device ipaddress ipv6address],
         :manager_ref_allowed_nil      => %i[ipaddress ipv6address],
-        :parent_inventory_collections => %i[physical_server]
+        :parent_inventory_collections => %i[physical_server_management_devices]
       )
     end
   end
