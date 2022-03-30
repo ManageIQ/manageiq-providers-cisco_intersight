@@ -3,7 +3,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     def collect
 
-      # Establish conneciton. Connection in inside ManagerMixin sets API key and keyid-d
+      # Establish connection. Connection is inside ManagerMixin which sets API key and keyid-d
       connection
 
       # Initialize API endpoints
