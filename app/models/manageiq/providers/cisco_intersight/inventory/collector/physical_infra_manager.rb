@@ -20,6 +20,7 @@ module ManageIQ::Providers::CiscoIntersight
 
       # Initialize the variables that may be memoized for the duration of the refresh run
       physical_servers
+      decomissioned_servers
       physical_racks
       firmware_firmware_summaries
       network_elements
@@ -76,6 +77,15 @@ module ManageIQ::Providers::CiscoIntersight
       else
         get_compute_rack_unit_by_moid(source_object_moid)
       end
+    end
+    
+    def decomissioned_servers
+      opts = { :filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')" }
+      get_search_api.get_search_search_item_list(opts).results
+    end
+
+    def compute_blades
+      get_compute_api.get_compute_blade_list.results
     end
 
     delegate :get_ether_physical_port_by_moid, :to => :ether_api
@@ -141,6 +151,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def ether_api
       @ether_api ||= IntersightClient::EtherApi.new
+    end
+
+    def get_search_api
+      IntersightClient::SearchApi.new
     end
 
     # API key and keyid configuration

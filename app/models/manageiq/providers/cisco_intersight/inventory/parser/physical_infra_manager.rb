@@ -6,6 +6,10 @@ module ManageIQ::Providers::CiscoIntersight
       physical_racks
       physical_chassis
       physical_switches
+
+      decomissioned_servers
+      decomissioned_server_details
+      decomissioned_hardwares
     end
 
     # Methods that are executed during refresh call
@@ -90,6 +94,42 @@ module ManageIQ::Providers::CiscoIntersight
         build_physical_switch_firmwares(hardware, ucsm_running_firmware)
       end
     end
+
+    def decomissioned_servers
+      collector.decomissioned_servers.each do |s|
+        server = persister.physical_servers.build(
+          :ems_ref         => s.moid,
+          :power_state     => "decomissioned",
+          :raw_power_state => "decomissioned",
+          :type            => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer"
+        )
+
+        persister.physical_server_computer_systems.build(
+          :managed_entity => server
+        )
+      end
+    end
+
+    def decomissioned_server_details
+      collector.decomissioned_servers.each do |s|
+        server = persister.physical_servers.lazy_find(s.moid)
+        persister.physical_server_details.build(
+          :resource      => server,
+        )
+      end
+    end
+
+    def decomissioned_hardwares
+      collector.decomissioned_servers.each do |s|
+        server = persister.physical_servers.lazy_find(s.moid)
+        computer = persister.physical_server_computer_systems.lazy_find(server)
+        # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
+        hardware = persister.physical_server_hardwares.build(
+          :computer_system => computer,
+        )
+      end
+    end
+
 
     private
 
