@@ -14,7 +14,7 @@ module ManageIQ::Providers::CiscoIntersight
       # Parses physical servers and its details
       collector.physical_servers.each do |server|
         # build collection physical_servers
-        physical_server = build_physical_servers(server)
+        physical_server = build_physical_server(server)
         # build collection physical_server_details
         build_physical_server_details(physical_server, server)
         # build collection physical_server_computer_systems
@@ -145,7 +145,7 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_servers(server)
+    def build_physical_server(server)
       # Builds out collection physical_servers
       # Object types:
       #   - server - ComputePhysicalSummary, object obtained by intersight client
