@@ -18,7 +18,7 @@ module ManageIQ::Providers::CiscoIntersight
         # build collection physical_server_details
         build_physical_server_details(physical_server, server)
         # build collection physical_server_computer_systems
-        physical_server_computer_system = build_physical_server_computer_systems(physical_server)
+        physical_server_computer_system = build_physical_server_computer_system(physical_server)
 
         # Since Intersight's source object is only consolidated view of either object ComputePhysicalSummary of ComputeRackUnit,
         # source object has to be obtained. I store it onto source_object
@@ -196,7 +196,7 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_server_computer_systems(physical_server)
+    def build_physical_server_computer_system(physical_server)
       # Builds out collection physical_server_computer_systems
       # Object types:
       #   - physical_server - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServers
