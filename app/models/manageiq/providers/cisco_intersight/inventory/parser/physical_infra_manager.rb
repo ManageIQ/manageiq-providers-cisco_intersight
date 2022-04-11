@@ -168,8 +168,7 @@ module ManageIQ::Providers::CiscoIntersight
         :physical_rack    => physical_rack, # nil for now
         :power_state      => server.admin_power_state,
         :raw_power_state  => server.admin_power_state,
-        :manufacturer     => server.vendor,
-        :type             => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer"
+        :manufacturer     => server.vendor
       )
     end
 
@@ -310,8 +309,7 @@ module ManageIQ::Providers::CiscoIntersight
         :name         => network_element.dn,
         :uid_ems      => network_element.moid,
         :switch_uuid  => network_element.moid,
-        :health_state => get_health_state(network_element),
-        :type         => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch"
+        :health_state => get_health_state(network_element)
       )
     end
 
