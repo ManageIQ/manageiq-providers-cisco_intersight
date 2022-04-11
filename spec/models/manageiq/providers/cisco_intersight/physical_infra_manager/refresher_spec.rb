@@ -240,7 +240,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     asset_detail = AssetDetail.find_by!(:resource => chassis)
 
     expect(asset_detail).to(have_attributes(
-                              :description            => "UCS Fabric Interconnect 6454",
+                              :description            => "UCS 9508 Chassis Configured",
                               :location               => "3800 ZANKER ROAD SAN JOSE US 95134 CA",
                               :room                   => nil,
                               :contact                => nil,
@@ -249,7 +249,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :resource_type          => "PhysicalChassis",
                               :product_name           => "CISCO SYSTEMS INC FOR US INTERNAL DEMO EVAL ONLY",
                               :manufacturer           => nil,
-                              :machine_type           => "CiscoUcsFI",
+                              :machine_type           => "CiscoUcsChassis",
                               :model                  => "UCSX-9508",
                               :serial_number          => "FOX2510P5HJ",
                               :field_replaceable_unit => nil,
@@ -284,7 +284,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     asset_detail = AssetDetail.find_by!(:resource => switch)
 
     expect(asset_detail).to(have_attributes(
-                              :description            => "UCS Fabric Interconnect 6454",
+                              :description            => "UCS 9508 Chassis Configured",
                               :location               => "3800 ZANKER ROAD SAN JOSE US 95134 CA",
                               :room                   => nil,
                               :contact                => nil,
@@ -293,7 +293,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :resource_type          => "Switch",
                               :product_name           => "CISCO SYSTEMS INC FOR US INTERNAL DEMO EVAL ONLY",
                               :manufacturer           => "Cisco Systems, Inc.",
-                              :machine_type           => "CiscoUcsFI",
+                              :machine_type           => "CiscoUcsChassis",
                               :model                  => "UCS-FI-6454",
                               :serial_number          => "FDO244106VJ",
                               :field_replaceable_unit => nil,

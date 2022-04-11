@@ -20,30 +20,20 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
     ].each do |name|
       add_collection(physical_infra, name)
 
-      add_physical_network_ports
+      add_physical_switch_network_ports
       add_physical_server_networks
       add_physical_switch_networks
       add_physical_server_management_devices
     end
   end
 
-  def add_physical_network_ports
-    %i[physical_server
-       physical_switch].each do |network_port_assoc|
-
-      add_collection(physical_infra, "#{network_port_assoc}_network_ports".to_sym) do |builder|
-        builder.add_properties(
-          :model_class                  => ::PhysicalNetworkPort,
-          :parent_inventory_collections => [network_port_assoc.to_s.pluralize.to_sym]
-        )
-
-        manager_ref = case network_port_assoc
-                      when :physical_server then %i[port_type uid_ems]
-                      when :physical_switch then %i[port_type port_name physical_switch]
-                      else []
-                      end
-        builder.add_properties(:manager_ref => manager_ref)
-      end
+  def add_physical_switch_network_ports
+    add_collection(physical_infra, :physical_switch_network_ports) do |builder|
+      builder.add_properties(
+        :model_class                  => ::PhysicalNetworkPort,
+        :manager_ref                  => %i[port_type port_name physical_switch],
+        :parent_inventory_collections => %i[physical_switches]
+      )
     end
   end
 

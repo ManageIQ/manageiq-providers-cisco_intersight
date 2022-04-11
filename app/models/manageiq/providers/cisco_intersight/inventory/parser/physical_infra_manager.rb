@@ -14,11 +14,11 @@ module ManageIQ::Providers::CiscoIntersight
       # Parses physical servers and its details
       collector.physical_servers.each do |server|
         # build collection physical_servers
-        physical_server = build_physical_servers(server)
+        physical_server = build_physical_server(server)
         # build collection physical_server_details
         build_physical_server_details(physical_server, server)
         # build collection physical_server_computer_systems
-        physical_server_computer_system = build_physical_server_computer_systems(physical_server)
+        physical_server_computer_system = build_physical_server_computer_system(physical_server)
 
         # Since Intersight's source object is only consolidated view of either object ComputePhysicalSummary of ComputeRackUnit,
         # source object has to be obtained. I store it onto source_object
@@ -44,7 +44,7 @@ module ManageIQ::Providers::CiscoIntersight
         physical_server_management_device = build_physical_server_management_devices(hardware, server)
         build_physical_server_networks(physical_server_management_device, server)
 
-        firmware_firmware_summary = collector.get_firmware_firmware_summary_from_server_moid(server.moid)
+        firmware_firmware_summary = collector.firmware_firmware_summary_by_moid[server.moid]
         next unless firmware_firmware_summary
 
         firmware_firmware_summary.components_fw_inventory.each do |component_fw_inventory|
@@ -116,7 +116,7 @@ module ManageIQ::Providers::CiscoIntersight
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssetDetails
       physical_chassis = persister.physical_chassis.lazy_find(chassis.moid)
       registered_device_moid = get_registered_device_moid(chassis)
-      device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
+      device_contract_information_unit = collector.device_contract_informations_by_moid[registered_device_moid]
       persister.physical_chassis_details.build(
         :description        => get_product_description(device_contract_information_unit),
         :location           => format_location(device_contract_information_unit),
@@ -145,7 +145,7 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_servers(server)
+    def build_physical_server(server)
       # Builds out collection physical_servers
       # Object types:
       #   - server - ComputePhysicalSummary, object obtained by intersight client
@@ -168,8 +168,7 @@ module ManageIQ::Providers::CiscoIntersight
         :physical_rack    => physical_rack, # nil for now
         :power_state      => server.admin_power_state,
         :raw_power_state  => server.admin_power_state,
-        :manufacturer     => server.vendor,
-        :type             => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer"
+        :manufacturer     => server.vendor
       )
     end
 
@@ -182,7 +181,7 @@ module ManageIQ::Providers::CiscoIntersight
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssetDetails
       registered_device_moid = get_registered_device_moid(server)
       source_object = collector.get_source_object_from_physical_server(server)
-      device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
+      device_contract_information_unit = collector.device_contract_informations_by_moid[registered_device_moid]
       persister.physical_server_details.build(
         :description        => get_product_description(device_contract_information_unit),
         :location           => format_location(device_contract_information_unit),
@@ -196,7 +195,7 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_server_computer_systems(physical_server)
+    def build_physical_server_computer_system(physical_server)
       # Builds out collection physical_server_computer_systems
       # Object types:
       #   - physical_server - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServers
@@ -310,8 +309,7 @@ module ManageIQ::Providers::CiscoIntersight
         :name         => network_element.dn,
         :uid_ems      => network_element.moid,
         :switch_uuid  => network_element.moid,
-        :health_state => get_health_state(network_element),
-        :type         => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch"
+        :health_state => get_health_state(network_element)
       )
     end
 
@@ -323,7 +321,7 @@ module ManageIQ::Providers::CiscoIntersight
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssetDetails
       registered_device_moid = get_registered_device_moid(network_element)
       switch = persister.physical_switches.lazy_find(network_element.moid)
-      device_contract_information_unit = collector.get_device_contract_information_from_device_moid(registered_device_moid)
+      device_contract_information_unit = collector.device_contract_informations_by_moid[registered_device_moid]
       persister.physical_switch_details.build(
         :description   => get_product_description(device_contract_information_unit),
         :location      => format_location(device_contract_information_unit),

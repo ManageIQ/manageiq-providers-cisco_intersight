@@ -53,12 +53,16 @@ module ManageIQ::Providers::CiscoIntersight
       @network_elements ||= network_api.get_network_element_list.results
     end
 
-    def get_device_contract_information_from_device_moid(registered_device_moid)
-      device_contract_informations.find { |c| c.registered_device.moid == registered_device_moid }
+    def device_contract_informations_by_moid
+      @device_contract_informations_by_moid ||= device_contract_informations.index_by do |dev_contract_info|
+        dev_contract_info.registered_device.moid
+      end
     end
 
-    def get_firmware_firmware_summary_from_server_moid(server_moid)
-      firmware_firmware_summaries.find { |c| c.server.moid == server_moid}
+    def firmware_firmware_summary_by_moid
+      @firmware_firmware_summary_by_moid ||= firmware_firmware_summaries.index_by do
+        |firmware_firmware_summary| firmware_firmware_summary.server.moid
+      end
     end
 
     def get_source_object_from_physical_server(physical_summary)
