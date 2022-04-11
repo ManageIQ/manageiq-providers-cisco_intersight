@@ -17,24 +17,14 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
       physical_switch_details
       physical_switch_hardwares
       physical_switch_firmwares
+      physical_switch_network_ports
     ].each do |name|
       add_collection(physical_infra, name)
-
-      add_physical_switch_network_ports
-      add_physical_server_networks
-      add_physical_switch_networks
-      add_physical_server_management_devices
     end
-  end
 
-  def add_physical_switch_network_ports
-    add_collection(physical_infra, :physical_switch_network_ports) do |builder|
-      builder.add_properties(
-        :model_class                  => ::PhysicalNetworkPort,
-        :manager_ref                  => %i[port_type port_name physical_switch],
-        :parent_inventory_collections => %i[physical_switches]
-      )
-    end
+    add_physical_server_networks
+    add_physical_switch_networks
+    add_physical_server_management_devices
   end
 
   def add_physical_server_management_devices
