@@ -54,8 +54,8 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def device_contract_informations_by_moid
-      @device_contract_informations_by_moid ||= device_contract_informations.index_by do
-        |dev_contract_info| dev_contract_info.registered_device.moid
+      @device_contract_informations_by_moid ||= device_contract_informations.index_by do |dev_contract_info|
+        dev_contract_info.registered_device.moid
       end
     end
 
