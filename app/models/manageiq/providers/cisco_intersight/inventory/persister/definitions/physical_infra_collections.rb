@@ -28,7 +28,7 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
   end
 
   def add_physical_switch_network_ports
-    add_collection(physical_infra, "physical_switch_network_ports".to_sym) do |builder|
+    add_collection(physical_infra, :physical_switch_network_ports) do |builder|
       builder.add_properties(
         :model_class                  => ::PhysicalNetworkPort,
         :manager_ref                  => %i[port_type port_name physical_switch],
