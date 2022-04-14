@@ -5,6 +5,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers
       decomissioned_servers
       physical_racks
+      physical_server_profiles
       firmware_firmware_summaries
       network_elements
       physical_chassis
@@ -40,6 +41,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def network_elements
       @network_elements ||= network_api.get_network_element_list.results
+    end
+
+    def physical_server_profiles
+      @physical_server_profiles ||= server_api.get_server_profile_list.results
     end
 
     def device_contract_informations_by_moid
@@ -140,6 +145,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def search_api
       @search_api ||= IntersightClient::SearchApi.new(api_client)
+    end
+
+    def server_api
+      @server_api ||= IntersightClient::ServerApi.new
     end
 
     # API key and keyid configuration
