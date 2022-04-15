@@ -1,7 +1,7 @@
 module ManageIQ::Providers::CiscoIntersight
   module PhysicalInfraManager::Operations::ServerProfileAssignment
     def assign_server(server_profile, options)
-      _log.info("Requesting server assignment on server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref})")
+      _log.info("Requesting server assignment on server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref}), server ID #{options[:server_id]}")
 
       with_provider_connection do |_client|
         server = PhysicalServer.find_by(:id => options[:server_id], :ems_id => id)
@@ -16,16 +16,16 @@ module ManageIQ::Providers::CiscoIntersight
 
         server_profile_updated = IntersightClient::ServerProfile.new(
           {
-            :assigned_server => {"Moid" => server.ems_ref, "ObjectType" => ems_server.source_object_type},
+            :assigned_server        => {"Moid" => server.ems_ref, "ObjectType" => ems_server.source_object_type},
             :server_assignment_mode => "Static",
-            :target_platform => nil,
-            :uuid_address_type => nil
+            :target_platform        => nil,
+            :uuid_address_type      => nil
           }
         )
 
         begin
           result = server_api.patch_server_profile(server_profile.ems_ref, server_profile_updated, {})
-          _log.info("Server profile assigned with server #{server.id} (ems_ref #{result.assigned_server.moid})")
+          _log.info("Server profile successfully assigned with server #{server.id} (ems_ref #{result.assigned_server.moid})")
         rescue IntersightClient::ApiError => e
           _log.error("Assign server failed for server profile (ems_ref #{server_profile.ems_ref}) server (ems_ref #{server.ems_ref})")
           raise MiqException::Error, "Assign server failed: #{e.response_body}"
@@ -34,13 +34,31 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def deploy_server(server_profile, _options)
-      # TODO
-      raise "not implemented"
+      simple_action(server_profile, "Deploy")
     end
 
     def unassign_server(server_profile, _options)
-      # TODO
-      raise "not implemented"
+      simple_action(server_profile, "Unassign")
+    end
+
+    private
+
+    def simple_action(server_profile, action)
+      _log.info("Requesting #{action} server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref})")
+
+      with_provider_connection do |_client|
+        server_api = IntersightClient::ServerApi.new
+
+        server_profile_updated = {"Action": action}
+
+        begin
+          result = server_api.patch_server_profile(server_profile.ems_ref, server_profile_updated, {})
+          _log.info("Server profile #{result.config_context.control_action} initiated successfully")
+        rescue IntersightClient::ApiError => e
+          _log.error("#{action} server failed for server profile (ems_ref #{server_profile.ems_ref})")
+          raise MiqException::Error, "#{action} server failed: #{e.response_body}"
+        end
+      end
     end
   end
 end
