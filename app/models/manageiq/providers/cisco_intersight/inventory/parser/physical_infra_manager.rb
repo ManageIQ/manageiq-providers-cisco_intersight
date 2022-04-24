@@ -23,10 +23,10 @@ module ManageIQ::Providers::CiscoIntersight
         # Since Intersight's source object is only consolidated view of either object ComputePhysicalSummary of ComputeRackUnit,
         # source object has to be obtained. I store it onto source_object
         source_object = collector.get_source_object_from_physical_server(server)
-        board_unit = collector.get_compute_board_by_moid(source_object.board.moid)
+        board_unit = collector.get_compute_board_by_moid(source_object&.board.moid) if source_object&.board
         # storage_controllers_list is only a list of references to the storage controllers, but not list of intersight's
         # storage controllers itself
-        storage_controllers_list = board_unit.storage_controllers
+        storage_controllers_list = board_unit.storage_controllers if board_unit
         # build collection physical_server_hardwares
         hardware = build_physical_server_hardwares(physical_server_computer_system, server)
 
@@ -36,10 +36,10 @@ module ManageIQ::Providers::CiscoIntersight
           build_physical_server_network_devices(hardware, adapter_unit)
         end
 
-        storage_controllers_list.each do |storage_controller_reference|
+        storage_controllers_list&.each do |storage_controller_reference|
           # build collection physical_server_storage_adapters
           build_physical_server_storage_adapters(hardware, storage_controller_reference)
-        end
+        end 
 
         physical_server_management_device = build_physical_server_management_devices(hardware, server)
         build_physical_server_networks(physical_server_management_device, server)
