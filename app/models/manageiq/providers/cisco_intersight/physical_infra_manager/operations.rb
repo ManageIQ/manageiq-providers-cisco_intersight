@@ -5,5 +5,6 @@ module ManageIQ::Providers::CiscoIntersight
     include_concern "Power"
     include_concern "Led"
     include_concern "Firmware"
+    include_concern "Lifecycle"
   end
 end
