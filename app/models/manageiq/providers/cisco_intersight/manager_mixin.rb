@@ -3,12 +3,24 @@ require 'intersight_client'
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
-  def connect(_options = {})
+  def connect(options = {})
     keyid = authentication_userid
     key = authentication_password
     raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
 
-    self.class.raw_connect(keyid, key)
+    api_client = self.class.raw_connect(keyid, key)
+
+    service = options.delete(:service)
+    if service
+      require "intersight_client/#{service.underscore}"
+
+      api_client_klass = "IntersightClient::#{service}".safe_constantize
+      raise ArgumentError, _("Invalid service") if api_client_klass.nil?
+
+      api_client_klass.new(api_client)
+    else
+      api_client
+    end
   end
 
   def disconnect(connection)
