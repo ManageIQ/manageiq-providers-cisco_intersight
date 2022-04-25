@@ -7,12 +7,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
     expect(described_class.description).to eq("Cisco Intersight")
   end
 
-  let(:ci_module) { class_double("IntersightClient").as_stubbed_const }
-
-  subject(:ems) do
-    FactoryBot.create(:ems_cisco_intersight_physical_infra, :auth)
-  end
-  let(:config_mock) { double }
+  let(:ems)         { FactoryBot.create(:ems_cisco_intersight_physical_infra, :auth) }
+  let(:config_mock) { double("IntersightClient::Configuration") }
 
   context ".raw_connect" do
     it "connects with key_id and secret key" do

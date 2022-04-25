@@ -29,19 +29,8 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   end
 
   def verify_credentials(_auth_type = nil, options = {})
-    with_provider_connection(options) do
-      self.class.verify_provider_connection
-    end
-  end
-
-  def self.verify_provider_connection(api_client)
-    IntersightClient::IamApi.new(api_client).get_iam_api_key_list({:count => true}).count > 0
-  rescue IntersightClient::ApiError => err
-    case err.code
-    when 401
-      raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
-    else
-      raise MiqException::MiqCommunicationsError, "HTTP error #{err.code}"
+    with_provider_connection(options) do |api_client|
+      self.class.verify_provider_connection(api_client)
     end
   end
 
@@ -108,6 +97,17 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
       key = ManageIQ::Password.try_decrypt(enc_key)
 
       verify_provider_connection(raw_connect(keyid, key))
+    end
+
+    def verify_provider_connection(api_client)
+      IntersightClient::IamApi.new(api_client).get_iam_api_key_list({:count => true}).count > 0
+    rescue IntersightClient::ApiError => err
+      case err.code
+      when 401
+        raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
+      else
+        raise MiqException::MiqCommunicationsError, "HTTP error #{err.code}"
+      end
     end
 
     def raw_connect(key_id, key)
