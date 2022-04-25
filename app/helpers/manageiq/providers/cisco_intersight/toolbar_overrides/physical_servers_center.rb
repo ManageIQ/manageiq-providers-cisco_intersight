@@ -25,7 +25,7 @@ module ManageIQ
                     },
                     :confirm => N_("Decommission selected servers?"),
                     :enabled => true,
-		    :onwhen  => "1+",
+                    :onwhen  => "1+",
                     :options => {:feature => :decommission}
                   ),
                   api_button(
@@ -40,7 +40,7 @@ module ManageIQ
                     },
                     :confirm => N_("Recommission selected servers?"),
                     :enabled => true,
-		    :onwhen  => "1+",
+                    :onwhen  => "1+",
                     :options => {:feature => :recommission}
                   ),
                 ]

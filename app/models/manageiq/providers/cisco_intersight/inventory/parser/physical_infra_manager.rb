@@ -39,7 +39,7 @@ module ManageIQ::Providers::CiscoIntersight
         storage_controllers_list&.each do |storage_controller_reference|
           # build collection physical_server_storage_adapters
           build_physical_server_storage_adapters(hardware, storage_controller_reference)
-        end 
+        end
 
         physical_server_management_device = build_physical_server_management_devices(hardware, server)
         build_physical_server_networks(physical_server_management_device, server)
