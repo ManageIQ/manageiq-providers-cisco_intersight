@@ -3,8 +3,8 @@ module ManageIQ::Providers::CiscoIntersight
     def recommission_server(server, _options)
       _log.info("Requesting server recommission #{server.ems_ref}.")
 
-      with_provider_connection do |_client|
-        compute_api = IntersightClient::ComputeApi.new
+      with_provider_connection do |api_client|
+        compute_api = IntersightClient::ComputeApi.new(api_client)
 
         compute_blade_identity = IntersightClient::ComputeBladeIdentity.new(
           :admin_action            => 'Recommission',
@@ -27,8 +27,8 @@ module ManageIQ::Providers::CiscoIntersight
     def decommission_server(server, _options)
       _log.info("Requesting server decommission #{server.ems_ref}.")
 
-      with_provider_connection do |_client|
-        compute_api = IntersightClient::ComputeApi.new
+      with_provider_connection do |api_client|
+        compute_api = IntersightClient::ComputeApi.new(api_client)
 
         # First, get the blade
         blade = compute_api.get_compute_blade_by_moid(server.ems_ref)

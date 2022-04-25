@@ -112,43 +112,43 @@ module ManageIQ::Providers::CiscoIntersight
 
     # API endpoint declaration
     def firmware_api
-      @firmware_api ||= IntersightClient::FirmwareApi.new
+      @firmware_api ||= IntersightClient::FirmwareApi.new(connection)
     end
 
     def compute_api
-      @compute_api ||= IntersightClient::ComputeApi.new
+      @compute_api ||= IntersightClient::ComputeApi.new(connection)
     end
 
     def equipment_api
-      @equipment_api ||= IntersightClient::EquipmentApi.new
+      @equipment_api ||= IntersightClient::EquipmentApi.new(connection)
     end
 
     def asset_api
-      @asset_api ||= IntersightClient::AssetApi.new
+      @asset_api ||= IntersightClient::AssetApi.new(connection)
     end
 
     def adapter_api
-      @adapter_api ||= IntersightClient::AdapterApi.new
+      @adapter_api ||= IntersightClient::AdapterApi.new(connection)
     end
 
     def management_api
-      @management_api ||= IntersightClient::ManagementApi.new
+      @management_api ||= IntersightClient::ManagementApi.new(connection)
     end
 
     def storage_api
-      @storage_api ||= IntersightClient::StorageApi.new
+      @storage_api ||= IntersightClient::StorageApi.new(connection)
     end
 
     def network_api
-      @network_api ||= IntersightClient::NetworkApi.new
+      @network_api ||= IntersightClient::NetworkApi.new(connection)
     end
 
     def port_api
-      @port_api ||= IntersightClient::PortApi.new
+      @port_api ||= IntersightClient::PortApi.new(connection)
     end
 
     def ether_api
-      @ether_api ||= IntersightClient::EtherApi.new
+      @ether_api ||= IntersightClient::EtherApi.new(connection)
     end
 
     def search_api
@@ -156,7 +156,6 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     # API key and keyid configuration
-
     def connection
       # Sets API key and keyid for the manager
       @connection ||= manager.connect
