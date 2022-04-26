@@ -28,7 +28,7 @@ module ManageIQ::Providers::CiscoIntersight
           return
         end
 
-        response = system.patch(:payload => { "IndicatorLED" => state })
+        response = system.patch(:payload => {"IndicatorLED" => state})
         unless response.status == 200
           _log.error("LED state change on #{server.ems_ref} failed.")
         end

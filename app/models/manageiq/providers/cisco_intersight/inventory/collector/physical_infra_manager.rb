@@ -1,8 +1,6 @@
 module ManageIQ::Providers::CiscoIntersight
   class Inventory::Collector::PhysicalInfraManager < ManageIQ::Providers::Inventory::Collector
-
     def collect
-
       # Establish connection. Connection is inside ManagerMixin which sets API key and keyid-d
       connection
 

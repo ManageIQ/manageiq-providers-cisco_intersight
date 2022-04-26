@@ -8,7 +8,8 @@ FactoryBot.define do
         ems.authentications << FactoryBot.create(
           :authentication,
           :userid   => "keyid",
-          :password => "secretkey") 
+          :password => "secretkey"
+        )
       end
     end
 

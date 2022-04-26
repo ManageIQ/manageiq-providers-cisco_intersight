@@ -8,14 +8,14 @@ module ManageIQ::Providers::CiscoIntersight
       event_monitor_handle.start
       event_monitor_running
       event_monitor_handle.poll do |event|
-        @queue.enq event
+        @queue.enq(event)
       end
     ensure
       stop_event_monitor
     end
 
     def queue_event(event)
-      _log.info "#{log_prefix} Caught event [#{event[:id]}]"
+      _log.info("#{log_prefix} Caught event [#{event[:id]}]")
       event_hash = event_to_hash(event, @cfg[:ems_id])
       EmsEvent.add_queue('add', @cfg[:ems_id], event_hash)
     end
