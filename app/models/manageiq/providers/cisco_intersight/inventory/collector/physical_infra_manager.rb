@@ -38,6 +38,11 @@ module ManageIQ::Providers::CiscoIntersight
       @physical_racks ||= compute_api.get_compute_rack_unit_list.results
     end
 
+    def decomissioned_servers
+      opts = { :filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')" }
+      @decomissioned_servers ||= get_search_api.get_search_search_item_list(opts).results
+    end
+
     def firmware_firmware_summaries
       @firmware_firmware_summaries ||= firmware_api.get_firmware_firmware_summary_list.results
     end
@@ -77,11 +82,6 @@ module ManageIQ::Providers::CiscoIntersight
       else
         get_compute_rack_unit_by_moid(source_object_moid)
       end
-    end
-    
-    def decomissioned_servers
-      opts = { :filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')" }
-      get_search_api.get_search_search_item_list(opts).results
     end
 
     def compute_blades
@@ -153,8 +153,8 @@ module ManageIQ::Providers::CiscoIntersight
       @ether_api ||= IntersightClient::EtherApi.new
     end
 
-    def get_search_api
-      IntersightClient::SearchApi.new
+    def search_api
+      @search_api ||= IntersightClient::SearchApi.new
     end
 
     # API key and keyid configuration

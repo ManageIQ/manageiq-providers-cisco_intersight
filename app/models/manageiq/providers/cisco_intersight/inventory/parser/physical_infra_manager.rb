@@ -114,7 +114,7 @@ module ManageIQ::Providers::CiscoIntersight
       collector.decomissioned_servers.each do |s|
         server = persister.physical_servers.lazy_find(s.moid)
         persister.physical_server_details.build(
-          :resource      => server,
+          :resource => server
         )
       end
     end
@@ -124,8 +124,8 @@ module ManageIQ::Providers::CiscoIntersight
         server = persister.physical_servers.lazy_find(s.moid)
         computer = persister.physical_server_computer_systems.lazy_find(server)
         # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
-        hardware = persister.physical_server_hardwares.build(
-          :computer_system => computer,
+        persister.physical_server_hardwares.build(
+          :computer_system => computer
         )
       end
     end
