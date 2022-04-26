@@ -13,37 +13,45 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         assert_ems
 
         # servers tests
+
+        # Asserting specific active/undecomissioned server:
         assert_specific_physical_server
         assert_specific_physical_server_details
         assert_specific_physical_server_hardwares
         assert_specific_physical_server_firmwares
         assert_specific_physical_server_network_devices
 
+        # Asserting specific decomissioned server:
+        assert_specific_decommissioned_physical_server
+        assert_specific_decommissioned_physical_server_details
+        assert_specific_decommissioned_physical_server_hardwares
+
         # chasses tests
         assert_specific_physical_chassis
         assert_specific_physical_chassis_details
 
         # switches tests
-
         assert_specific_physical_switch
         assert_specific_physical_switch_details
         assert_specific_physical_switch_hardwares
         assert_specific_physical_switch_firmwares
         assert_specific_physical_switch_network_ports
         assert_specific_physical_switch_networks
+
       end
     end
   end
 
   def assert_ems
     # physical server's collections
+    # These numbers also take into account decommissioned servers
     expect(ems.physical_servers.count).to(eq(4))
     expect(ems.physical_server_details.count).to(eq(4))
     expect(ems.physical_server_computer_systems.count).to(eq(4))
     expect(ems.physical_server_hardwares.count).to(eq(4))
-    expect(ems.physical_server_network_devices.count).to(eq(4))
-    expect(ems.physical_server_firmwares.count).to(eq(56))
-    expect(ems.physical_server_storage_adapters.count).to(eq(5))
+    expect(ems.physical_server_network_devices.count).to(eq(3))
+    expect(ems.physical_server_firmwares.count).to(eq(41))
+    expect(ems.physical_server_storage_adapters.count).to(eq(0))
 
     # physical rack's collections
     # In our available lab, we have informations about racks yet.
@@ -67,12 +75,12 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
   # Asserting specific objects type of tests
 
   def assert_specific_physical_server
-    server_ems_ref = "614cec416176752d35abe368"
+    server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
 
     expect(server).to(have_attributes(
                         :ems_ref                => server_ems_ref,
-                        :hostname               => "C1-B4-UCSX-210C-M6",
+                        :hostname               => "C1-B1-UCSX-210C-M6",
                         :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
                         :product_name           => nil,
                         :manufacturer           => "Cisco Systems Inc",
@@ -84,13 +92,13 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                         :vendor                 => nil,
                         :health_state           => "Valid",
                         :power_state            => ""
-    ))
+                      ))
 
     expect(server.ext_management_system).to(eq(ems))
   end
 
   def assert_specific_physical_server_details
-    server_ems_ref = "614cec416176752d35abe368"
+    server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     asset_detail = AssetDetail.find_by!(:resource => server)
 
@@ -98,23 +106,23 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :description            => "UCS 210c M6 Compute Node w/o CPU,  Memory, Storage, Mezz",
                               :contact                => nil,
                               :location               => "3800 ZANKER ROAD SAN JOSE US 95134 CA",
-                              :room                   => "4",
+                              :room                   => "1",
                               :rack_name              => nil,
                               :lowest_rack_unit       => nil,
                               :resource_type          => "PhysicalServer",
                               :product_name           => "CISCO SYSTEMS INC FOR US INTERNAL DEMO EVAL ONLY",
                               :machine_type           => "CiscoUcsServer",
                               :model                  => "UCSX-210C-M6",
-                              :serial_number          => "FCH250671QU",
+                              :serial_number          => "FCH25057ANX",
                               :field_replaceable_unit => nil,
                               :part_number            => nil,
                               :location_led_ems_ref   => nil,
                               :location_led_state     => "off"
-    ))
+                            ))
   end
 
   def assert_specific_physical_server_hardwares
-    server_ems_ref = "614cec416176752d35abe368"
+    server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     hardware = server.hardware
 
@@ -128,9 +136,9 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :time_sync            => nil,
                           :annotation           => nil,
                           :vm_or_template_id    => nil,
-                          :memory_mb            => 512,
+                          :memory_mb            => 1024,
                           :host_id              => nil,
-                          :cpu_speed            => 145,
+                          :cpu_speed            => 182,
                           :cpu_type             => nil,
                           :size_on_disk         => nil,
                           :manufacturer         => "",
@@ -139,7 +147,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :cpu_usage            => nil,
                           :memory_usage         => nil,
                           :cpu_cores_per_socket => nil,
-                          :cpu_total_cores      => 56,
+                          :cpu_total_cores      => 76,
                           :vmotion_enabled      => nil,
                           :disk_free_space      => nil,
                           :disk_capacity        => nil,
@@ -156,12 +164,12 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :switch_id            => nil,
                           :firmware_type        => nil,
                           :canister_id          => nil
-    ))
+                        ))
 
   end
 
   def assert_specific_physical_server_firmwares
-    server_ems_ref = "614cec416176752d35abe368"
+    server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     firmware = server.hardware.firmwares.first
 
@@ -172,16 +180,16 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :release_date    => nil,
                           :resource_type   => "Hardware",
                           :guest_device_id => nil
-    ))
+                        ))
   end
 
   def assert_specific_physical_server_network_devices
-    server_ems_ref = "614cec416176752d35abe368"
+    server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     nic = server.hardware.nics.first
 
     expect(nic).to(have_attributes(
-                     :device_name            => "UCSX-V4-Q25GML_FCH2505713A",
+                     :device_name            => "UCSX-V4-Q25GML_FCH2505713V",
                      :device_type            => "ethernet",
                      :location               => nil,
                      :filename               => nil,
@@ -199,7 +207,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                      :present                => true,
                      :start_connected        => true,
                      :auto_detect            => nil,
-                     :uid_ems                => "614cec8e6176752d35ac0743",
+                     :uid_ems                => "620587956176752d3672375f",
                      :chap_auth_enabled      => nil,
                      :manufacturer           => "Cisco Systems Inc",
                      :field_replaceable_unit => nil,
@@ -208,7 +216,103 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                      :vlan_enabled           => nil,
                      :peer_mac_address       => nil,
                      :speed                  => nil
-    ))
+                   ))
+  end
+
+  def assert_specific_decommissioned_physical_server
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    expect(server_decommissioned).to(have_attributes(
+                                       :ems_ref                => server_ems_ref,
+                                       :hostname               => nil,
+                                       :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
+                                       :product_name           => nil,
+                                       :manufacturer           => nil,
+                                       :machine_type           => nil,
+                                       :model                  => nil,
+                                       :serial_number          => nil,
+                                       :field_replaceable_unit => nil,
+                                       :raw_power_state        => "decomissioned",
+                                       :vendor                 => nil,
+                                       :health_state           => nil,
+                                       :power_state            => "decomissioned"
+                                     ))
+  end
+
+  def assert_specific_decommissioned_physical_server_details
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+    asset_detail = AssetDetail.find_by!(:resource => server_decommissioned)
+
+    expect(asset_detail).to(have_attributes(
+                              :description            => nil,
+                              :contact                => nil,
+                              :location               => nil,
+                              :room                   => nil,
+                              :rack_name              => nil,
+                              :lowest_rack_unit       => nil,
+                              :resource_type          => "PhysicalServer",
+                              :product_name           => nil,
+                              :machine_type           => nil,
+                              :model                  => nil,
+                              :serial_number          => nil,
+                              :field_replaceable_unit => nil,
+                              :part_number            => nil,
+                              :location_led_ems_ref   => nil,
+                              :location_led_state     => nil
+                            ))
+  end
+
+  def assert_specific_decommissioned_physical_server_hardwares
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    hardware_decommissioned = server_decommissioned.hardware
+
+    expect(hardware_decommissioned).to(have_attributes(
+                                         :virtual_hw_version   => nil,
+                                         :config_version       => nil,
+                                         :guest_os             => nil,
+                                         :cpu_sockets          => 1,
+                                         :bios                 => nil,
+                                         :bios_location        => nil,
+                                         :time_sync            => nil,
+                                         :annotation           => nil,
+                                         :vm_or_template_id    => nil,
+                                         :memory_mb            => nil,
+                                         :host_id              => nil,
+                                         :cpu_speed            => nil,
+                                         :cpu_type             => nil,
+                                         :size_on_disk         => nil,
+                                         :manufacturer         => "",
+                                         :model                => "",
+                                         :number_of_nics       => nil,
+                                         :cpu_usage            => nil,
+                                         :memory_usage         => nil,
+                                         :cpu_cores_per_socket => nil,
+                                         :cpu_total_cores      => nil,
+                                         :vmotion_enabled      => nil,
+                                         :disk_free_space      => nil,
+                                         :disk_capacity        => nil,
+                                         :guest_os_full_name   => nil,
+                                         :memory_console       => nil,
+                                         :bitness              => nil,
+                                         :virtualization_type  => nil,
+                                         :root_device_type     => nil,
+                                         :disk_size_minimum    => nil,
+                                         :memory_mb_minimum    => nil,
+                                         :introspected         => nil,
+                                         :provision_state      => nil,
+                                         :serial_number        => nil,
+                                         :switch_id            => nil,
+                                         :firmware_type        => nil,
+                                         :canister_id          => nil
+                                       ))
+
   end
 
   def assert_specific_physical_chassis
@@ -229,7 +333,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                          :fan_slot_count               => nil,
                          :blade_slot_count             => nil,
                          :powersupply_slot_count       => nil
-     ))
+                       ))
 
     expect(chassis.ext_management_system).to(eq(ems))
   end
@@ -256,7 +360,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :part_number            => "68-6847-03  ",
                               :location_led_ems_ref   => nil,
                               :location_led_state     => "off"
-     ))
+                            ))
   end
 
   def assert_specific_physical_switch
@@ -274,7 +378,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                         :type              => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitch",
                         :health_state      => "Warning",
                         :power_state       => nil
-    ))
+                      ))
     expect(switch.ext_management_system).to(eq(ems))
   end
 
@@ -300,7 +404,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :part_number            => nil,
                               :location_led_ems_ref   => nil,
                               :location_led_state     => nil
-    ))
+                            ))
 
   end
 
@@ -346,7 +450,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :serial_number        => nil,
                           :firmware_type        => nil,
                           :canister_id          => nil
-    ))
+                        ))
   end
 
   def assert_specific_physical_switch_firmwares
@@ -360,7 +464,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :version         => "9.3(5)I42(1f)",
                           :resource_type   => "Hardware",
                           :guest_device_id => nil
-    ))
+                        ))
   end
 
   def assert_specific_physical_switch_network_ports
@@ -380,7 +484,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                                               :vlan_enabled       => nil,
                                               :guest_device_id    => nil,
                                               :connected_port_uid => switch_uid_ems
-    ))
+                                            ))
   end
 
   def assert_specific_physical_switch_networks
@@ -404,7 +508,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                          :hostname        => nil,
                          :domain          => nil,
                          :ipv6address     => ""
-    ))
+                       ))
   end
 
   # Helper methods
