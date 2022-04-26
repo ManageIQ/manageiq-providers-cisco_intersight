@@ -35,6 +35,5 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
       expect(config_mock).to receive(:api_key=).with("secretkey")
       ems.connect
     end
-
   end
 end

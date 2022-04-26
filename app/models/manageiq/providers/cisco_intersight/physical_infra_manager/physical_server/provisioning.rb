@@ -4,6 +4,7 @@ module ManageIQ::Providers::CiscoIntersight
       with_provider_object do |system|
         macs = mac_addresses(system)
         raise MiqException::MiqProvisionError, 'at least one MAC address is needed for provisioning' if macs.empty?
+
         macs.each { |mac| pxe_image.pxe_server.create_provisioning_files(pxe_image, mac, nil, customization_template) }
       end
     end

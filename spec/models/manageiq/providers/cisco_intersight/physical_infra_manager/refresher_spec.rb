@@ -3,7 +3,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     FactoryBot.create(:ems_cisco_intersight_physical_infra, :vcr)
   end
 
-
   describe "refresh", :vcr do
     it "will perform a full refresh" do
       2.times do # Test for refresh idempotence
@@ -37,7 +36,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         assert_specific_physical_switch_firmwares
         assert_specific_physical_switch_network_ports
         assert_specific_physical_switch_networks
-
       end
     end
   end
@@ -69,7 +67,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
 
     expect(ems.physical_switch_network_ports.count).to(eq(108))
     expect(ems.physical_switch_networks.count).to(eq(2))
-
   end
 
   # Asserting specific objects type of tests
@@ -165,7 +162,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                           :firmware_type        => nil,
                           :canister_id          => nil
                         ))
-
   end
 
   def assert_specific_physical_server_firmwares
@@ -312,7 +308,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                                          :firmware_type        => nil,
                                          :canister_id          => nil
                                        ))
-
   end
 
   def assert_specific_physical_chassis
@@ -405,7 +400,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                               :location_led_ems_ref   => nil,
                               :location_led_state     => nil
                             ))
-
   end
 
   def assert_specific_physical_switch_hardwares
@@ -529,4 +523,3 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     PhysicalNetworkPort.find_by(:connected_port_uid => uid_ems)
   end
 end
-

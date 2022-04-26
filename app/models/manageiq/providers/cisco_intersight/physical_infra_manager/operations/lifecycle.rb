@@ -1,6 +1,6 @@
 module ManageIQ::Providers::CiscoIntersight
   module PhysicalInfraManager::Operations::Lifecycle
-    def recommission_server(server, options)
+    def recommission_server(server, _options)
       _log.info("Requesting server recommission #{server.ems_ref}.")
 
       with_provider_connection do |_client|
@@ -15,7 +15,7 @@ module ManageIQ::Providers::CiscoIntersight
         )
 
         begin
-          result = compute_api.update_compute_blade_identity(server.ems_ref, compute_blade_identity, {})
+          compute_api.update_compute_blade_identity(server.ems_ref, compute_blade_identity, {})
           _log.info("Server #{server.ems_ref} recommissioned.")
         rescue IntersightClient::ApiError => e
           _log.error("Recommission of #{server.ems_ref} failed.")
@@ -24,7 +24,7 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
-    def decommission_server(server, options)
+    def decommission_server(server, _options)
       _log.info("Requesting server decommission #{server.ems_ref}.")
 
       with_provider_connection do |_client|
@@ -42,7 +42,7 @@ module ManageIQ::Providers::CiscoIntersight
         )
 
         begin
-          result = compute_api.update_compute_blade_identity(blade.mgmt_identity.moid, compute_blade_identity, {})
+          compute_api.update_compute_blade_identity(blade.mgmt_identity.moid, compute_blade_identity, {})
           _log.info("Server #{server.ems_ref} decommissioned.")
         rescue IntersightClient::ApiError => e
           _log.error("Recommission of #{server.ems_ref} failed.")
@@ -50,7 +50,5 @@ module ManageIQ::Providers::CiscoIntersight
         end
       end
     end
-
   end
 end
-

@@ -1,6 +1,5 @@
 module ManageIQ::Providers::CiscoIntersight
   class Inventory::Parser::PhysicalInfraManager < Inventory::Parser
-
     def parse
       physical_servers
       physical_racks
@@ -23,7 +22,7 @@ module ManageIQ::Providers::CiscoIntersight
         # Since Intersight's source object is only consolidated view of either object ComputePhysicalSummary of ComputeRackUnit,
         # source object has to be obtained. I store it onto source_object
         source_object = collector.get_source_object_from_physical_server(server)
-        board_unit = collector.get_compute_board_by_moid(source_object&.board.moid) if source_object&.board
+        board_unit = collector.get_compute_board_by_moid(source_object&.board&.moid) if source_object&.board&.moid
         # storage_controllers_list is only a list of references to the storage controllers, but not list of intersight's
         # storage controllers itself
         storage_controllers_list = board_unit.storage_controllers if board_unit
@@ -57,7 +56,6 @@ module ManageIQ::Providers::CiscoIntersight
       collector.decomissioned_servers.each do |s|
         build_decomissioned_physical_infrastructure(s)
       end
-
     end
 
     def physical_racks

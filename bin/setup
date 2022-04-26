@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-require 'pathname'
-require 'fileutils'
+
+require "pathname"
 
 gem_root = Pathname.new(__dir__).join("..")
-spec_manageiq = gem_root.join("spec/manageiq")
+system(gem_root.join("bin/before_install").to_s)
 
-require gem_root.join("spec/manageiq/lib/manageiq/environment").to_s
+require gem_root.join("spec/manageiq/lib/manageiq/environment")
 ManageIQ::Environment.manageiq_plugin_setup(gem_root)

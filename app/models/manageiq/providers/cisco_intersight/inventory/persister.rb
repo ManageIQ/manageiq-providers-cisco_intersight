@@ -3,4 +3,3 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :PhysicalInfraManager
   end
 end
-

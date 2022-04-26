@@ -28,7 +28,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def restart_mgmt_controller(_server, _options)
-      reset_server(server, "Reboot");
+      reset_server(server, "Reboot")
     end
 
     private
@@ -50,7 +50,7 @@ module ManageIQ::Providers::CiscoIntersight
 
       with_provider_connection do |_client|
         compute_api = IntersightClient::ComputeApi.new
-        system = compute_api.get_compute_physical_summary_by_moid(server.ems_ref)
+        _system = compute_api.get_compute_physical_summary_by_moid(server.ems_ref)
 
         # Get the related ComputeServerSettings:
         # This only works for servers that are Intersight-managed and have a directly related IntersightClient::ComputeServerSetting object
@@ -59,6 +59,7 @@ module ManageIQ::Providers::CiscoIntersight
         if compute_server_settings_list.empty?
           raise MiqException::Error, "No IntersightClient::ComputeServerSetting object found for ems_ref #{server.ems_ref} . Server might not be Intersight-managed."
         end
+
         compute_server_settings = compute_server_settings_list.first
 
         previous_admin_power_state = compute_server_settings.admin_power_state
