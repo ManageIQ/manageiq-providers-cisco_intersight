@@ -11,7 +11,7 @@ module ManageIQ::Providers::CiscoIntersight
     # Methods that are executed during refresh call
 
     def physical_servers
-      # Parsing active/undecomissioned servers:
+      # Parsing active servers:
       collector.physical_servers.each do |server|
         # build collection physical_servers
         physical_server = build_physical_server(server)
