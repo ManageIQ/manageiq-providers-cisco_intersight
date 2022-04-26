@@ -40,7 +40,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     def decomissioned_servers
       opts = { :filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')" }
-      @decomissioned_servers ||= get_search_api.get_search_search_item_list(opts).results
+      @decomissioned_servers ||= search_api.get_search_search_item_list(opts).results
     end
 
     def firmware_firmware_summaries
@@ -85,7 +85,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def compute_blades
-      get_compute_api.get_compute_blade_list.results
+      compute_api.get_compute_blade_list.results
     end
 
     delegate :get_ether_physical_port_by_moid, :to => :ether_api

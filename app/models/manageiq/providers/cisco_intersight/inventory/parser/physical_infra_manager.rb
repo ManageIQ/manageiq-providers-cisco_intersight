@@ -130,7 +130,6 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
-
     private
 
     # Methods that directly build out inventory collections
