@@ -14,11 +14,17 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
 
         # servers tests
 
+        # Asserting specific active/undecomissioned server:
         assert_specific_physical_server
         assert_specific_physical_server_details
         assert_specific_physical_server_hardwares
         assert_specific_physical_server_firmwares
         assert_specific_physical_server_network_devices
+
+        # Asserting specific decomissioned server:
+        assert_specific_decommissioned_physical_server
+        assert_specific_decommissioned_physical_server_details
+        assert_specific_decommissioned_physical_server_hardwares
 
         # chasses tests
         assert_specific_physical_chassis
@@ -31,12 +37,14 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
         assert_specific_physical_switch_firmwares
         assert_specific_physical_switch_network_ports
         assert_specific_physical_switch_networks
+
       end
     end
   end
 
   def assert_ems
     # physical server's collections
+    # These numbers also take into account decommissioned servers
     expect(ems.physical_servers.count).to(eq(4))
     expect(ems.physical_server_details.count).to(eq(4))
     expect(ems.physical_server_computer_systems.count).to(eq(4))
@@ -209,6 +217,102 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                      :peer_mac_address       => nil,
                      :speed                  => nil
                    ))
+  end
+
+  def assert_specific_decommissioned_physical_server
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    expect(server_decommissioned).to(have_attributes(
+                                       :ems_ref                => server_ems_ref,
+                                       :hostname               => nil,
+                                       :type                   => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer",
+                                       :product_name           => nil,
+                                       :manufacturer           => nil,
+                                       :machine_type           => nil,
+                                       :model                  => nil,
+                                       :serial_number          => nil,
+                                       :field_replaceable_unit => nil,
+                                       :raw_power_state        => "decomissioned",
+                                       :vendor                 => nil,
+                                       :health_state           => nil,
+                                       :power_state            => "decomissioned"
+                                     ))
+  end
+
+  def assert_specific_decommissioned_physical_server_details
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+    asset_detail = AssetDetail.find_by!(:resource => server_decommissioned)
+
+    expect(asset_detail).to(have_attributes(
+                              :description            => nil,
+                              :contact                => nil,
+                              :location               => nil,
+                              :room                   => nil,
+                              :rack_name              => nil,
+                              :lowest_rack_unit       => nil,
+                              :resource_type          => "PhysicalServer",
+                              :product_name           => nil,
+                              :machine_type           => nil,
+                              :model                  => nil,
+                              :serial_number          => nil,
+                              :field_replaceable_unit => nil,
+                              :part_number            => nil,
+                              :location_led_ems_ref   => nil,
+                              :location_led_state     => nil
+                            ))
+  end
+
+  def assert_specific_decommissioned_physical_server_hardwares
+    # Note that these tests have to be updated if a re/decommission operation is done on this server.
+    server_ems_ref = "614cebe76f62692d3083863f"
+    server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    hardware_decommissioned = server_decommissioned.hardware
+
+    expect(hardware_decommissioned).to(have_attributes(
+                                         :virtual_hw_version   => nil,
+                                         :config_version       => nil,
+                                         :guest_os             => nil,
+                                         :cpu_sockets          => 1,
+                                         :bios                 => nil,
+                                         :bios_location        => nil,
+                                         :time_sync            => nil,
+                                         :annotation           => nil,
+                                         :vm_or_template_id    => nil,
+                                         :memory_mb            => nil,
+                                         :host_id              => nil,
+                                         :cpu_speed            => nil,
+                                         :cpu_type             => nil,
+                                         :size_on_disk         => nil,
+                                         :manufacturer         => "",
+                                         :model                => "",
+                                         :number_of_nics       => nil,
+                                         :cpu_usage            => nil,
+                                         :memory_usage         => nil,
+                                         :cpu_cores_per_socket => nil,
+                                         :cpu_total_cores      => nil,
+                                         :vmotion_enabled      => nil,
+                                         :disk_free_space      => nil,
+                                         :disk_capacity        => nil,
+                                         :guest_os_full_name   => nil,
+                                         :memory_console       => nil,
+                                         :bitness              => nil,
+                                         :virtualization_type  => nil,
+                                         :root_device_type     => nil,
+                                         :disk_size_minimum    => nil,
+                                         :memory_mb_minimum    => nil,
+                                         :introspected         => nil,
+                                         :provision_state      => nil,
+                                         :serial_number        => nil,
+                                         :switch_id            => nil,
+                                         :firmware_type        => nil,
+                                         :canister_id          => nil
+                                       ))
+
   end
 
   def assert_specific_physical_chassis
