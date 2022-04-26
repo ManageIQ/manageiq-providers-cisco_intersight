@@ -39,7 +39,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def decomissioned_servers
-      opts = { :filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')" }
+      opts = {:filter => "(Lifecycle eq 'Decommissioned') and (IndexMotypes eq  'equipment.Identity')"}
       @decomissioned_servers ||= search_api.get_search_search_item_list(opts).results
     end
 

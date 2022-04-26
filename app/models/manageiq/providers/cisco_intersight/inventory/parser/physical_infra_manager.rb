@@ -6,16 +6,12 @@ module ManageIQ::Providers::CiscoIntersight
       physical_racks
       physical_chassis
       physical_switches
-
-      decomissioned_servers
-      decomissioned_server_details
-      decomissioned_hardwares
     end
 
     # Methods that are executed during refresh call
 
     def physical_servers
-      # Parses physical servers and its details
+      # Parsing active/undecomissioned servers:
       collector.physical_servers.each do |server|
         # build collection physical_servers
         physical_server = build_physical_server(server)
@@ -56,6 +52,12 @@ module ManageIQ::Providers::CiscoIntersight
           build_physical_server_firmwares(hardware, component_fw_inventory)
         end
       end
+
+      # Parsing decomissioned servers:
+      collector.decomissioned_servers.each do |s|
+        build_decomissioned_physical_infrastructure(s)
+      end
+
     end
 
     def physical_racks
@@ -92,41 +94,6 @@ module ManageIQ::Providers::CiscoIntersight
         next unless ucsm_running_firmware
 
         build_physical_switch_firmwares(hardware, ucsm_running_firmware)
-      end
-    end
-
-    def decomissioned_servers
-      collector.decomissioned_servers.each do |s|
-        server = persister.physical_servers.build(
-          :ems_ref         => s.moid,
-          :power_state     => "decomissioned",
-          :raw_power_state => "decomissioned",
-          :type            => "ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer"
-        )
-
-        persister.physical_server_computer_systems.build(
-          :managed_entity => server
-        )
-      end
-    end
-
-    def decomissioned_server_details
-      collector.decomissioned_servers.each do |s|
-        server = persister.physical_servers.lazy_find(s.moid)
-        persister.physical_server_details.build(
-          :resource => server
-        )
-      end
-    end
-
-    def decomissioned_hardwares
-      collector.decomissioned_servers.each do |s|
-        server = persister.physical_servers.lazy_find(s.moid)
-        computer = persister.physical_server_computer_systems.lazy_find(server)
-        # disk_capacity and disk_free_space aren't finished yet. Setting their value to -1
-        persister.physical_server_hardwares.build(
-          :computer_system => computer
-        )
       end
     end
 
@@ -440,6 +407,31 @@ module ManageIQ::Providers::CiscoIntersight
       end
     end
 
+    def build_decomissioned_physical_infrastructure(server)
+      # Builds out collections physical_servers, physical_server_details, physical_server_computer_systems and
+      # physical_server_hardwares for decomissioned servers
+      # Object types:
+      #   - server - SearchSearchItem, object obtained by intersight client
+      # Returns:
+      #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServer
+      physical_server = persister.physical_servers.build(
+        :ems_ref         => server.moid,
+        :power_state     => "decomissioned",
+        :raw_power_state => "decomissioned"
+      )
+
+      computer = persister.physical_server_computer_systems.build(
+        :managed_entity => physical_server
+      )
+
+      persister.physical_server_details.build(
+        :resource => physical_server
+      )
+
+      persister.physical_server_hardwares.build(
+        :computer_system => computer
+      )
+    end
 
     # Helper methods to the ones that directly build inventory collections
 
