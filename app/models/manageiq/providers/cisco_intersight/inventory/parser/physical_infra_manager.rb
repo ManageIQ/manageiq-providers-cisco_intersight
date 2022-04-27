@@ -76,8 +76,11 @@ module ManageIQ::Providers::CiscoIntersight
 
     def physical_switches
       collector.network_elements.each do |network_element|
+        # object network_element_summary has the same moid as network_element.
+        # network_element_summary is needed to obtain info about switch's name
+        network_element_summary = collector.get_network_element_summary_by_moid(network_element.moid)
         # build collection physical_switches
-        build_physical_switches(network_element)
+        build_physical_switches(network_element, network_element_summary)
         # build collection physical_switch_details
         build_physical_switch_details(network_element)
         # build collection physical_switch_hardwares
@@ -303,14 +306,15 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_switches(network_element)
+    def build_physical_switches(network_element, network_element_summary)
       # Builds out collection physical_switches
       # Object types:
       #   - network_element - NetworkElements, object obtained by intersight client
+      #   - network_element_summary - NetworkElementSummary, object obtained by intersight client
       # Returns:
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalSwitches
       persister.physical_switches.build(
-        :name         => network_element.dn,
+        :name         => network_element_summary.name,
         :uid_ems      => network_element.moid,
         :switch_uuid  => network_element.moid,
         :health_state => get_health_state(network_element)

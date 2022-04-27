@@ -108,6 +108,8 @@ module ManageIQ::Providers::CiscoIntersight
 
     delegate :get_compute_rack_unit_by_moid, :to => :compute_api
 
+    delegate :get_network_element_summary_by_moid, :to => :network_api
+
     private
 
     # API endpoint declaration
