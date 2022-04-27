@@ -367,7 +367,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     switch = get_physical_switch_from_uid_ems(switch_uid_ems)
 
     expect(switch).to(have_attributes(
-                        :name              => "switch-FDO244106VJ",
+                        :name              => "LAB02D02F01 FI-B",
                         :ports             => nil,
                         :uid_ems           => switch_uid_ems,
                         :allow_promiscuous => nil,
