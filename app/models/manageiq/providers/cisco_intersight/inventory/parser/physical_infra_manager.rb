@@ -160,7 +160,9 @@ module ManageIQ::Providers::CiscoIntersight
 
       # Obtain data about chassis and racks if they're wired to the server
       physical_rack = nil # TODO: After chassis gets written into the DB, obtain it and write it here as reference using lazy find.
-      physical_chassis = persister.physical_chassis.lazy_find(server.equipment_chassis.moid) if server.equipment_chassis
+      physical_chassis = if server&.parent&.object_type == "equipment.Chassis"
+                           persister.physical_chassis.lazy_find(server&.parent&.moid)
+                         end
       registered_device_moid = get_registered_device_moid(server)
       device_registration = collector.get_asset_device_registration_by_moid(registered_device_moid)
       persister.physical_servers.build(
