@@ -48,8 +48,7 @@ module ManageIQ::Providers::CiscoIntersight
 
       _log.info("Requesting #{power_state} for #{server.ems_ref}.")
 
-      with_provider_connection do |_client|
-        compute_api = IntersightClient::ComputeApi.new
+      with_provider_connection(:service => "ComputeApi") do |compute_api|
         _system = compute_api.get_compute_physical_summary_by_moid(server.ems_ref)
 
         # Get the related ComputeServerSettings:

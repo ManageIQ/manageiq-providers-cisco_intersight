@@ -7,18 +7,15 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
     expect(described_class.description).to eq("Cisco Intersight")
   end
 
-  let(:ci_module) { class_double("IntersightClient").as_stubbed_const }
-  let(:ci_client) { instance_double("RedfishClient::Root") }
-  subject(:ems) do
-    FactoryBot.create(:ems_cisco_intersight_physical_infra, :auth)
-  end
-  let(:config_mock) { double }
+  let(:ems)         { FactoryBot.create(:ems_cisco_intersight_physical_infra, :auth) }
+  let(:config_mock) { double("IntersightClient::Configuration") }
 
   context ".raw_connect" do
     it "connects with key_id and secret key" do
-      expect(ci_module).to receive(:configure).and_yield(config_mock)
+      expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
       expect(config_mock).to receive(:api_key_id=).with("keyid")
       expect(config_mock).to receive(:api_key=).with("secretkey")
+
       described_class.raw_connect("keyid", "secretkey")
     end
   end
@@ -30,9 +27,10 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
     end
 
     it "connects with key_id and secret key" do
-      expect(ci_module).to receive(:configure).and_yield(config_mock)
+      expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
       expect(config_mock).to receive(:api_key_id=).with("keyid")
       expect(config_mock).to receive(:api_key=).with("secretkey")
+
       ems.connect
     end
   end

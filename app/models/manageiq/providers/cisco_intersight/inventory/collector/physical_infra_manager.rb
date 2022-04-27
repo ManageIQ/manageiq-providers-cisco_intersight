@@ -1,21 +1,6 @@
 module ManageIQ::Providers::CiscoIntersight
   class Inventory::Collector::PhysicalInfraManager < ManageIQ::Providers::Inventory::Collector
     def collect
-      # Establish connection. Connection is inside ManagerMixin which sets API key and keyid-d
-      connection
-
-      # Initialize API endpoints
-      firmware_api
-      compute_api
-      equipment_api
-      asset_api
-      adapter_api
-      management_api
-      storage_api
-      network_api
-      port_api
-      ether_api
-
       # Initialize the variables that may be memoized for the duration of the refresh run
       physical_servers
       decomissioned_servers
@@ -114,54 +99,53 @@ module ManageIQ::Providers::CiscoIntersight
 
     # API endpoint declaration
     def firmware_api
-      @firmware_api ||= IntersightClient::FirmwareApi.new
+      @firmware_api ||= IntersightClient::FirmwareApi.new(api_client)
     end
 
     def compute_api
-      @compute_api ||= IntersightClient::ComputeApi.new
+      @compute_api ||= IntersightClient::ComputeApi.new(api_client)
     end
 
     def equipment_api
-      @equipment_api ||= IntersightClient::EquipmentApi.new
+      @equipment_api ||= IntersightClient::EquipmentApi.new(api_client)
     end
 
     def asset_api
-      @asset_api ||= IntersightClient::AssetApi.new
+      @asset_api ||= IntersightClient::AssetApi.new(api_client)
     end
 
     def adapter_api
-      @adapter_api ||= IntersightClient::AdapterApi.new
+      @adapter_api ||= IntersightClient::AdapterApi.new(api_client)
     end
 
     def management_api
-      @management_api ||= IntersightClient::ManagementApi.new
+      @management_api ||= IntersightClient::ManagementApi.new(api_client)
     end
 
     def storage_api
-      @storage_api ||= IntersightClient::StorageApi.new
+      @storage_api ||= IntersightClient::StorageApi.new(api_client)
     end
 
     def network_api
-      @network_api ||= IntersightClient::NetworkApi.new
+      @network_api ||= IntersightClient::NetworkApi.new(api_client)
     end
 
     def port_api
-      @port_api ||= IntersightClient::PortApi.new
+      @port_api ||= IntersightClient::PortApi.new(api_client)
     end
 
     def ether_api
-      @ether_api ||= IntersightClient::EtherApi.new
+      @ether_api ||= IntersightClient::EtherApi.new(api_client)
     end
 
     def search_api
-      @search_api ||= IntersightClient::SearchApi.new
+      @search_api ||= IntersightClient::SearchApi.new(api_client)
     end
 
     # API key and keyid configuration
-
-    def connection
+    def api_client
       # Sets API key and keyid for the manager
-      @connection ||= manager.connect
+      @api_client ||= manager.connect
     end
   end
 end

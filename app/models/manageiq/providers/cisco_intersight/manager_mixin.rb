@@ -3,12 +3,24 @@ require 'intersight_client'
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
-  def connect(_options = {})
+  def connect(options = {})
     keyid = authentication_userid
     key = authentication_password
     raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
 
-    self.class.raw_connect(keyid, key)
+    api_client = self.class.raw_connect(keyid, key)
+
+    service = options.delete(:service)
+    if service
+      require "intersight_client/#{service.underscore}"
+
+      api_client_klass = "IntersightClient::#{service}".safe_constantize
+      raise ArgumentError, _("Invalid service") if api_client_klass.nil?
+
+      api_client_klass.new(api_client)
+    else
+      api_client
+    end
   end
 
   def disconnect(connection)
@@ -17,19 +29,8 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   end
 
   def verify_credentials(_auth_type = nil, options = {})
-    with_provider_connection(options) do
-      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
-    end
-  end
-
-  def self.verify_provider_connection
-    IntersightClient::IamApi.new.get_iam_api_key_list({:count => true}).count > 0
-  rescue IntersightClient::ApiError => err
-    case err.code
-    when 401
-      raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
-    else
-      raise MiqException::MiqCommunicationsError, "HTTP error #{err.code}"
+    with_provider_connection(options) do |api_client|
+      self.class.verify_provider_connection(api_client)
     end
   end
 
@@ -95,16 +96,29 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
       keyid, enc_key = authentication&.values_at("userid", "password")
       key = ManageIQ::Password.try_decrypt(enc_key)
 
-      raw_connect(keyid, key)
-
-      ManageIQ::Providers::CiscoIntersight::ManagerMixin.verify_provider_connection
+      verify_provider_connection(raw_connect(keyid, key))
     end
 
-    def raw_connect(keyid, key)
-      IntersightClient.configure do |config|
-        config.api_key = key
-        config.api_key_id = keyid
+    def verify_provider_connection(api_client)
+      IntersightClient::IamApi.new(api_client).get_iam_api_key_list({:count => true}).count > 0
+    rescue IntersightClient::ApiError => err
+      case err.code
+      when 401
+        raise MiqException::MiqInvalidCredentialsError, "Invalid API key"
+      else
+        raise MiqException::MiqCommunicationsError, "HTTP error #{err.code}"
       end
+    end
+
+    def raw_connect(key_id, key)
+      require "intersight_client"
+
+      IntersightClient::ApiClient.new(
+        IntersightClient::Configuration.new do |config|
+          config.api_key    = key
+          config.api_key_id = key_id
+        end
+      )
     rescue OpenSSL::PKey::ECError
       raise MiqException::MiqInvalidCredentialsError, "Invalid key structure"
     end
