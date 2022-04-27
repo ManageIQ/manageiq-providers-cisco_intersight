@@ -175,8 +175,8 @@ module ManageIQ::Providers::CiscoIntersight
         :name             => server.name,
         :physical_chassis => physical_chassis,
         :physical_rack    => physical_rack, # nil for now
-        :power_state      => server.admin_power_state,
-        :raw_power_state  => server.admin_power_state,
+        :power_state      => server.oper_power_state,
+        :raw_power_state  => server.oper_power_state,
         :manufacturer     => server.vendor
       )
     end
