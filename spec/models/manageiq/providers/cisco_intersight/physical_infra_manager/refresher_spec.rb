@@ -75,6 +75,9 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     server_ems_ref = "6205743e6176752d366ee76e"
     server = get_physical_server_from_ems_ref(server_ems_ref)
 
+    chassis_ems_ref = "614ceb786176752d35ab8b41"
+    chassis = get_physical_chassis_from_ems_ref(chassis_ems_ref)
+
     expect(server).to(have_attributes(
                         :ems_ref                => server_ems_ref,
                         :hostname               => "C1-B1-UCSX-210C-M6",
@@ -88,7 +91,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                         :raw_power_state        => "",
                         :vendor                 => nil,
                         :health_state           => "Valid",
-                        :power_state            => ""
+                        :power_state            => "",
+                        :physical_chassis       => chassis
                       ))
 
     expect(server.ext_management_system).to(eq(ems))
