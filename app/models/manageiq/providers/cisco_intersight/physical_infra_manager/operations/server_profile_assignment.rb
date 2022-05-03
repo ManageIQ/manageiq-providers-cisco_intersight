@@ -48,7 +48,7 @@ module ManageIQ::Providers::CiscoIntersight
       _log.info("Requesting #{action} server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref})")
 
       with_provider_connection(:service => "ServerApi") do |server_api|
-        server_profile_updated = {"Action": action}
+        server_profile_updated = { 'Action' => action}
 
         begin
           result = server_api.patch_server_profile(server_profile.ems_ref, server_profile_updated, {})

@@ -454,10 +454,10 @@ module ManageIQ::Providers::CiscoIntersight
       assigned_server = physical_server_profile.assigned_server.nil? ? nil : persister.physical_servers.lazy_find(physical_server_profile.assigned_server.moid)
       associated_server = physical_server_profile.associated_server.nil? ? nil : persister.physical_servers.lazy_find(physical_server_profile.associated_server.moid)
       persister.physical_server_profiles.build(
-        :ems_ref            => physical_server_profile.moid,
-        :assigned_server    => assigned_server,
-        :associated_server    => associated_server,
-        :name               => physical_server_profile.name
+        :ems_ref           => physical_server_profile.moid,
+        :assigned_server   => assigned_server,
+        :associated_server => associated_server,
+        :name              => physical_server_profile.name
       )
     end
 

@@ -7,6 +7,5 @@ module ManageIQ::Providers::CiscoIntersight
     def provider_object(connection)
       connection.find!(ems_ref)
     end
-
   end
 end
