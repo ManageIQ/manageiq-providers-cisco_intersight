@@ -8,8 +8,6 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :EventParser
     require_nested :PhysicalServer
 
-    has_many :physical_server_profiles, :foreign_key => "ems_id", :dependent => :destroy, :inverse_of => :ext_management_system
-
     include Vmdb::Logging
     include ManagerMixin
     include_concern "Operations"

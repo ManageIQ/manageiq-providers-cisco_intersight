@@ -451,8 +451,8 @@ module ManageIQ::Providers::CiscoIntersight
       #   - physical_server_profile - ServerProfile, object obtained by intersight client
       # Returns:
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerProfile
-      assigned_server = physical_server_profile.assigned_server.nil? ? nil : persister.physical_servers.lazy_find(physical_server_profile.assigned_server.moid)
-      associated_server = physical_server_profile.associated_server.nil? ? nil : persister.physical_servers.lazy_find(physical_server_profile.associated_server.moid)
+      assigned_server = persister.physical_servers.lazy_find(physical_server_profile.assigned_server&.moid)
+      associated_server = persister.physical_servers.lazy_find(physical_server_profile.associated_server&.moid)
       persister.physical_server_profiles.build(
         :ems_ref           => physical_server_profile.moid,
         :assigned_server   => assigned_server,
