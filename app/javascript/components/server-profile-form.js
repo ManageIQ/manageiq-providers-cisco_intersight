@@ -28,14 +28,6 @@ const ServerProfileForm = ({ dispatch, modalData }) => {
     serverProfileVisible = true;
   } else {
     submitLabel = (modalData.action === 'deploy_server' ? __('Deploy') : __('Unassign'));
-
-    useEffect(() => {
-      API.get(
-        `/api/physical_servers/${ManageIQ.record.recordId}?attributes=name,assigned_server_profile.id`
-      ).then((data) => {
-        console.log(data);
-      });
-    });
   }
 
   const initialize = (formOptions) => {
@@ -61,8 +53,6 @@ const ServerProfileForm = ({ dispatch, modalData }) => {
       API.get(
         `/api/physical_servers/${ManageIQ.record.recordId}?attributes=assigned_server_profile.id`
       ).then((data) => {
-        console.log(data);
-
         API.post('/api/physical_server_profiles', {
           action: modalData.action,
           resources: [{ 
