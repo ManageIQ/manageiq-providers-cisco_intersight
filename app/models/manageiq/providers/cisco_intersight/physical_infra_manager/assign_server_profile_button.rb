@@ -2,6 +2,6 @@ class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssignServerPr
   needs :@record
 
   def disabled?
-    !@record.assigned_server_profile.nil?
+    @record.assigned_server_profile.present?
   end
 end
