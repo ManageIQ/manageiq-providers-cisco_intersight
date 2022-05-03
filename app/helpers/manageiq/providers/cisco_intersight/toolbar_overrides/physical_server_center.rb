@@ -53,7 +53,7 @@ module ManageIQ
                                                    :modal_title    => N_('Assign Server Profile'),
                                                    :component_name => 'ServerProfileForm',
                                                    :action         => 'assign_server'}},
-                                                   :klass          => ApplicationHelper::Button::ButtonWithoutRbacCheck
+                                                   :klass          => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssignServerProfileButton
                   ),
                   button(
                     :physical_server_deploy_server_profile,
