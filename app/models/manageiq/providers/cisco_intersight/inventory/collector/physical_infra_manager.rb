@@ -148,7 +148,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def server_api
-      @server_api ||= IntersightClient::ServerApi.new
+      @server_api ||= IntersightClient::ServerApi.new(api_client)
     end
 
     # API key and keyid configuration

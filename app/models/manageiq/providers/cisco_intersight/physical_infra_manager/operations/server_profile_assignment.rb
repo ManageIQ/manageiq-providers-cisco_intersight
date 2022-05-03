@@ -3,20 +3,21 @@ module ManageIQ::Providers::CiscoIntersight
     def assign_server(server_profile, options)
       _log.info("Requesting server assignment on server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref}), server ID #{options[:server_id]}")
 
-      with_provider_connection do |_client|
-        server = PhysicalServer.find_by(:id => options[:server_id], :ems_id => id)
-        if server.nil?
-          raise MiqException::Error, "Server with ID #{options[:server_id]} does not exist in EMS with ID #{id}"
-        end
+      server = PhysicalServer.find_by(:id => options[:server_id], :ems_id => id)
+      if server.nil?
+        raise MiqException::Error, "Server with ID #{options[:server_id]} does not exist in EMS with ID #{id}"
+      end
 
-        server_api = IntersightClient::ServerApi.new
-        compute_api = IntersightClient::ComputeApi.new
-
+      source_object_type = nil
+      with_provider_connection(:service => "ComputeApi") do |compute_api|
         ems_server = compute_api.get_compute_physical_summary_by_moid(server.ems_ref)
+        source_object_type = ems_server.source_object_type
+      end
 
+      with_provider_connection(:service => "ServerApi") do |server_api|
         server_profile_updated = IntersightClient::ServerProfile.new(
           {
-            :assigned_server        => {"Moid" => server.ems_ref, "ObjectType" => ems_server.source_object_type},
+            :assigned_server        => {"Moid" => server.ems_ref, "ObjectType" => source_object_type},
             :server_assignment_mode => "Static",
             :target_platform        => nil,
             :uuid_address_type      => nil
@@ -46,9 +47,7 @@ module ManageIQ::Providers::CiscoIntersight
     def simple_action(server_profile, action)
       _log.info("Requesting #{action} server profile #{server_profile.id} (ems_ref #{server_profile.ems_ref})")
 
-      with_provider_connection do |_client|
-        server_api = IntersightClient::ServerApi.new
-
+      with_provider_connection(:service => "ServerApi") do |server_api|
         server_profile_updated = {"Action": action}
 
         begin
