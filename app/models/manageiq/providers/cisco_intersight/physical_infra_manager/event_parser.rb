@@ -3,12 +3,12 @@ module ManageIQ::Providers::CiscoIntersight
     def self.event_to_hash(event, ems_id)
       {
         :ems_id     => ems_id,
-        :ems_ref    => event["EventId"],
-        :event_type => "CiscoIntersight_#{event["MessageId"]}",
-        :full_data  => event,
-        :message    => event["Message"],
+        :ems_ref    => event.moid,
+        :event_type => event.orig_severity,
+        :full_data  => event.to_h,
+        :message    => event.description,
         :source     => "CiscoIntersight",
-        :timestamp  => event["EventTimestamp"] || Time.now.utc.to_s,
+        :timestamp  => event.mod_time || Time.now.utc.to_s,
       }
     end
   end

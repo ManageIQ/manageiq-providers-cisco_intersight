@@ -19,15 +19,10 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def poll
-      @ems.with_provider_connection do |connection|
+      @ems.with_provider_connection do |api_client|
         catch(:stop_polling) do
-          loop do
-            connection.events.each do |activity|
-              throw :stop_polling if @stop_polling
-              yield activity.to_h
-            end
-            sleep @poll_sleep
-          end
+          events = IntersightClient::CondApi.new(api_client).get_cond_alarm_list.results
+          events.each { |event| yield event }
         rescue => exception
           raise ProviderUnreachable, exception.message
         end
