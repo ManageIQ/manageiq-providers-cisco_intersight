@@ -12,8 +12,6 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
 
     service = options.delete(:service)
     if service
-      require "intersight_client/#{service.underscore}"
-
       api_client_klass = "IntersightClient::#{service}".safe_constantize
       raise ArgumentError, _("Invalid service") if api_client_klass.nil?
 
