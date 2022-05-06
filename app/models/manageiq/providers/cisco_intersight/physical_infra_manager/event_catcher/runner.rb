@@ -7,13 +7,8 @@ module ManageIQ::Providers::CiscoIntersight
     # Additional comment (Tjaz): All functions except event_monitor_handle are pretty much
     #   the same across all providers. event_monitor_handle and the Stream class need to be changed
     def monitor_events
-      # Start up our event monitor
       event_monitor_handle.start
-
-      # Tell the core runner thread that the event monitor is started. The worker won't be marked as "running" until this happens.
       event_monitor_running
-
-      # And finally poll for events. This is implemented as a blocking method which yields events caught from the provider
       event_monitor_handle.poll do |event|
         @queue.enq(event)
       end
@@ -28,7 +23,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     # This is called by the core runner thread to parse and put the event on the queue.
     def queue_event(event)
-      _log.info("#{log_prefix} Caught event [#{event[:id]}]")
+      _log.info("#{log_prefix} Caught event [#{event.moid}]")
       event_hash = ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EventParser.event_to_hash(event, @cfg[:ems_id])
       EmsEvent.add_queue('add', @cfg[:ems_id], event_hash)
     end
