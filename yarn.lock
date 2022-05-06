@@ -4,8 +4,8 @@
 __metadata:
   version: 4
 
-"root-workspace-0b6124@workspace:.":
+"manageiq-providers-cisco_intersight@workspace:.":
   version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
+  resolution: "manageiq-providers-cisco_intersight@workspace:."
   languageName: unknown
   linkType: soft
