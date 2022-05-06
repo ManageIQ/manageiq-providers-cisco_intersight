@@ -18,6 +18,7 @@ module ManageIQ::Providers::CiscoIntersight::Inventory::Persister::Definitions::
       physical_switch_hardwares
       physical_switch_firmwares
       physical_switch_network_ports
+      physical_server_profiles
     ].each do |name|
       add_collection(physical_infra, name)
     end
