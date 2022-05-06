@@ -3,10 +3,6 @@
     :blacklisted_event_names: []
     :event_handling:
       :event_groups: {} # TODO: Add event names under the appropriate groups here
-      # Examples for previous providers [Redfish's by far the shortest]:
-      #   - Redfish: https://github.com/ManageIQ/manageiq-providers-redfish/blob/f5cfcc5139ed3079ba51ce70a5cb80c2a64d560b/config/settings.yml#L6-L9
-      #   - Amazon: https://github.com/ManageIQ/manageiq-providers-amazon/blob/79ab34cf73e0707afebd4d2c381bf92e0e91063f/config/settings.yml#L5-L30
-      #   - Lenovo: https://github.com/ManageIQ/manageiq-providers-lenovo/blob/cb4bdcc8e4291653309dcd463d9e6ea4b17a26ef/config/settings.yml#L8-L374
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes
