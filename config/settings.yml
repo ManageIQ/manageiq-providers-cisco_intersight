@@ -5,7 +5,11 @@
       :event_groups:
         :general:
           :critical:
-          - Alarm 
+          - Alarm
+        :update:
+          :critical:
+          - WorkflowInfo
+          # TODO: Add all update groups that there are (go search them on intersight.com)
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes
