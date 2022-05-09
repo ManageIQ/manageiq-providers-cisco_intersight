@@ -9,6 +9,7 @@ module ManageIQ::Providers::CiscoIntersight
       firmware_firmware_summaries
       network_elements
       physical_chassis
+      ## workflow_info_list
     end
 
     # Methods that are directly used by parser
@@ -74,6 +75,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def compute_blades
       compute_api.get_compute_blade_list.results
+    end
+
+    def workflow_info_list
+      workflow_api.get_workflow_workflow_info_list(@workflow_api_opts).results
     end
 
     delegate :get_ether_physical_port_by_moid, :to => :ether_api
@@ -155,6 +160,17 @@ module ManageIQ::Providers::CiscoIntersight
     def api_client
       # Sets API key and keyid for the manager
       @api_client ||= manager.connect
+    end
+
+    def workflow_api
+      @workflow_api ||= IntersightClient::WorkflowApi.new(api_client)
+      # Strangely without opts workflowinfo_list calls fail due to Object validation,but with opts it goes through OK.
+      @workflow_api_opts = {
+        orderby: 'CreateTime desc', # String | Determines what properties are used to sort the collection of resources.
+        top: $top=100, # Integer | Specifies the maximum number of resources to return in the response.
+        skip: $skip=0, # Integer | Specifies the number of resources to skip in the response.
+        inlinecount: 'allpages', # String | The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+      }
     end
   end
 end
