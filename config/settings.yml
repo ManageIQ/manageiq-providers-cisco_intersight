@@ -3,6 +3,9 @@
     :blacklisted_event_names: []
     :event_handling:
       :event_groups:
+        :general:
+          :critical:
+          - Alarm 
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes
