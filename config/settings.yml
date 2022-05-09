@@ -2,7 +2,10 @@
   :ems_cisco_intersight:
     :blacklisted_event_names: []
     :event_handling:
-      :event_groups: {} # TODO: Add event names under the appropriate groups here
+      :event_groups:
+        :general:
+          :critical:
+          - Alarm 
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes

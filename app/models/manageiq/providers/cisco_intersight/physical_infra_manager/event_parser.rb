@@ -4,9 +4,9 @@ module ManageIQ::Providers::CiscoIntersight
       {
         :ems_id     => ems_id,
         :ems_ref    => event.moid,
-        :event_type => event.orig_severity,
+        :event_type => "Alarm",
         :full_data  => JSON.parse(event.to_json),
-        :message    => event.description,
+        :message    => "#{event.description} (#{event.name})",
         :source     => "CiscoIntersight",
         :timestamp  => event.mod_time || Time.now.utc.to_s,
       }
