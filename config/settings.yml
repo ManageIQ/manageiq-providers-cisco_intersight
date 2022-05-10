@@ -8,7 +8,10 @@
           - Alarm
         :update:
           :critical:
-          - WorkflowInfo
+          - "Workflow Info"
+          - "Blade Decommission"
+          - "Blade Discovery"
+          - "Blade Recommission"
           # TODO: Add all update groups that there are (go search them on intersight.com)
 :ems_refresh:
   :cisco_intersight:
