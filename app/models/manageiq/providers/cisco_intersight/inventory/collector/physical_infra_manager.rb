@@ -54,8 +54,8 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def firmware_firmware_summary_by_moid
-      @firmware_firmware_summary_by_moid ||= firmware_firmware_summaries.index_by do
-        |firmware_firmware_summary| firmware_firmware_summary.server.moid
+      @firmware_firmware_summary_by_moid ||= firmware_firmware_summaries.index_by do |firmware_firmware_summary|
+        firmware_firmware_summary.server.moid
       end
     end
 

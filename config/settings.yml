@@ -1,8 +1,22 @@
 :ems:
   :ems_cisco_intersight:
-    :blacklisted_event_names: []
+    :blacklisted_event_names: [ ]
     :event_handling:
       :event_groups:
+        :general:
+          :critical:
+          - Alarm
+        :update:
+          :detail:
+          - "Chassis Rediscover"
+          - "Chassis Discovery"
+          - "Chassis Inventory"
+          - "Blade Discovery"
+          - "Deploy Domain Profile"
+          - "Blade Recommission"
+          - "Undeploy Server Profile"
+          - "Deploy Server Profile"
+          - "Blade Decommission"
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes
@@ -21,6 +35,6 @@
         :poll: 20.seconds
     :queue_worker_base:
       :ems_metrics_collector_worker:
-        :ems_metrics_collector_worker_cisco_intersight: {}
+        :ems_metrics_collector_worker_cisco_intersight: { }
       :ems_refresh_worker:
-        :ems_refresh_worker_cisco_intersight_physical_infra: {}
+        :ems_refresh_worker_cisco_intersight_physical_infra: { }
