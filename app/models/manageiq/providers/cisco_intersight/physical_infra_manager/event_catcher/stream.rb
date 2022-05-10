@@ -18,7 +18,7 @@ module ManageIQ::Providers::CiscoIntersight
       @stop_polling = true
     end
 
-    def poll
+    def poll(&block)
       since = Time.new(2000).utc.iso8601
       loop do
         @ems.with_provider_connection do |api_client|
@@ -36,8 +36,8 @@ module ManageIQ::Providers::CiscoIntersight
             since = Time.now.utc.iso8601
             break if @stop_polling
 
-            events.each { |event| yield event }
-            workflow_infos.each { |workflow_info| yield workflow_info }
+            events.each(&block)
+            workflow_infos.each(&block)
           rescue => exception
             raise ProviderUnreachable, exception.message
           end
