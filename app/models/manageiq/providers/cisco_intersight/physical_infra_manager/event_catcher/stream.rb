@@ -24,12 +24,13 @@ module ManageIQ::Providers::CiscoIntersight
         @ems.with_provider_connection do |api_client|
           catch(:stop_polling) do
             cond_api_opts = {
-              :filter => 'CreateTime gt ' + since.to_s,
+              :filter => "CreateTime gt #{since}",
             }
             events = IntersightClient::CondApi.new(api_client).get_cond_alarm_list(cond_api_opts).results
             workflow_api_opts = {
-              :filter => 'CreateTime gt ' + since.to_s,
-              :select => '$select=CreateTime,ModTime,Name,Status,Email,WorkflowCtx,ClassId,Message', # Use only selected attributes. Validation of other within the SDK lib might fail
+              :filter => "CreateTime gt #{since}",
+              # Use only selected attributes. Validation of other within the SDK lib might fail:
+              :select => '$select=CreateTime,ModTime,Name,Status,Email,WorkflowCtx,ClassId,Message',
             }
             workflow_infos = IntersightClient::WorkflowApi.new(api_client).get_workflow_workflow_info_list(workflow_api_opts).results
             since = Time.now.utc.iso8601
@@ -37,7 +38,6 @@ module ManageIQ::Providers::CiscoIntersight
 
             events.each { |event| yield event }
             workflow_infos.each { |workflow_info| yield workflow_info }
-            # TODO: Write tests for events
           rescue => exception
             raise ProviderUnreachable, exception.message
           end
