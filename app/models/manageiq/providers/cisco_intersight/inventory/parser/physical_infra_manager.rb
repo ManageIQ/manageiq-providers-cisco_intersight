@@ -412,7 +412,8 @@ module ManageIQ::Providers::CiscoIntersight
               :port_type          => "ethernet",
               :mac_address        => physical_port.mac_address,
               :port_index         => physical_port.port_id,
-              :connected_port_uid => physical_port.moid
+              :connected_port_uid => physical_port.moid,
+              :port_status        => physical_port.admin_state
             )
           end
         end
