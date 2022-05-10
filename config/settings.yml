@@ -5,18 +5,18 @@
       :event_groups:
         :general:
           :critical:
-            - Alarm
+          - Alarm
         :update:
           :critical:
-            - "Chassis Rediscover"
-            - "Chassis Discovery"
-            - "Chassis Inventory"
-            - "Blade Discovery"
-            - "Deploy Domain Profile"
-            - "Blade Recommission"
-            - "Undeploy Server Profile"
-            - "Deploy Server Profile"
-            - "Blade Decommission"
+          - "Chassis Rediscover"
+          - "Chassis Discovery"
+          - "Chassis Inventory"
+          - "Blade Discovery"
+          - "Deploy Domain Profile"
+          - "Blade Recommission"
+          - "Undeploy Server Profile"
+          - "Deploy Server Profile"
+          - "Blade Decommission"
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes
