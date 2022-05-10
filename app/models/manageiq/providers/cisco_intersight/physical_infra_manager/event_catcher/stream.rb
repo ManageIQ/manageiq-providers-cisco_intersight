@@ -19,7 +19,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def poll(&block)
-      since = Time.new(2000).utc.iso8601
+      since = 2.minutes.ago.utc.iso8601
       loop do
         @ems.with_provider_connection do |api_client|
           catch(:stop_polling) do
@@ -28,14 +28,16 @@ module ManageIQ::Providers::CiscoIntersight
             }
             events = IntersightClient::CondApi.new(api_client).get_cond_alarm_list(cond_api_opts).results
             workflow_api_opts = {
-              :filter => "CreateTime gt #{since}",
+              :filter  => "ModTime gt #{since}",
               # Use only selected attributes. Validation of other within the SDK lib might fail:
-              :select => '$select=CreateTime,ModTime,Name,Status,Email,WorkflowCtx,ClassId,Message',
+              :select  => '$select=CreateTime,ModTime,Name,Status,Email,WorkflowCtx,ClassId,Message',
+              :orderby => 'ModTime' # Orders elements in ascending order based on atribute ModTime
             }
             workflow_infos = IntersightClient::WorkflowApi.new(api_client).get_workflow_workflow_info_list(workflow_api_opts).results
-            since = Time.now.utc.iso8601
+            since = workflow_infos.last&.mod_time || since # Detect the most recently caught event and use that timestamp for since
             break if @stop_polling
 
+            # Yield the events
             events.each(&block)
             workflow_infos.each(&block)
           rescue => exception
