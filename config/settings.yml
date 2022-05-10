@@ -8,11 +8,15 @@
           - Alarm
         :update:
           :critical:
-          - "Workflow Info"
-          - "Blade Decommission"
+          - "Chassis Rediscover"
+          - "Chassis Discovery"
+          - "Chassis Inventory"
           - "Blade Discovery"
+          - "Deploy Domain Profile"
           - "Blade Recommission"
-          # TODO: Add all update groups that there are (go search them on intersight.com)
+          - "Undeploy Server Profile"
+          - "Deploy Server Profile"
+          - "Blade Decommission"
 :ems_refresh:
   :cisco_intersight:
     :refresh_interval: 15.minutes

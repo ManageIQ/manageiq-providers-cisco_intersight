@@ -18,8 +18,7 @@ module ManageIQ::Providers::CiscoIntersight
         {
           :ems_id     => ems_id,
           :ems_ref    => event.moid,
-          # TODO: Replace hardcoded event type with event.name after update groups get written in config/settings.yml
-          :event_type => "Workflow Info", # event.name,
+          :event_type => event.name,
           :full_data  => JSON.parse(event.to_json),
           :message    => "#{event.message&.first&.message} (#{event.name})",
           :source     => "CiscoIntersight",
