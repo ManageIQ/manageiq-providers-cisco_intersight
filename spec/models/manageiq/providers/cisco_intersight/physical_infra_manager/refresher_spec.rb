@@ -481,7 +481,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                                               :port_index         => 42,
                                               :vlan_enabled       => nil,
                                               :guest_device_id    => nil,
-                                              :connected_port_uid => switch_uid_ems
+                                              :connected_port_uid => switch_uid_ems,
+                                              :port_status        => "Disabled"
                                             ))
   end
 
