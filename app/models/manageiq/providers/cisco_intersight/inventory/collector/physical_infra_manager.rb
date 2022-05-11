@@ -45,6 +45,9 @@ module ManageIQ::Providers::CiscoIntersight
 
     def physical_server_profiles
       @physical_server_profiles ||= server_api.get_server_profile_list.results
+    rescue IntersightClient::ApiError => e
+      @physical_server_profiles = {}
+      _log.error("Collecting process of Server Profiles has failed: #{e.response_body}. There might be a potential license issue.")
     end
 
     def device_contract_informations_by_moid
