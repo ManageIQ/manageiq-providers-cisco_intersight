@@ -475,7 +475,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                                               :type               => nil,
                                               :port_name          => "switch-FDO244106VJ/slot-1/switch-ether/port-42",
                                               :port_type          => "ethernet",
-                                              :peer_mac_address   => nil,
+                                              :peer_mac_address   => "unknown",
                                               :vlan_key           => nil,
                                               :mac_address        => "00:3A:9C:DA:78:F1",
                                               :port_index         => 42,
