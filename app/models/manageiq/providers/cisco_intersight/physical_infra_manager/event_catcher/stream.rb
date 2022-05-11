@@ -19,7 +19,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def poll(&block)
-      since = 2.minutes.ago.utc.iso8601
+      since = @ems.ems_events.order(:timestamp).pluck(:timestamp).last&.utc&.iso8601 || Time.new(2000).utc.iso8601
       loop do
         @ems.with_provider_connection do |api_client|
           catch(:stop_polling) do
