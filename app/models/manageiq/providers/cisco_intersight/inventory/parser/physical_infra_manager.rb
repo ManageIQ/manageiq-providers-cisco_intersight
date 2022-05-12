@@ -32,8 +32,11 @@ module ManageIQ::Providers::CiscoIntersight
 
         source_object.adapters.each do |adapter|
           adapter_unit = collector.get_adapter_unit_by_moid(adapter.moid)
-          # build collection physical_server_network_devices
-          build_physical_server_network_devices(hardware, adapter_unit)
+          adapter_unit.host_eth_ifs.each do |host_eth_if_reference|
+            host_eth_if = collector.get_adapter_host_eth_interface_by_moid(host_eth_if_reference.moid)
+            # build collection physical_server_network_devices
+            build_physical_server_network_devices(hardware, host_eth_if)
+          end
         end
 
         storage_controllers_list&.each do |storage_controller_reference|
@@ -238,20 +241,19 @@ module ManageIQ::Providers::CiscoIntersight
       )
     end
 
-    def build_physical_server_network_devices(physical_server_hardware, adapter_unit)
+    def build_physical_server_network_devices(physical_server_hardware, host_eth_if)
       # Builds out collection physical_server_network_devices
       # Object types:
       #   - computer_system - ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerHardwares
-      #   - adapter_unit - AdapterUnit, object obtained by intersight client
+      #   - host_eth_if - HostEthIfs, object obtained by intersight client
       # Returns:
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerNetworkDevices
       persister.physical_server_network_devices.build(
-        :hardware     => physical_server_hardware,
-        :device_name  => adapter_unit.adapter_id,
-        :device_type  => "ethernet",
-        :manufacturer => adapter_unit.vendor,
-        :model        => adapter_unit.model,
-        :uid_ems      => adapter_unit.moid
+        :hardware         => physical_server_hardware,
+        :device_name      => host_eth_if.name,
+        :device_type      => "ethernet",
+        :peer_mac_address => host_eth_if.mac_address,
+        :uid_ems          => host_eth_if.moid
       )
     end
 
