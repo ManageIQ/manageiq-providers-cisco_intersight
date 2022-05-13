@@ -6,6 +6,5 @@ module ManageIQ::Providers::CiscoIntersight
     include_concern "Led"
     include_concern "Firmware"
     include_concern "Lifecycle"
-    include_concern "ServerProfileAssignment"
   end
 end

@@ -4,7 +4,6 @@ module ManageIQ::Providers::CiscoIntersight
       physical_servers
       physical_racks
       physical_chassis
-      physical_server_profiles
       physical_switches
     end
 
@@ -96,13 +95,6 @@ module ManageIQ::Providers::CiscoIntersight
         next unless ucsm_running_firmware
 
         build_physical_switch_firmwares(hardware, ucsm_running_firmware)
-      end
-    end
-
-    def physical_server_profiles
-      collector.physical_server_profiles.each do |c|
-        # build collection physical_server_profiles
-        build_physical_server_profiles(c)
       end
     end
 
@@ -444,22 +436,6 @@ module ManageIQ::Providers::CiscoIntersight
 
       persister.physical_server_hardwares.build(
         :computer_system => computer
-      )
-    end
-
-    def build_physical_server_profiles(physical_server_profile)
-      # Builds out collection physical_server_profiles
-      # Object types:
-      #   - physical_server_profile - ServerProfile, object obtained by intersight client
-      # Returns:
-      #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerProfile
-      assigned_server = persister.physical_servers.lazy_find(physical_server_profile.assigned_server&.moid)
-      associated_server = persister.physical_servers.lazy_find(physical_server_profile.associated_server&.moid)
-      persister.physical_server_profiles.build(
-        :ems_ref           => physical_server_profile.moid,
-        :assigned_server   => assigned_server,
-        :associated_server => associated_server,
-        :name              => physical_server_profile.name
       )
     end
 
