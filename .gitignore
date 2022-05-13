@@ -17,14 +17,5 @@
 /config/environments/*.local.yml
 /spec/manageiq
 
-/node_modules/
-/.pnp.*
-/.yarn/*
-!/.yarn/patches
-!/.yarn/plugins
-!/.yarn/releases
-!/.yarn/sdks
-!/.yarn/versions
-
 intersight-client-ruby/
 intersight-sdk-ruby
