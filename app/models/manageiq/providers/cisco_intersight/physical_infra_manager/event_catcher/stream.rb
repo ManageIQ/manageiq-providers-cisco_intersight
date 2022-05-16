@@ -32,8 +32,8 @@ module ManageIQ::Providers::CiscoIntersight
               # Use only selected attributes. Validation of other within the SDK lib might fail:
               :select  => '$select=CreateTime,ModTime,Name,Status,Email,WorkflowCtx,ClassId,Message',
               :orderby => 'ModTime', # Orders elements in ascending order based on atribute ModTime
-              :top     => $top=100, # Specifies the maximum number of resources to return in the response.
-              :skip    => $skip=0, # Specifies the number of resources to skip in the response.
+              :top     => 100, # Specifies the maximum number of resources to return in the response.
+              :skip    => 0, # Specifies the number of resources to skip in the response.
             }
             workflow_infos = IntersightClient::WorkflowApi.new(api_client).get_workflow_workflow_info_list(workflow_api_opts).results
             since = workflow_infos.last&.mod_time || since # Detect the most recently caught event and use that timestamp for since
