@@ -9,7 +9,7 @@ module ManageIQ
               select(
                 :physical_server_lifecycle_choice,
                 nil,
-                t = N_('Cisco Intersight'),
+                t = N_('Intersight'),
                 t,
                 :enabled => true,
                 :items   => [
