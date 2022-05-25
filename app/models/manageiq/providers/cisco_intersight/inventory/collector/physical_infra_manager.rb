@@ -103,6 +103,8 @@ module ManageIQ::Providers::CiscoIntersight
 
     delegate :get_network_element_summary_by_moid, :to => :network_api
 
+    delegate :get_adapter_host_eth_interface_by_moid, :to => :adapter_api
+
     private
 
     # API endpoint declaration

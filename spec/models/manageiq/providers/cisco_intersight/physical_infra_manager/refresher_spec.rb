@@ -47,8 +47,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     expect(ems.physical_server_details.count).to(eq(4))
     expect(ems.physical_server_computer_systems.count).to(eq(4))
     expect(ems.physical_server_hardwares.count).to(eq(4))
-    expect(ems.physical_server_network_devices.count).to(eq(3))
-    expect(ems.physical_server_firmwares.count).to(eq(41))
+    expect(ems.physical_server_network_devices.count).to(eq(2))
+    expect(ems.physical_server_firmwares.count).to(eq(56))
     expect(ems.physical_server_storage_adapters.count).to(eq(0))
 
     # physical rack's collections
@@ -184,12 +184,12 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
   end
 
   def assert_specific_physical_server_network_devices
-    server_ems_ref = "6272cb176176752d36b0dd57"
+    server_ems_ref = "626980986176752d368dabb9"
     server = get_physical_server_from_ems_ref(server_ems_ref)
     nic = server.hardware.nics.first
 
     expect(nic).to(have_attributes(
-                     :device_name            => "UCSX-V4-Q25GML_FCH250672ZM",
+                     :device_name            => "vNIC-A",
                      :device_type            => "ethernet",
                      :location               => nil,
                      :filename               => nil,
@@ -201,20 +201,20 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
                      :address                => nil,
                      :switch_id              => nil,
                      :lan_id                 => nil,
-                     :model                  => "UCSX-V4-Q25GML",
+                     :model                  => nil,
                      :iscsi_name             => nil,
                      :iscsi_alias            => nil,
                      :present                => true,
                      :start_connected        => true,
                      :auto_detect            => nil,
-                     :uid_ems                => "6272cced6176752d36b15a96",
+                     :uid_ems                => "627a472f6176752d36718ff9",
                      :chap_auth_enabled      => nil,
-                     :manufacturer           => "Cisco Systems Inc",
+                     :manufacturer           => nil,
                      :field_replaceable_unit => nil,
                      :parent_device_id       => nil,
                      :vlan_key               => nil,
                      :vlan_enabled           => nil,
-                     :peer_mac_address       => nil,
+                     :peer_mac_address       => "00:25:B5:1A:00:03",
                      :speed                  => nil
                    ))
   end
@@ -223,6 +223,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     # Note that these tests have to be updated if a re/decommission operation is done on this server.
     server_ems_ref = "614cebe76f62692d3083863f"
     server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    return unless server_decommissioned
 
     expect(server_decommissioned).to(have_attributes(
                                        :ems_ref                => server_ems_ref,
@@ -245,6 +247,9 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     # Note that these tests have to be updated if a re/decommission operation is done on this server.
     server_ems_ref = "614cebe76f62692d3083863f"
     server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    return unless server_decommissioned
+
     asset_detail = AssetDetail.find_by!(:resource => server_decommissioned)
 
     expect(asset_detail).to(have_attributes(
@@ -270,6 +275,8 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::Refresher d
     # Note that these tests have to be updated if a re/decommission operation is done on this server.
     server_ems_ref = "614cebe76f62692d3083863f"
     server_decommissioned = get_physical_server_from_ems_ref(server_ems_ref)
+
+    return unless server_decommissioned
 
     hardware_decommissioned = server_decommissioned.hardware
 
