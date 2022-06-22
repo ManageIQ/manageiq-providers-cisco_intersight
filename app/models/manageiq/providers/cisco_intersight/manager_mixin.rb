@@ -1,9 +1,8 @@
-require 'intersight_client'
-
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
   def connect(options = {})
+    require 'intersight_client'
     keyid = authentication_userid
     key = authentication_password
     raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
@@ -98,6 +97,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     end
 
     def verify_provider_connection(api_client)
+      require 'intersight_client'
       IntersightClient::IamApi.new(api_client).get_iam_api_key_list({:count => true}).count > 0
     rescue IntersightClient::ApiError => err
       case err.code
