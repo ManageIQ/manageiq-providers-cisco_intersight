@@ -1,3 +1,5 @@
+require 'intersight_client'
+
 describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
   it ".ems_type" do
     expect(described_class.ems_type).to eq("cisco_intersight")
