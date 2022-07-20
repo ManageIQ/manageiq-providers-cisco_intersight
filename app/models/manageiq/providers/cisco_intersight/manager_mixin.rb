@@ -33,7 +33,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
 
   module ClassMethods
     def params_for_create
-      @params_for_create ||= {
+      {
         :fields => [
           {
             :component => 'sub-form',
@@ -53,7 +53,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                     :component  => "text-field",
                     :id         => "authentications.default.userid",
                     :name       => "authentications.default.userid",
-                    :label      => "Intersight API key ID",
+                    :label      => _("Intersight API key ID"),
                     :isRequired => true,
                     :validate   => [{:type => "required"}],
                   },
@@ -61,7 +61,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                     :component  => "textarea",
                     :id         => "authentications.default.password",
                     :name       => "authentications.default.password",
-                    :label      => "Intersight API key",
+                    :label      => _("Intersight API key"),
                     :type       => "password",
                     :isRequired => true,
                     :validate   => [{:type => "required"}, {
