@@ -471,7 +471,7 @@ module ManageIQ::Providers::CiscoIntersight
         :associated_server => associated_server,
         :name              => physical_server_profile.name
       )
-      end
+    end
 
     def build_physical_server_profile_templates(physical_server_profile_template)
       # Builds out collection physical_server_profile_templates
@@ -480,8 +480,8 @@ module ManageIQ::Providers::CiscoIntersight
       # Returns:
       #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerProfileTemplate
       persister.physical_server_profile_templates.build(
-        :ems_ref           => physical_server_profile_template.moid,
-        :name              => physical_server_profile_template.name
+        :ems_ref => physical_server_profile_template.moid,
+        :name    => physical_server_profile_template.name
       )
     end
 
