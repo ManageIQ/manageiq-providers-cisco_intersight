@@ -5,6 +5,7 @@ module ManageIQ::Providers::CiscoIntersight
       physical_racks
       physical_chassis
       physical_server_profiles
+      physical_server_profile_templates
       physical_switches
     end
 
@@ -99,6 +100,13 @@ module ManageIQ::Providers::CiscoIntersight
         next unless ucsm_running_firmware
 
         build_physical_switch_firmwares(hardware, ucsm_running_firmware)
+      end
+    end
+
+    def physical_server_profile_templates
+      collector.physical_server_profile_templates.each do |c|
+        # build collection physical_server_profile_templates
+        build_physical_server_profile_templates(c)
       end
     end
 
@@ -462,6 +470,18 @@ module ManageIQ::Providers::CiscoIntersight
         :assigned_server   => assigned_server,
         :associated_server => associated_server,
         :name              => physical_server_profile.name
+      )
+      end
+
+    def build_physical_server_profile_templates(physical_server_profile_template)
+      # Builds out collection physical_server_profile_templates
+      # Object types:
+      #   - physical_server_profile_template - ServerProfileTemplate, object obtained by intersight client
+      # Returns:
+      #   ManageIQ's object ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::PhysicalServerProfileTemplate
+      persister.physical_server_profile_templates.build(
+        :ems_ref           => physical_server_profile_template.moid,
+        :name              => physical_server_profile_template.name
       )
     end
 
