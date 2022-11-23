@@ -1,15 +1,13 @@
 class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWorkflow < ManageIQ::Providers::EmsRefreshWorkflow
-
   def run_native_op
     queue_signal(:poll_native_task)
   end
   alias start run_native_op
 
   def poll_native_task
-
     wf_api = ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager.first.connect(:service=>'WorkflowApi')
-    native_object_response = wf_api.get_workflow_workflow_info_list({ :filter => "Input.workflowContext.WorkflowType eq 'serverconfig' and Input.workflowContext.WorkflowSubtype eq 'Deploy' and Input.workflowContext.InitiatorCtx.InitiatorMoid eq '#{options[:native_task_id]}'", :select => "Status" })
-    native_object =  native_object_response.results[0]
+    native_object_response = wf_api.get_workflow_workflow_info_list({:filter => "Input.workflowContext.WorkflowType eq 'serverconfig' and Input.workflowContext.WorkflowSubtype eq 'Deploy' and Input.workflowContext.InitiatorCtx.InitiatorMoid eq '#{options[:native_task_id]}'", :select => "Status"})
+    native_object = native_object_response.results[0]
 
     case native_object.status
     when "FAILED"
@@ -26,7 +24,6 @@ class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWork
     signal(:abort, err.message, "error")
   end
 
-
   def refresh
     task_ids = EmsRefresh.queue_refresh_task(ext_management_system)
     if task_ids.blank?
@@ -39,7 +36,6 @@ class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWork
       queue_signal(:poll_refresh)
     end
   end
-
 
   def ext_management_system
     @ext_management_system ||= ExtManagementSystem.find(options[:ems_id])
