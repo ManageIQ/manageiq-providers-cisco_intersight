@@ -164,6 +164,10 @@ module ManageIQ::Providers::CiscoIntersight
       @server_api ||= IntersightClient::ServerApi.new(api_client)
     end
 
+    def bulk_api
+      @bulk_api ||= IntersightClient::BulkApi.new(api_client)
+    end
+
     # API key and keyid configuration
     def api_client
       # Sets API key and keyid for the manager
