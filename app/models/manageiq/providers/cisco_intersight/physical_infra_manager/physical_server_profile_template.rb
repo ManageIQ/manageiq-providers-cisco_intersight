@@ -8,7 +8,6 @@ module ManageIQ::Providers::CiscoIntersight
       connection.find!(ems_ref)
     end
 
-
     def deploy_server_from_template(server_id, profile_name)
       # Load the gem
       require 'intersight_client'
@@ -51,7 +50,7 @@ module ManageIQ::Providers::CiscoIntersight
 
       # create a job to refresh the cisco intersight provider after the deployment finished
       options = {
-        :target_class   =>self.class.name,
+        :target_class   => self.class.name,
         :target_id      => id,
         :ems_id         => ext_management_system.id,
         :native_task_id => new_profile_moid,
