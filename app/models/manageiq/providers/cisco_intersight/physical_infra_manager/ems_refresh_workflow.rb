@@ -5,7 +5,7 @@ class ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWork
   alias start run_native_op
 
   def poll_native_task
-    wf_api = ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager.first.connect(:service=>'WorkflowApi')
+    wf_api = ext_management_system.connect(:service=>'WorkflowApi')
     native_object_response = wf_api.get_workflow_workflow_info_list({:filter => "Input.workflowContext.WorkflowType eq 'serverconfig' and Input.workflowContext.WorkflowSubtype eq 'Deploy' and Input.workflowContext.InitiatorCtx.InitiatorMoid eq '#{options[:native_task_id]}'", :select => "Status"})
     native_object = native_object_response.results[0]
 
