@@ -64246,7 +64246,7 @@ http_interactions:
   recorded_at: Thu, 12 May 2022 13:47:31 GMT
 - request:
     method: get
-    uri: https://intersight.com/api/v1/server/ProfilesTemplates
+    uri: https://intersight.com/api/v1/server/ProfileTemplates
     body:
       encoding: US-ASCII
       string: ''
@@ -64324,108 +64324,108 @@ http_interactions:
         {
           "ObjectType": "server.ProfileTemplate.List",
           "Results": [
-                    {
-                        "ClassId": "server.ProfileTemplate",
-                        "ObjectType": "server.ProfileTemplate",
-                        "AccountMoid": "5ed10e437564612d3352cc2d",
-                        "CreateTime": "2022-10-12T16:53:46.348Z",
-                        "DomainGroupMoid": "5ed10e437564612d3352cc37",
-                        "ModTime": "2022-11-29T12:32:37.902Z",
-                        "Moid": "6346f11a77696e2d300b6049",
-                        "Owners": [
-                          "5ed10e437564612d3352cc2d"
-                        ],
-                        "SharedScope": "",
-                        "Tags": [
+            {
+              "ClassId": "server.ProfileTemplate",
+              "ObjectType": "server.ProfileTemplate",
+              "AccountMoid": "5ed10e437564612d3352cc2d",
+              "CreateTime": "2022-10-12T16:53:46.348Z",
+              "DomainGroupMoid": "5ed10e437564612d3352cc37",
+              "ModTime": "2022-11-29T12:32:37.902Z",
+              "Moid": "6346f11a77696e2d300b6049",
+              "Owners": [
+                "5ed10e437564612d3352cc2d"
+              ],
+              "SharedScope": "",
+              "Tags": [
 
-                        ],
-                        "VersionContext": null,
-                        "Ancestors": [
+              ],
+              "VersionContext": null,
+              "Ancestors": [
 
-                        ],
-                        "PermissionResources": [
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "organization.Organization",
-                            "Moid": "631803456972652d3097eb8d",
-                            "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
-                          }
-                        ],
-                        "DisplayNames": null,
-                        "Description": "",
-                        "Name": "xLabs-Development",
-                        "Type": "instance",
-                        "Action": "No-op",
-                        "ConfigContext": {
-                          "ClassId": "policy.ConfigContext",
-                          "ObjectType": "policy.ConfigContext",
-                          "ConfigState": "",
-                          "ConfigType": "",
-                          "ControlAction": "ConfigChange",
-                          "ErrorState": "",
-                          "OperState": ""
-                        },
-                        "PolicyBucket": [
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "bios.Policy",
-                            "Moid": "6346f13e6275722d30ed4a0e",
-                            "link": "https://www.intersight.com/api/v1/bios/Policies/6346f13e6275722d30ed4a0e"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "access.Policy",
-                            "Moid": "6346f21c6275722d30ed6144",
-                            "link": "https://www.intersight.com/api/v1/access/Policies/6346f21c6275722d30ed6144"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "ipmioverlan.Policy",
-                            "Moid": "6346f2356275722d30ed63d9",
-                            "link": "https://www.intersight.com/api/v1/ipmioverlan/Policies/6346f2356275722d30ed63d9"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "iam.EndPointUserPolicy",
-                            "Moid": "6346f26b6275722d30ed691f",
-                            "link": "https://www.intersight.com/api/v1/iam/EndPointUserPolicies/6346f26b6275722d30ed691f"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "kvm.Policy",
-                            "Moid": "6347308a6275722d30f410e2",
-                            "link": "https://www.intersight.com/api/v1/kvm/Policies/6347308a6275722d30f410e2"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "boot.PrecisionPolicy",
-                            "Moid": "6346f1b26275722d30ed5613",
-                            "link": "https://www.intersight.com/api/v1/boot/PrecisionPolicies/6346f1b26275722d30ed5613"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "vnic.LanConnectivityPolicy",
-                            "Moid": "634846a5ea6a1292fc328d82",
-                            "link": "https://www.intersight.com/api/v1/vnic/LanConnectivityPolicies/634846a5ea6a1292fc328d82"
-                          }
-                        ],
-                        "TargetPlatform": "FIAttached",
-                        "UuidAddressType": "NONE",
-                        "Usage": 1,
-                        "Organization": {
-                          "ClassId": "mo.MoRef",
-                          "ObjectType": "organization.Organization",
-                          "Moid": "631803456972652d3097eb8d",
-                          "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
-                        }
-                      }
-                      ]
+              ],
+              "PermissionResources": [
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "organization.Organization",
+                  "Moid": "631803456972652d3097eb8d",
+                  "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+                }
+              ],
+              "DisplayNames": null,
+              "Description": "",
+              "Name": "xLabs-Development",
+              "Type": "instance",
+              "Action": "No-op",
+              "ConfigContext": {
+                "ClassId": "policy.ConfigContext",
+                "ObjectType": "policy.ConfigContext",
+                "ConfigState": "",
+                "ConfigType": "",
+                "ControlAction": "ConfigChange",
+                "ErrorState": "",
+                "OperState": ""
+              },
+              "PolicyBucket": [
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "bios.Policy",
+                  "Moid": "6346f13e6275722d30ed4a0e",
+                  "link": "https://www.intersight.com/api/v1/bios/Policies/6346f13e6275722d30ed4a0e"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "access.Policy",
+                  "Moid": "6346f21c6275722d30ed6144",
+                  "link": "https://www.intersight.com/api/v1/access/Policies/6346f21c6275722d30ed6144"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "ipmioverlan.Policy",
+                  "Moid": "6346f2356275722d30ed63d9",
+                  "link": "https://www.intersight.com/api/v1/ipmioverlan/Policies/6346f2356275722d30ed63d9"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "iam.EndPointUserPolicy",
+                  "Moid": "6346f26b6275722d30ed691f",
+                  "link": "https://www.intersight.com/api/v1/iam/EndPointUserPolicies/6346f26b6275722d30ed691f"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "kvm.Policy",
+                  "Moid": "6347308a6275722d30f410e2",
+                  "link": "https://www.intersight.com/api/v1/kvm/Policies/6347308a6275722d30f410e2"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "boot.PrecisionPolicy",
+                  "Moid": "6346f1b26275722d30ed5613",
+                  "link": "https://www.intersight.com/api/v1/boot/PrecisionPolicies/6346f1b26275722d30ed5613"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "vnic.LanConnectivityPolicy",
+                  "Moid": "634846a5ea6a1292fc328d82",
+                  "link": "https://www.intersight.com/api/v1/vnic/LanConnectivityPolicies/634846a5ea6a1292fc328d82"
+                }
+              ],
+              "TargetPlatform": "FIAttached",
+              "UuidAddressType": "NONE",
+              "Usage": 1,
+              "Organization": {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "organization.Organization",
+                "Moid": "631803456972652d3097eb8d",
+                "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+              }
+            }
+          ]
         }
     http_version:
   recorded_at: Thu, 12 May 2022 13:46:56 GMT
 - request:
     method: get
-    uri: https://intersight.com/api/v1/server/ProfilesTemplates
+    uri: https://intersight.com/api/v1/server/ProfileTemplates
     body:
       encoding: US-ASCII
       string: ''
@@ -64503,102 +64503,102 @@ http_interactions:
         {
           "ObjectType": "server.ProfileTemplate.List",
           "Results": [
-                    {
-                        "ClassId": "server.ProfileTemplate",
-                        "ObjectType": "server.ProfileTemplate",
-                        "AccountMoid": "5ed10e437564612d3352cc2d",
-                        "CreateTime": "2022-10-12T16:53:46.348Z",
-                        "DomainGroupMoid": "5ed10e437564612d3352cc37",
-                        "ModTime": "2022-11-29T12:32:37.902Z",
-                        "Moid": "6346f11a77696e2d300b6049",
-                        "Owners": [
-                          "5ed10e437564612d3352cc2d"
-                        ],
-                        "SharedScope": "",
-                        "Tags": [
+            {
+              "ClassId": "server.ProfileTemplate",
+              "ObjectType": "server.ProfileTemplate",
+              "AccountMoid": "5ed10e437564612d3352cc2d",
+              "CreateTime": "2022-10-12T16:53:46.348Z",
+              "DomainGroupMoid": "5ed10e437564612d3352cc37",
+              "ModTime": "2022-11-29T12:32:37.902Z",
+              "Moid": "6346f11a77696e2d300b6049",
+              "Owners": [
+                "5ed10e437564612d3352cc2d"
+              ],
+              "SharedScope": "",
+              "Tags": [
 
-                        ],
-                        "VersionContext": null,
-                        "Ancestors": [
+              ],
+              "VersionContext": null,
+              "Ancestors": [
 
-                        ],
-                        "PermissionResources": [
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "organization.Organization",
-                            "Moid": "631803456972652d3097eb8d",
-                            "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
-                          }
-                        ],
-                        "DisplayNames": null,
-                        "Description": "",
-                        "Name": "xLabs-Development",
-                        "Type": "instance",
-                        "Action": "No-op",
-                        "ConfigContext": {
-                          "ClassId": "policy.ConfigContext",
-                          "ObjectType": "policy.ConfigContext",
-                          "ConfigState": "",
-                          "ConfigType": "",
-                          "ControlAction": "ConfigChange",
-                          "ErrorState": "",
-                          "OperState": ""
-                        },
-                        "PolicyBucket": [
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "bios.Policy",
-                            "Moid": "6346f13e6275722d30ed4a0e",
-                            "link": "https://www.intersight.com/api/v1/bios/Policies/6346f13e6275722d30ed4a0e"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "access.Policy",
-                            "Moid": "6346f21c6275722d30ed6144",
-                            "link": "https://www.intersight.com/api/v1/access/Policies/6346f21c6275722d30ed6144"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "ipmioverlan.Policy",
-                            "Moid": "6346f2356275722d30ed63d9",
-                            "link": "https://www.intersight.com/api/v1/ipmioverlan/Policies/6346f2356275722d30ed63d9"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "iam.EndPointUserPolicy",
-                            "Moid": "6346f26b6275722d30ed691f",
-                            "link": "https://www.intersight.com/api/v1/iam/EndPointUserPolicies/6346f26b6275722d30ed691f"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "kvm.Policy",
-                            "Moid": "6347308a6275722d30f410e2",
-                            "link": "https://www.intersight.com/api/v1/kvm/Policies/6347308a6275722d30f410e2"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "boot.PrecisionPolicy",
-                            "Moid": "6346f1b26275722d30ed5613",
-                            "link": "https://www.intersight.com/api/v1/boot/PrecisionPolicies/6346f1b26275722d30ed5613"
-                          },
-                          {
-                            "ClassId": "mo.MoRef",
-                            "ObjectType": "vnic.LanConnectivityPolicy",
-                            "Moid": "634846a5ea6a1292fc328d82",
-                            "link": "https://www.intersight.com/api/v1/vnic/LanConnectivityPolicies/634846a5ea6a1292fc328d82"
-                          }
-                        ],
-                        "TargetPlatform": "FIAttached",
-                        "UuidAddressType": "NONE",
-                        "Usage": 1,
-                        "Organization": {
-                          "ClassId": "mo.MoRef",
-                          "ObjectType": "organization.Organization",
-                          "Moid": "631803456972652d3097eb8d",
-                          "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
-                        }
-                      }
-                      ]
+              ],
+              "PermissionResources": [
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "organization.Organization",
+                  "Moid": "631803456972652d3097eb8d",
+                  "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+                }
+              ],
+              "DisplayNames": null,
+              "Description": "",
+              "Name": "xLabs-Development",
+              "Type": "instance",
+              "Action": "No-op",
+              "ConfigContext": {
+                "ClassId": "policy.ConfigContext",
+                "ObjectType": "policy.ConfigContext",
+                "ConfigState": "",
+                "ConfigType": "",
+                "ControlAction": "ConfigChange",
+                "ErrorState": "",
+                "OperState": ""
+              },
+              "PolicyBucket": [
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "bios.Policy",
+                  "Moid": "6346f13e6275722d30ed4a0e",
+                  "link": "https://www.intersight.com/api/v1/bios/Policies/6346f13e6275722d30ed4a0e"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "access.Policy",
+                  "Moid": "6346f21c6275722d30ed6144",
+                  "link": "https://www.intersight.com/api/v1/access/Policies/6346f21c6275722d30ed6144"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "ipmioverlan.Policy",
+                  "Moid": "6346f2356275722d30ed63d9",
+                  "link": "https://www.intersight.com/api/v1/ipmioverlan/Policies/6346f2356275722d30ed63d9"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "iam.EndPointUserPolicy",
+                  "Moid": "6346f26b6275722d30ed691f",
+                  "link": "https://www.intersight.com/api/v1/iam/EndPointUserPolicies/6346f26b6275722d30ed691f"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "kvm.Policy",
+                  "Moid": "6347308a6275722d30f410e2",
+                  "link": "https://www.intersight.com/api/v1/kvm/Policies/6347308a6275722d30f410e2"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "boot.PrecisionPolicy",
+                  "Moid": "6346f1b26275722d30ed5613",
+                  "link": "https://www.intersight.com/api/v1/boot/PrecisionPolicies/6346f1b26275722d30ed5613"
+                },
+                {
+                  "ClassId": "mo.MoRef",
+                  "ObjectType": "vnic.LanConnectivityPolicy",
+                  "Moid": "634846a5ea6a1292fc328d82",
+                  "link": "https://www.intersight.com/api/v1/vnic/LanConnectivityPolicies/634846a5ea6a1292fc328d82"
+                }
+              ],
+              "TargetPlatform": "FIAttached",
+              "UuidAddressType": "NONE",
+              "Usage": 1,
+              "Organization": {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "organization.Organization",
+                "Moid": "631803456972652d3097eb8d",
+                "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+              }
+            }
+          ]
         }
     http_version:
   recorded_at: Thu, 12 May 2022 13:46:56 GMT
