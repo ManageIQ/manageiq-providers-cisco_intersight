@@ -33858,8 +33858,7 @@ http_interactions:
       string: |-
             {
         "ObjectType": "server.ProfileTemplate.List",
-        "Results":
-        [
+        "Results":  [
           {
             "ClassId": "server.ProfileTemplate",
             "ObjectType": "server.ProfileTemplate",
@@ -34038,8 +34037,7 @@ http_interactions:
       string: |-
             {
         "ObjectType": "server.ProfileTemplate.List",
-        "Results":
-        [
+        "Results":  [
           {
             "ClassId": "server.ProfileTemplate",
             "ObjectType": "server.ProfileTemplate",
