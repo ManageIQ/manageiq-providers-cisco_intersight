@@ -58,7 +58,7 @@ module ManageIQ::Providers::CiscoIntersight
         :target_option  => "deploy"
       }
 
-      ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWorkflow.create_job(options).tap { |job| job.signal(:start) }
+      ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::EmsRefreshWorkflow.create_job(options).tap(&:signal_start)
     end
   end
 end
