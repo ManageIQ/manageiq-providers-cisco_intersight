@@ -33778,7 +33778,8 @@ http_interactions:
           ]
         }
     http_version:
-  recorded_at: Thu, 12 May 2022 13:46:56 GMT- request:
+  recorded_at: Thu, 12 May 2022 13:46:56 GMT
+- request:
     method: get
     uri: https://intersight.com/api/v1/server/ProfileTemplates
     body:
@@ -33957,7 +33958,8 @@ http_interactions:
         ]
       }
     http_version:
-    recorded_at: Thu, 12 May 2022 13:46:56 GMT- request:
+  recorded_at: Thu, 12 May 2022 13:46:56 GMT
+- request:
     method: get
     uri: https://intersight.com/api/v1/server/ProfileTemplates
     body:
