@@ -33957,6 +33957,185 @@ http_interactions:
         ]
       }
     http_version:
+    recorded_at: Thu, 12 May 2022 13:46:56 GMT- request:
+    method: get
+    uri: https://intersight.com/api/v1/server/ProfileTemplates
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - OpenAPI-Generator/0.1.3/ruby
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      Authorization:
+      - Signature keyId="5ed10e437564612d3352cc2d/606616ad7564612d3042cdd0/6205497b7564612d301e04c8",algorithm="hs2019",headers="(request-target)
+        host date digest",signature="MEUCIGVj0xfRjnBm7x132CdrcorbNT8cELNV4D5L2TaDpJJ2AiEAl5RZugH4ZGB2E4Lo2ZTINN4qKBG3flG6xlLQlVXBxpw="
+      Date:
+      - Thu, 12 May 2022 13:46:56 GMT
+      Digest:
+      - SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 12 May 2022 13:46:56 GMT
+      Set-Cookie:
+      - AWSALB=XkWIj6bwzgQT58i+G6ozDEL426EyDG/BrktyWogB0N36WKVxE8pNxJuw168cByJy5GrVUPljRaI8wWqUFrPP4v5rsSxVB/tLWN8nZx7VsRw6HpbBz8X8jIrgRh8f;
+        Expires=Thu, 19 May 2022 13:46:56 GMT; Path=/
+      - AWSALBCORS=XkWIj6bwzgQT58i+G6ozDEL426EyDG/BrktyWogB0N36WKVxE8pNxJuw168cByJy5GrVUPljRaI8wWqUFrPP4v5rsSxVB/tLWN8nZx7VsRw6HpbBz8X8jIrgRh8f;
+        Expires=Thu, 19 May 2022 13:46:56 GMT; Path=/; SameSite=None; Secure
+      Server:
+      - nginx
+      X-Starship-Traceid:
+      - NBca08f754fa54715bb84593919f2fd61a
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Content-Security-Policy:
+      - 'base-uri ''self'' https://cdn.intersight.com/; child-src ''self'' https://www.intersight.com/
+        https://cdn.intersight.com/  https://cloudsso.cisco.com https://www.cisco.com/
+        https://id.cisco.com; default-src ''self'' https://cdn.intersight.com/; font-src
+        ''self'' data: https://cdn.intersight.com/; frame-ancestors ''self''; img-src
+        ''self'' data: https://cdn.intersight.com/; style-src ''self'' ''unsafe-inline''
+        https://cdn.intersight.com/; object-src ''none''; form-action ''self'' https://www.intersight.com/
+        https://cloudsso.cisco.com https://www.cisco.com/ https://id.cisco.com; script-src
+        ''self'' https://cdn.intersight.com/; sandbox allow-modals allow-scripts allow-same-origin
+        allow-popups allow-forms allow-downloads; connect-src ''self'' https://cdn.intersight.com/
+        https://status.intersight.com https://download.intersight.com/ wss://socket.intersight.com
+        wss://intersight.com; frame-src ''self'' blob: https://www.intersight.com/
+        https://cdn.intersight.com/  https://cloudsso.cisco.com https://www.cisco.com/
+        https://id.cisco.com;'
+      X-Xss-Protection:
+      - 1; mode=block;
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 158b0f42a1d87ab9108e2baf28e8c990.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - ZAG50-C1
+      X-Amz-Cf-Id:
+      - zj3DxkQ3pJsUdc9vnh_OhYUxtoUzHgKINKUwpvtlxSYlGMppiwehkQ==
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+            {
+        "ObjectType": "server.ProfileTemplate.List",
+        "Results":
+        [
+          {
+            "ClassId": "server.ProfileTemplate",
+            "ObjectType": "server.ProfileTemplate",
+            "AccountMoid": "5ed10e437564612d3352cc2d",
+            "CreateTime": "2022-10-12T16:53:46.348Z",
+            "DomainGroupMoid": "5ed10e437564612d3352cc37",
+            "ModTime": "2022-11-29T12:32:37.902Z",
+            "Moid": "6346f11a77696e2d300b6049",
+            "Owners": [
+              "5ed10e437564612d3352cc2d"
+            ],
+            "SharedScope": "",
+            "Tags": [
+
+            ],
+            "VersionContext": null,
+            "Ancestors": [
+
+            ],
+            "PermissionResources": [
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "organization.Organization",
+                "Moid": "631803456972652d3097eb8d",
+                "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+              }
+            ],
+            "DisplayNames": null,
+            "Description": "",
+            "Name": "xLabs-Development",
+            "Type": "instance",
+            "Action": "No-op",
+            "ConfigContext": {
+              "ClassId": "policy.ConfigContext",
+              "ObjectType": "policy.ConfigContext",
+              "ConfigState": "",
+              "ConfigType": "",
+              "ControlAction": "ConfigChange",
+              "ErrorState": "",
+              "OperState": ""
+            },
+            "PolicyBucket": [
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "bios.Policy",
+                "Moid": "6346f13e6275722d30ed4a0e",
+                "link": "https://www.intersight.com/api/v1/bios/Policies/6346f13e6275722d30ed4a0e"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "access.Policy",
+                "Moid": "6346f21c6275722d30ed6144",
+                "link": "https://www.intersight.com/api/v1/access/Policies/6346f21c6275722d30ed6144"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "ipmioverlan.Policy",
+                "Moid": "6346f2356275722d30ed63d9",
+                "link": "https://www.intersight.com/api/v1/ipmioverlan/Policies/6346f2356275722d30ed63d9"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "iam.EndPointUserPolicy",
+                "Moid": "6346f26b6275722d30ed691f",
+                "link": "https://www.intersight.com/api/v1/iam/EndPointUserPolicies/6346f26b6275722d30ed691f"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "kvm.Policy",
+                "Moid": "6347308a6275722d30f410e2",
+                "link": "https://www.intersight.com/api/v1/kvm/Policies/6347308a6275722d30f410e2"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "boot.PrecisionPolicy",
+                "Moid": "6346f1b26275722d30ed5613",
+                "link": "https://www.intersight.com/api/v1/boot/PrecisionPolicies/6346f1b26275722d30ed5613"
+              },
+              {
+                "ClassId": "mo.MoRef",
+                "ObjectType": "vnic.LanConnectivityPolicy",
+                "Moid": "634846a5ea6a1292fc328d82",
+                "link": "https://www.intersight.com/api/v1/vnic/LanConnectivityPolicies/634846a5ea6a1292fc328d82"
+              }
+            ],
+            "TargetPlatform": "FIAttached",
+            "UuidAddressType": "NONE",
+            "Usage": 1,
+            "Organization": {
+              "ClassId": "mo.MoRef",
+              "ObjectType": "organization.Organization",
+              "Moid": "631803456972652d3097eb8d",
+              "link": "https://www.intersight.com/api/v1/organization/Organizations/631803456972652d3097eb8d"
+            }
+          }
+        ]
+      }
+    http_version:
   recorded_at: Thu, 12 May 2022 13:46:56 GMT
 - request:
     method: get
