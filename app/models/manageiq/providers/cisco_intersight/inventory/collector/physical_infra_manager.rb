@@ -1,6 +1,5 @@
 module ManageIQ::Providers::CiscoIntersight
   class Inventory::Collector::PhysicalInfraManager < ManageIQ::Providers::Inventory::Collector
-    require 'intersight_client'
     def collect
       # Initialize the variables that may be memoized for the duration of the refresh run
       physical_servers
