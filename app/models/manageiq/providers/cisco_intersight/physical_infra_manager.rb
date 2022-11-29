@@ -7,6 +7,7 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :EventCatcher
     require_nested :EventParser
     require_nested :PhysicalServer
+    require_nested :PhysicalServerProfileTemplate
 
     include Vmdb::Logging
     include ManagerMixin
