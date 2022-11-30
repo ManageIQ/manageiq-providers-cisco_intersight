@@ -6,6 +6,7 @@ module ManageIQ::Providers::CiscoIntersight
       decomissioned_servers
       physical_racks
       physical_server_profiles
+      physical_server_profile_templates
       firmware_firmware_summaries
       network_elements
       physical_chassis
@@ -48,6 +49,13 @@ module ManageIQ::Providers::CiscoIntersight
     rescue IntersightClient::ApiError => e
       @physical_server_profiles = {}
       _log.error("Collecting process of Server Profiles has failed: #{e.response_body}. There might be a potential license issue.")
+    end
+
+    def physical_server_profile_templates
+      @physical_server_profile_templates ||= server_api.get_server_profile_template_list.results
+    rescue IntersightClient::ApiError => e
+      @physical_server_profile_templates = {}
+      _log.error("Collecting process of Server Profiles Templates has failed: #{e.response_body}. There might be a potential license issue.")
     end
 
     def device_contract_informations_by_moid
@@ -154,6 +162,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def server_api
       @server_api ||= IntersightClient::ServerApi.new(api_client)
+    end
+
+    def bulk_api
+      @bulk_api ||= IntersightClient::BulkApi.new(api_client)
     end
 
     # API key and keyid configuration
