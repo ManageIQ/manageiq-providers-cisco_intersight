@@ -8,6 +8,7 @@ module ManageIQ::Providers::CiscoIntersight
     require_nested :EventParser
     require_nested :PhysicalServer
     require_nested :PhysicalServerProfileTemplate
+    supports :catalog
 
     include Vmdb::Logging
     include ManagerMixin
@@ -21,6 +22,10 @@ module ManageIQ::Providers::CiscoIntersight
 
     def self.description
       @description ||= "Cisco Intersight".freeze
+    end
+
+    def self.catalog_types
+      {"cisco_intersight" => N_("Cisco intersight")}
     end
   end
 end
