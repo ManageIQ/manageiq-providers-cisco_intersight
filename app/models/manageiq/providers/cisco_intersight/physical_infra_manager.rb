@@ -25,7 +25,7 @@ module ManageIQ::Providers::CiscoIntersight
     end
 
     def self.catalog_types
-      {"cisco_intersight" => N_("Cisco intersight")}
+      {"cisco_intersight" => N_("Cisco Intersight")}
     end
   end
 end
