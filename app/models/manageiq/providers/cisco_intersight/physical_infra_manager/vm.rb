@@ -1,6 +1,7 @@
 module ManageIQ::Providers::CiscoIntersight
-  class PhysicalInfraManager::Vm \
-      < ManageIQ::Providers::PhysicalInfraManager::Vm
+  class PhysicalInfraManager::Vm < ManageIQ::Providers::PhysicalInfraManager::Vm
+    supports :capture
+
     def provider_object(connection = nil)
       connection ||= ext_management_system.connect
       connection.find_vm(ems_ref)
