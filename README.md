@@ -1,11 +1,11 @@
 # ManageIQ::Providers::CiscoIntersight
 
-[![CI](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml/badge.svg)](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml)
+[![CI](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml/badge.svg?branch=quinteros)](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions/workflows/ci.yaml)
 [![Code Climate](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight.svg)](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight)
 [![Test Coverage](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight/badges/coverage.svg)](https://codeclimate.com/github/ManageIQ/manageiq-providers-cisco_intersight/coverage)
 [![Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ManageIQ/manageiq-providers-cisco_intersight?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build history for master branch](https://buildstats.info/github/chart/ManageIQ/manageiq-providers-cisco_intersight?branch=master&buildCount=50&includeBuildsFromPullRequest=false&showstats=false)](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions?query=branch%3Amaster)
+[![Build history for quinteros branch](https://buildstats.info/github/chart/ManageIQ/manageiq-providers-cisco_intersight?branch=quinteros&buildCount=50&includeBuildsFromPullRequest=false&showstats=false)](https://github.com/ManageIQ/manageiq-providers-cisco_intersight/actions?query=branch%3Amaster)
 
 ManageIQ plugin for the Cisco Intersight provider.
 
