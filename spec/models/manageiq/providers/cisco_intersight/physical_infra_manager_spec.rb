@@ -22,6 +22,20 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
     end
   end
 
+  context "#pause!" do
+    let(:zone) { FactoryBot.create(:zone) }
+    let(:ems)  { FactoryBot.create(:ems_cisco_intersight_physical_infra, :zone => zone) }
+
+    include_examples "ExtManagementSystem#pause!"
+  end
+
+  context "#resume!" do
+    let(:zone) { FactoryBot.create(:zone) }
+    let(:ems)  { FactoryBot.create(:ems_cisco_intersight_physical_infra, :zone => zone) }
+
+    include_examples "ExtManagementSystem#resume!"
+  end
+
   context "#connect" do
     it "aborts on missing credentials" do
       ems = FactoryBot.create(:ems_cisco_intersight_physical_infra)
