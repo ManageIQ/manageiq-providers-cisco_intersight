@@ -47,7 +47,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                 :name                   => 'authentications.default.valid',
                 :skipSubmit             => true,
                 :isRequired             => true,
-                :validationDependencies => %w[type],
+                :validationDependencies => %w[type zone_id],
                 :fields                 => [
                   {
                     :component  => "text-field",
