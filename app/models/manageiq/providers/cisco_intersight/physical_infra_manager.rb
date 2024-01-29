@@ -12,7 +12,7 @@ module ManageIQ::Providers::CiscoIntersight
 
     include Vmdb::Logging
     include ManagerMixin
-    include_concern "Operations"
+    include Operations
 
     supports :create
 
