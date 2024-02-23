@@ -7,7 +7,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     key = authentication_password
     raise MiqException::MiqHostError, "No credentials defined" if !keyid || !key
 
-    api_client = self.class.raw_connect(keyid, key)
+    api_client = self.class.raw_connect(default_endpoint&.url, default_endpoint&.verify_ssl, keyid, key)
 
     service = options.delete(:service)
     if service
@@ -50,6 +50,34 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                 :validationDependencies => %w[type zone_id],
                 :fields                 => [
                   {
+                    :component    => "select",
+                    :id           => "endpoints.default.verify_ssl",
+                    :name         => "endpoints.default.verify_ssl",
+                    :label        => _("SSL verification"),
+                    :dataType     => "integer",
+                    :isRequired   => true,
+                    :initialValue => OpenSSL::SSL::VERIFY_PEER,
+                    :options      => [
+                      {
+                        :label => _('Do not verify'),
+                        :value => OpenSSL::SSL::VERIFY_NONE,
+                      },
+                      {
+                        :label => _('Verify'),
+                        :value => OpenSSL::SSL::VERIFY_PEER,
+                      },
+                    ]
+                  },
+                  {
+                    :component    => "text-field",
+                    :id           => "endpoints.default.url",
+                    :name         => "endpoints.default.url",
+                    :label        => _("Endpoint URL"),
+                    :initialValue => "https://intersight.com",
+                    :isRequired   => true,
+                    :validate     => [{:type => "required"}]
+                  },
+                  {
                     :component  => "text-field",
                     :id         => "authentications.default.userid",
                     :name       => "authentications.default.userid",
@@ -89,11 +117,14 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     #   }
 
     def verify_credentials(args)
+      endpoint       = args.dig("endpoints", "default")
       authentication = args.dig("authentications", "default")
-      keyid, enc_key = authentication&.values_at("userid", "password")
+
+      url, verify_ssl = endpoint&.values_at("url", "verify_ssl")
+      keyid, enc_key  = authentication&.values_at("userid", "password")
       key = ManageIQ::Password.try_decrypt(enc_key)
 
-      verify_provider_connection(raw_connect(keyid, key))
+      verify_provider_connection(raw_connect(url, verify_ssl, keyid, key))
     end
 
     def verify_provider_connection(api_client)
@@ -108,11 +139,21 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
       end
     end
 
-    def raw_connect(key_id, key)
+    def raw_connect(url, verify_ssl, key_id, key)
       require "intersight_client"
+
+      uri    = URI.parse(url || "https://intersight.com")
+      scheme = uri.scheme
+      host   = "#{uri.host}:#{uri.port}"
+
+      verify_ssl = OpenSSL::SSL::VERIFY_PEER if verify_ssl.nil?
+      verify_ssl = verify_ssl == OpenSSL::SSL::VERIFY_PEER
 
       IntersightClient::ApiClient.new(
         IntersightClient::Configuration.new do |config|
+          config.scheme     = scheme
+          config.host       = host
+          config.verify_ssl = verify_ssl
           config.api_key    = key
           config.api_key_id = key_id
         end
