@@ -1,6 +1,8 @@
 module ManageIQ::Providers::CiscoIntersight::ManagerMixin
   extend ActiveSupport::Concern
 
+  DEFAULT_INTERSIGHT_URL = "https://intersight.com".freeze
+
   def connect(options = {})
     require 'intersight_client'
     keyid = authentication_userid
@@ -73,7 +75,7 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
                     :id           => "endpoints.default.url",
                     :name         => "endpoints.default.url",
                     :label        => _("Endpoint URL"),
-                    :initialValue => "https://intersight.com",
+                    :initialValue => DEFAULT_INTERSIGHT_URL,
                     :isRequired   => true,
                     :validate     => [{:type => "required"}]
                   },
@@ -142,17 +144,24 @@ module ManageIQ::Providers::CiscoIntersight::ManagerMixin
     def raw_connect(url, verify_ssl, key_id, key)
       require "intersight_client"
 
-      uri    = URI.parse(url || "https://intersight.com")
-      scheme = uri.scheme
-      host   = "#{uri.host}:#{uri.port}"
-
       verify_ssl = OpenSSL::SSL::VERIFY_PEER if verify_ssl.nil?
       verify_ssl = verify_ssl == OpenSSL::SSL::VERIFY_PEER
 
       IntersightClient::ApiClient.new(
         IntersightClient::Configuration.new do |config|
-          config.scheme     = scheme
-          config.host       = host
+          uri = URI.parse(url || DEFAULT_INTERSIGHT_URL)
+
+          if uri != URI.parse(DEFAULT_INTERSIGHT_URL)
+            uri   = URI.parse(url)
+            host  = uri.host
+            host += ":#{uri.port}" if uri.port.present?
+
+            config.scheme       = uri.scheme || "https"
+            config.host         = host
+            config.base_path    = uri.path if uri.path.present?
+            config.server_index = nil
+          end
+
           config.verify_ssl = verify_ssl
           config.api_key    = key
           config.api_key_id = key_id

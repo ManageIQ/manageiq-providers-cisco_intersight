@@ -15,8 +15,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
   context ".raw_connect" do
     it "connects with key_id and secret key" do
       expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
-      expect(config_mock).to receive(:scheme=).with("https")
-      expect(config_mock).to receive(:host=).with("intersight.com:443")
       expect(config_mock).to receive(:verify_ssl=).with(true)
       expect(config_mock).to receive(:api_key_id=).with("keyid")
       expect(config_mock).to receive(:api_key=).with("secretkey")
@@ -26,8 +24,6 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
 
     it "defaults to url=https://intersight.com and verify_ssl=true" do
       expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
-      expect(config_mock).to receive(:scheme=).with("https")
-      expect(config_mock).to receive(:host=).with("intersight.com:443")
       expect(config_mock).to receive(:verify_ssl=).with(true)
       expect(config_mock).to receive(:api_key_id=).with("keyid")
       expect(config_mock).to receive(:api_key=).with("secretkey")
@@ -61,13 +57,30 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
 
     it "connects with key_id and secret key" do
       expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
-      expect(config_mock).to receive(:scheme=).with("https")
-      expect(config_mock).to receive(:host=).with("intersight.com:443")
       expect(config_mock).to receive(:verify_ssl=).with(true)
       expect(config_mock).to receive(:api_key_id=).with("keyid")
       expect(config_mock).to receive(:api_key=).with("secretkey")
 
       ems.connect
+    end
+
+    context "with a variation of the default url" do
+      let(:url) { "https://intersight.com:443/" }
+      let(:ems) do
+        FactoryBot.create(:ems_cisco_intersight_physical_infra, :auth).tap do |ems|
+          ems.default_endpoint.url = url
+          ems.default_endpoint.verify_ssl = OpenSSL::SSL::VERIFY_NONE
+        end
+      end
+
+      it "connects with the default server" do
+        expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
+        expect(config_mock).to receive(:verify_ssl=).with(false)
+        expect(config_mock).to receive(:api_key_id=).with("keyid")
+        expect(config_mock).to receive(:api_key=).with("secretkey")
+
+        ems.connect
+      end
     end
 
     context "with an alternate URL" do
@@ -83,6 +96,7 @@ describe ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager do
         expect(IntersightClient::Configuration).to receive(:new).and_yield(config_mock)
         expect(config_mock).to receive(:scheme=).with("http")
         expect(config_mock).to receive(:host=).with("intersight.localdomain:8080")
+        expect(config_mock).to receive(:server_index=).with(nil)
         expect(config_mock).to receive(:verify_ssl=).with(false)
         expect(config_mock).to receive(:api_key_id=).with("keyid")
         expect(config_mock).to receive(:api_key=).with("secretkey")
