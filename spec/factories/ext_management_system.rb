@@ -15,11 +15,10 @@ FactoryBot.define do
 
     trait :vcr do
       after(:create) do |ems|
-        secrets = Rails.application.secrets.cisco_intersight
         ems.authentications << FactoryBot.create(
           :authentication,
-          :userid   => secrets[:key_id],
-          :password => secrets[:secret_key]
+          :userid   => VcrSecrets.cisco_intersight.key_id,
+          :password => VcrSecrets.cisco_intersight.secret_key
         )
       end
     end

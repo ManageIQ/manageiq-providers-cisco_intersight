@@ -11,15 +11,11 @@ require "manageiq/providers/cisco_intersight"
 VCR.configure do |config|
   config.ignore_hosts('codeclimate.com') if ENV['CI']
   config.cassette_library_dir = File.join(ManageIQ::Providers::CiscoIntersight::Engine.root, 'spec/vcr_cassettes')
-
-  config.configure_rspec_metadata!
   config.default_cassette_options = {
     :match_requests_on            => %i[method uri body],
     :update_content_length_header => true
   }
+  config.configure_rspec_metadata! # Auto-detects the cassette name based on the example's full description
 
-  secrets = Rails.application.secrets
-  secrets.cisco_intersight.each_key do |secret|
-    config.filter_sensitive_data(secrets.cisco_intersight_defaults[secret]) { secrets.cisco_intersight[secret] }
-  end
+  VcrSecrets.define_all_cassette_placeholders(config, :cisco_intersight)
 end
