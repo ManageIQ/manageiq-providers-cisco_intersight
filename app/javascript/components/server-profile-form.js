@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MiqFormRenderer from '@@ddf';
