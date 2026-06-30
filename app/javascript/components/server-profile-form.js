@@ -82,8 +82,4 @@ ServerProfileForm.propTypes = {
   dispatch:        PropTypes.func.isRequired,
 };
 
-ServerProfileForm.defaultProps = {
-  server_profile_id: undefined
-};
-
 export default connect()(ServerProfileForm);
