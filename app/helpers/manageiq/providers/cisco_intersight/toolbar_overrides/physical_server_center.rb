@@ -66,7 +66,7 @@ module ManageIQ
                                                    :modal_title    => N_('Deploy Server Profile'),
                                                    :component_name => 'ServerProfileForm',
                                                    :action         => 'deploy_server'}},
-                    :klass => ApplicationHelper::Button::ButtonWithoutRbacCheck
+                    :klass => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::ServerProfileActionButton
                   ),
                   button(
                     :physical_server_profile_unassign_server,
@@ -79,7 +79,7 @@ module ManageIQ
                                                    :modal_title    => N_('Unassign Server Profile'),
                                                    :component_name => 'ServerProfileForm',
                                                    :action         => 'unassign_server'}},
-                    :klass => ApplicationHelper::Button::ButtonWithoutRbacCheck
+                    :klass => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::ServerProfileActionButton
                   ),
                 ]
               )
