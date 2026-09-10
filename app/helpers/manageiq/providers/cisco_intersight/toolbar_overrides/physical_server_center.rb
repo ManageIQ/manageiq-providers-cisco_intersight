@@ -51,7 +51,7 @@ module ManageIQ
                                'function-data' => {:controller     => 'provider_dialogs',
                                                    :button         => :physical_server_profile_assign_server,
                                                    :modal_title    => N_('Assign Server Profile'),
-                                                   :component_name => 'ServerProfileForm',
+                                                   :component_name => 'ServerProfileActions',
                                                    :action         => 'assign_server'}},
                     :klass => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::AssignServerProfileButton
                   ),
@@ -64,7 +64,7 @@ module ManageIQ
                                'function-data' => {:controller     => 'provider_dialogs',
                                                    :button         => :physical_server_profile_deploy_server,
                                                    :modal_title    => N_('Deploy Server Profile'),
-                                                   :component_name => 'ServerProfileForm',
+                                                   :component_name => 'ServerProfileActions',
                                                    :action         => 'deploy_server'}},
                     :klass => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::ServerProfileActionButton
                   ),
@@ -77,7 +77,7 @@ module ManageIQ
                                'function-data' => {:controller     => 'provider_dialogs',
                                                    :button         => :physical_server_profile_unassign_server,
                                                    :modal_title    => N_('Unassign Server Profile'),
-                                                   :component_name => 'ServerProfileForm',
+                                                   :component_name => 'ServerProfileActions',
                                                    :action         => 'unassign_server'}},
                     :klass => ManageIQ::Providers::CiscoIntersight::PhysicalInfraManager::ServerProfileActionButton
                   ),

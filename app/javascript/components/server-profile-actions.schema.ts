@@ -2,15 +2,14 @@ import { componentTypes, validatorTypes } from "@@ddf";
 import type {
   MiqFormSchemaType,
   OptionType,
-} from "./server-profile-form-types";
+} from "./server-profile-actions-types";
 
 const createSchema = (
-  serverProfilesPromise: Promise<OptionType[]>,
-  physicalServersPromise: Promise<OptionType[]>,
-  serverProfileVisible: boolean,
+  loadOptions: Promise<OptionType[]>,
+  isAssignAction: boolean,
 ): MiqFormSchemaType => ({
   fields: [
-    ...(serverProfileVisible
+    ...(isAssignAction
       ? [
           {
             component: componentTypes.SELECT,
@@ -27,7 +26,7 @@ const createSchema = (
                 message: __("Required"),
               },
             ],
-            loadOptions: () => serverProfilesPromise,
+            loadOptions: () => loadOptions,
           },
         ]
       : [
@@ -37,7 +36,6 @@ const createSchema = (
             name: "physical_server",
             label: __("Physical Server"),
             placeholder: __("Select a Physical Server"),
-            initialValue: ManageIQ.record.recordId,
             isRequired: true,
             includeEmpty: true,
             validate: [
@@ -46,7 +44,7 @@ const createSchema = (
                 message: __("Required"),
               },
             ],
-            loadOptions: () => physicalServersPromise,
+            loadOptions: () => loadOptions,
           },
         ]),
   ],
