@@ -42,7 +42,6 @@ export type ResourcesResponseType = {
 
 export type ServerProfileActionsValuesType = {
   server_profile?: string;
-  physical_server?: string;
 };
 
 type ApiResultType = {
