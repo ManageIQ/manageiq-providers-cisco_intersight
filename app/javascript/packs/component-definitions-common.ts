@@ -1,3 +1,3 @@
-import ServerProfileForm from "../components/server-profile-form";
+import ServerProfileActions from "../components/server-profile-actions";
 
-ManageIQ.component.addReact("ServerProfileForm", ServerProfileForm);
+ManageIQ.component.addReact("ServerProfileActions", ServerProfileActions);
