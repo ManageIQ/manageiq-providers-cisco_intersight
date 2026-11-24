@@ -4,14 +4,23 @@ export type {
   OptionType,
 } from "@@miq-types/forms";
 
-type ModalAction = "assign_server" | "deploy_server" | "unassign_server";
+export type ModalActionType =
+  | "assign_server"
+  | "deploy_server"
+  | "unassign_server";
 
-type ModalData = {
-  action: ModalAction;
+export type ModalDataType = {
+  action: ModalActionType;
 };
 
-export type ServerProfileFormProps = {
-  modalData: ModalData;
+export type DirectActionProps = {
+  action: ModalActionType;
+  onModalClose: () => void;
+};
+
+export type ServerProfileActionsProps = {
+  onModalClose: () => void;
+  modalData: ModalDataType;
 };
 
 export type ApiErrorType = {
@@ -23,7 +32,7 @@ export type ApiErrorType = {
 };
 
 type ResourceType = {
-  id: string | number;
+  id: string;
   name: string;
 };
 
@@ -31,14 +40,14 @@ export type ResourcesResponseType = {
   resources: ResourceType[];
 };
 
-export type ServerProfileFormValues = {
-  server_profile?: string | number | null;
-  physical_server?: string | number | null;
+export type ServerProfileActionsValuesType = {
+  server_profile?: string;
 };
 
 type ApiResultType = {
   message: string;
   success: boolean;
+  task_id: string;
 };
 
 export type ApiResultsResponseType = {
@@ -46,7 +55,7 @@ export type ApiResultsResponseType = {
 };
 
 export type PhysicalServerDetailsResponseType = {
-  assigned_server_profile: {
-    id: string | number;
+  assigned_server_profile?: {
+    id: string;
   };
 };
